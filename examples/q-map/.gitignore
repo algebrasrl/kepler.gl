@@ -28,7 +28,6 @@ backends/q-cumber-backend/data/assets/*
 
 /bundle*.js
 /favicon.png
-/index.html
 
 npm-debug.log
 .history/
