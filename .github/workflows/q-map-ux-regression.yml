@@ -69,6 +69,11 @@ jobs:
         working-directory: examples/q-map
         run: npx playwright install --with-deps chromium
 
+      - name: Prepare backend data dirs
+        run: |
+          mkdir -p examples/q-map/backends/q-storage-backend/data
+          mkdir -p examples/q-map/backends/q-cumber-postgis/data
+
       - name: Start q-map backends
         working-directory: examples/q-map/backends
         run: docker compose up -d --build
@@ -85,6 +90,7 @@ jobs:
           done
           echo "Backends did not become healthy in time" >&2
           docker compose -f examples/q-map/backends/docker-compose.yaml ps || true
+          docker compose -f examples/q-map/backends/docker-compose.yaml logs --tail=50 || true
           exit 1
 
       - name: Run UX regression suite
@@ -139,6 +145,11 @@ jobs:
         working-directory: examples/q-map
         run: npx playwright install --with-deps chromium
 
+      - name: Prepare backend data dirs
+        run: |
+          mkdir -p examples/q-map/backends/q-storage-backend/data
+          mkdir -p examples/q-map/backends/q-cumber-postgis/data
+
       - name: Start q-map backends
         working-directory: examples/q-map/backends
         run: docker compose up -d --build
@@ -155,6 +166,7 @@ jobs:
           done
           echo "Backends did not become healthy in time" >&2
           docker compose -f examples/q-map/backends/docker-compose.yaml ps || true
+          docker compose -f examples/q-map/backends/docker-compose.yaml logs --tail=50 || true
           exit 1
 
       - name: Run strict assistant live gate
