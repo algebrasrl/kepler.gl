@@ -8222,22 +8222,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.uniq@npm:^4":
-  version: 4.5.9
-  resolution: "@types/lodash.uniq@npm:4.5.9"
-  dependencies:
-    "@types/lodash": "npm:*"
-  checksum: 10c0/feb01dfd7b6e3d2b4d29bdb0d00cce8ffa685f1c219b34ae531f098811faab11696b7bdfc3654edcf65f6180ad0cda6471cec7da8a9e7688f294b5c8177cfea7
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.17.23
-  resolution: "@types/lodash@npm:4.17.23"
-  checksum: 10c0/9d9cbfb684e064a2b78aab9e220d398c9c2a7d36bc51a07b184ff382fa043a99b3d00c16c7f109b4eb8614118f4869678dbae7d5c6700ed16fb9340e26cc0bf6
-  languageName: node
-  linkType: hard
-
 "@types/lodash@npm:4.17.5":
   version: 4.17.5
   resolution: "@types/lodash@npm:4.17.5"
@@ -14094,7 +14078,6 @@ __metadata:
     "@openassistant/utils": "npm:^0.5.17"
     "@playwright/test": "npm:^1.58.2"
     "@turf/turf": "npm:^7.3.4"
-    "@types/lodash.uniq": "npm:^4"
     "@types/node": "npm:^22.15.21"
     "@types/react": "npm:^18.3.7"
     "@types/react-dom": "npm:^18.3.7"
