@@ -18,7 +18,35 @@ on:
     - cron: '30 2 * * *'
 
 jobs:
+  lint:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack (Yarn 4)
+        run: corepack enable
+
+      - name: Install q-map dependencies
+        working-directory: examples/q-map
+        run: yarn install
+
+      - name: Lint
+        working-directory: examples/q-map
+        run: npx eslint src tests --max-warnings 0
+
+      - name: Typecheck
+        working-directory: examples/q-map
+        run: npx tsc --noEmit
+
   ux-regression:
+    needs: lint
     if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
