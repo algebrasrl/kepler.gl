@@ -92,7 +92,7 @@ export function AiAssistantPanel() {
       ...Object.keys(keplerGlMessages || {})
     ]);
 
-    return Array.from(allLanguages).reduce(
+    return Array.from(allLanguages).reduce<Record<string, Record<string, string>>>(
       (acc, language) => ({
         ...acc,
         [language]: {

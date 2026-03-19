@@ -416,6 +416,7 @@ export type MapControlItem = {
   active: boolean;
   disableClose?: boolean;
   activeMapIndex?: number;
+  settings?: Record<string, any>;
 };
 
 export type MapLegendControlSettings = {
