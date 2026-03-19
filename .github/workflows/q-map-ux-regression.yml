@@ -26,8 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Project pins Node 18 / Yarn 4 via Volta.
-      - uses: volta-cli/action@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack (Yarn 4)
+        run: corepack enable
 
       - name: Install q-map dependencies
         working-directory: examples/q-map
@@ -85,7 +89,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: volta-cli/action@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack (Yarn 4)
+        run: corepack enable
 
       - name: Validate assistant provider secret
         run: |
