@@ -36,7 +36,7 @@ export function useToolExecution({
 
   const shouldSkip = useCallback(
     () => shouldSkipToolComponentRun({hasRunRef, executionKey, executedToolComponentKeys}),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [executionKey, executedToolComponentKeys]
   );
 
@@ -46,7 +46,7 @@ export function useToolExecution({
 
   const complete = useCallback(
     () => markToolComponentRunCompleted({hasRunRef, executionKey, rememberExecutedToolComponentKey}),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [executionKey, rememberExecutedToolComponentKey]
   );
 

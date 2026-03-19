@@ -2097,7 +2097,7 @@ function createLoadQMapCloudMapTool(apiBaseUrl: string) {
       .strict(),
     execute: async ({provider, mapId}) => {
       const resolvedProvider = normalizeCloudMapProvider(provider);
-      let resolvedId = (mapId || '').trim();
+      const resolvedId = (mapId || '').trim();
 
       if (!resolvedId) {
         return {
@@ -2162,8 +2162,8 @@ function createListQCumberDatasetsTool() {
           }
         };
       }
-      let providerSelection = await resolveExistingQCumberProviderId(providerId);
-      let resolvedProviderId = providerSelection.providerId;
+      const providerSelection = await resolveExistingQCumberProviderId(providerId);
+      const resolvedProviderId = providerSelection.providerId;
       if (!resolvedProviderId) {
         const availableHint = providerSelection.availableProviderIds.length
           ? ` Available providers: ${providerSelection.availableProviderIds.join(', ')}.`
@@ -2250,10 +2250,10 @@ function createGetQCumberDatasetHelpTool() {
           }
         };
       }
-      let providerSelection = await resolveExistingQCumberProviderId(providerId);
-      let resolvedProviderId = providerSelection.providerId || resolveQCumberProviderId(providerId);
+      const providerSelection = await resolveExistingQCumberProviderId(providerId);
+      const resolvedProviderId = providerSelection.providerId || resolveQCumberProviderId(providerId);
       const datasetResolution = await resolveQCumberDatasetId(resolvedProviderId, datasetId);
-      let resolvedDatasetId = datasetResolution.resolvedDatasetId;
+      const resolvedDatasetId = datasetResolution.resolvedDatasetId;
       if (!resolvedDatasetId) {
         const availableDatasets = formatAvailableDatasetIds(datasetResolution.availableDatasetIds);
         return {
@@ -2474,7 +2474,7 @@ function createQueryQCumberDatasetTool(policyMode: QcumberQueryPolicy = 'auto') 
           ? ` expectedAdminType "${normalizedExpectedAdminTypeInput}" ignored for thematic spatial query.`
           : '';
       const normalizedSpatialBbox = normalizeSpatialBboxInput(spatialBbox);
-      let providerSelection = await resolveExistingQCumberProviderId(providerId);
+      const providerSelection = await resolveExistingQCumberProviderId(providerId);
       let resolvedProviderId = await resolvePreferredTerritorialProviderId(
         providerId,
         requestedDatasetId,

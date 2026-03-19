@@ -80,7 +80,7 @@ export function createLoadCloudMapAndWaitTool(ctx: QMapToolContext) {
     execute: async ({provider, mapId, timeoutMs}) => {
       const resolvedProvider = normalizeCloudMapProvider(provider || DEFAULT_PROVIDER);
       const requestedProvider = String(resolvedProvider).trim().toLowerCase();
-      let resolvedMapId = String(mapId || '').trim();
+      const resolvedMapId = String(mapId || '').trim();
       const mapsPayload = await callMcpToolParsed(assistantBaseUrl, ['list_qmap_cloud_maps'], {
         provider: resolvedProvider
       });

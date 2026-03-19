@@ -755,7 +755,7 @@ export function createAggregateDatasetToH3Tool(ctx: QMapToolContext) {
       const localVisState = useSelector(selectQMapVisState);
       const {shouldSkip, complete} = useToolExecution({executionKey, executedToolComponentKeys: EXECUTED_TOOL_COMPONENT_KEYS, rememberExecutedToolComponentKey});
       useEffect(() => {
-        let cancelled = false;
+        const cancelled = false;
         if (shouldSkip()) return;
         const sourceDataset = localVisState?.datasets?.[datasetId];
         if (!sourceDataset) return;
@@ -1275,7 +1275,7 @@ export function createPopulateTassellationFromAdminUnitsTool(ctx: QMapToolContex
       const localVisState = useSelector(selectQMapVisState);
       const {shouldSkip, complete} = useToolExecution({executionKey, executedToolComponentKeys: EXECUTED_TOOL_COMPONENT_KEYS, rememberExecutedToolComponentKey});
       useEffect(() => {
-        let cancelled = false;
+        const cancelled = false;
         if (shouldSkip()) return;
 
         const datasets = localVisState?.datasets || {};
