@@ -10,9 +10,12 @@ RUN chmod +x /usr/local/bin/restore-dumps.sh /usr/local/bin/entrypoint-wrapper.s
 
 COPY sql/init /docker-entrypoint-initdb.d
 
-# Embed pgdump files into the image so deploys are self-contained.
+# Embed pgdump files into the image when available (self-contained deploys).
 # Local dev can still override via volume mount (-v ./dumps:/dumps:ro).
-COPY dumps/*.pgdump /dumps/
+# In CI the dumps are gitignored, so the directory may only contain .gitkeep.
+RUN mkdir -p /dumps
+COPY dumps/ /tmp/dumps/
+RUN find /tmp/dumps -name '*.pgdump' -exec mv {} /dumps/ \; && rm -rf /tmp/dumps
 
 ENTRYPOINT ["entrypoint-wrapper.sh"]
 CMD ["postgres"]
