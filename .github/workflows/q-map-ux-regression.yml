@@ -72,14 +72,19 @@ jobs:
         working-directory: examples/q-map
         run: npx playwright install --with-deps chromium
 
-      - name: Prepare backend data dirs
-        run: |
-          mkdir -p examples/q-map/backends/q-storage-backend/data
-          mkdir -p examples/q-map/backends/q-cumber-postgis/data
-
-      - name: Start q-map backends
+      - name: Bootstrap backend env
         working-directory: examples/q-map/backends
-        run: QMAP_DOCKER_UID=$(id -u) QMAP_DOCKER_GID=$(id -g) docker compose up -d --build
+        run: |
+          cp .env.example .env
+          sed -i "s/^QMAP_DOCKER_UID=.*/QMAP_DOCKER_UID=$(id -u)/" .env
+          sed -i "s/^QMAP_DOCKER_GID=.*/QMAP_DOCKER_GID=$(id -g)/" .env
+          sed -i "s/^QSTORAGE_ALLOW_INSECURE_DEFAULT_USER=.*/QSTORAGE_ALLOW_INSECURE_DEFAULT_USER=true/" .env
+          mkdir -p q-storage-backend/data
+          mkdir -p q-cumber-postgis/data
+
+      - name: Start q-map backends (direct ports)
+        working-directory: examples/q-map/backends
+        run: DOCTOR_STRICT=0 make up-direct-build
 
       - name: Wait for backend health
         run: |
@@ -151,14 +156,19 @@ jobs:
         working-directory: examples/q-map
         run: npx playwright install --with-deps chromium
 
-      - name: Prepare backend data dirs
-        run: |
-          mkdir -p examples/q-map/backends/q-storage-backend/data
-          mkdir -p examples/q-map/backends/q-cumber-postgis/data
-
-      - name: Start q-map backends
+      - name: Bootstrap backend env
         working-directory: examples/q-map/backends
-        run: QMAP_DOCKER_UID=$(id -u) QMAP_DOCKER_GID=$(id -g) docker compose up -d --build
+        run: |
+          cp .env.example .env
+          sed -i "s/^QMAP_DOCKER_UID=.*/QMAP_DOCKER_UID=$(id -u)/" .env
+          sed -i "s/^QMAP_DOCKER_GID=.*/QMAP_DOCKER_GID=$(id -g)/" .env
+          sed -i "s/^QSTORAGE_ALLOW_INSECURE_DEFAULT_USER=.*/QSTORAGE_ALLOW_INSECURE_DEFAULT_USER=true/" .env
+          mkdir -p q-storage-backend/data
+          mkdir -p q-cumber-postgis/data
+
+      - name: Start q-map backends (direct ports)
+        working-directory: examples/q-map/backends
+        run: DOCTOR_STRICT=0 make up-direct-build
 
       - name: Wait for backend health
         run: |
