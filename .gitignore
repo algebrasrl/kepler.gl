@@ -16,6 +16,7 @@ typedoc/
 
 examples/**/yarn.lock
 !examples/demo-app/yarn.lock
+!examples/q-map/yarn.lock
 
 yarn-error.log
 */**/package-lock.json
