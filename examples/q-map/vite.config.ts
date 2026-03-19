@@ -256,8 +256,7 @@ export default defineConfig(({mode}) => {
         '@loaders.gl/parquet',
         '@math.gl/core',
         '@math.gl/web-mercator',
-        'gl-matrix',
-        'lodash.uniq'
+        'gl-matrix'
       ],
       esbuildOptions: {
         target: 'es2020'
