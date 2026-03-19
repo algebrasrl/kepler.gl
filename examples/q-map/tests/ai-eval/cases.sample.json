@@ -1,0 +1,70 @@
+[
+  {
+    "id": "sample_discovery_catalog",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "deterministic_discovery_routing",
+    "criticality": "critical",
+    "user_prompt": "Mostra le categorie strumenti disponibili e poi i tool della categoria discovery.",
+    "required_tools_any": ["listQMapToolCategories", "listQMapToolsByCategory"],
+    "expected_tools_any": ["listQMapDatasets", "listQMapChartTools"],
+    "forbidden_tools": ["genericQuery", "filterDataset", "queryDataset"],
+    "expected_keywords_any": ["categorie", "discovery", "tools"]
+  },
+  {
+    "id": "sample_qcumber_admin_query",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Recupera le unità amministrative dal provider local-assets-it (dataset kontur-boundaries-italia) e mostrami un estratto ordinato per popolazione.",
+    "required_tools_any": ["queryQCumberTerritorialUnits", "queryQCumberDataset"],
+    "expected_tools_any": ["listQCumberProviders", "listQCumberDatasets", "getQCumberDatasetHelp", "rankQMapDatasetRows", "previewQMapDatasetRows"],
+    "forbidden_tools": ["genericQuery", "queryDataset"],
+    "expected_keywords_any": ["dataset", "popolazione"]
+  },
+  {
+    "id": "sample_geo_transform_chain",
+    "area": "geo_processing",
+    "kpi_id": "geometry_operation_precision",
+    "criticality": "standard",
+    "min_case_score": 0.5,
+    "min_tool_precision": 0.2,
+    "user_prompt": "Esegui una pipeline geospaziale con clipping, dissolve e overlay su dataset caricati.",
+    "required_tools_any": ["clipQMapDatasetByGeometry", "dissolveQMapDatasetByField", "overlayDifference"],
+    "expected_tools_any": ["overlayUnion", "overlayIntersection", "overlaySymmetricDifference", "listQMapDatasets", "waitForQMapDataset", "countQMapRows"],
+    "forbidden_tools": ["genericQuery", "queryDataset"],
+    "expected_keywords_any": ["clip", "dissolve", "overlay"]
+  },
+  {
+    "id": "sample_h3_pipeline",
+    "area": "geo_processing",
+    "kpi_id": "h3_workflow_completion_rate",
+    "criticality": "standard",
+    "user_prompt": "Tassella a H3, aggrega e fai join su H3 per ottenere un dataset finale pronto alla mappa.",
+    "required_tools_any": ["tassellateDatasetLayer", "aggregateDatasetToH3", "joinQMapDatasetsOnH3"],
+    "expected_tools_any": ["waitForQMapDataset", "countQMapRows", "populateTassellationFromAdminUnitsAreaWeighted", "listQMapDatasets"],
+    "forbidden_tools": ["genericQuery", "queryDataset"],
+    "expected_keywords_any": ["H3", "join", "aggrega"]
+  },
+  {
+    "id": "sample_layer_styling",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Applica stile al layer con colore per campo, soglie statistiche, tooltip e ordine layer.",
+    "required_tools_any": ["setQMapLayerColorByField", "setQMapLayerColorByStatsThresholds", "setQMapTooltipFields"],
+    "expected_tools_any": ["setQMapLayerOrder", "setQMapLayerVisibility", "showOnlyQMapLayer", "listQMapDatasets"],
+    "forbidden_tools": ["genericQuery", "queryDataset"],
+    "expected_keywords_any": ["stile", "layer", "tooltip"]
+  },
+  {
+    "id": "sample_cloud_map_handling",
+    "area": "backend_reliability",
+    "kpi_id": "cloud_tool_error_handling",
+    "criticality": "critical",
+    "user_prompt": "Elenca mappe cloud e gestisci in modo robusto il caricamento con attesa dataset.",
+    "required_tools_any": ["listQMapCloudMaps", "loadQMapCloudMap", "loadCloudMapAndWait"],
+    "expected_tools_any": ["waitForQMapDataset", "listQMapDatasets"],
+    "forbidden_tools": ["genericQuery", "queryDataset"],
+    "expected_keywords_any": ["cloud", "map", "dataset"]
+  }
+]

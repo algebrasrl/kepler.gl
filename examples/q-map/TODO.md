@@ -1,0 +1,337 @@
+# TODO
+
+## Next Session Handoff (2026-03-15)
+- [x] Run a fresh full `make -C examples/q-map ai-eval-functional` plus `ai-operational-audit` / `ai-trace-quality-audit` on the latest `responseContract` + `contractResponseMismatch` wiring, so the new output-contract KPI gate has a clean post-hardening baseline report (`runId=kpi-20260315-1835-functional`, `passRate=1`, `contractResponseMismatchRate=0`, operational/trace-quality green).
+- [x] Keep reducing prompt-only burden using the new output-contract/runtime evidence path: moved the `forbidden silent fallback` invariant for invalid `datasetId` into backend runtime guardrails (`invalid_dataset_id` taxonomy + forced `listQCumberDatasets` recovery), with matching backend tests and functional regression case `arch_qcumber_invalid_dataset_recovery` (`runId=dataset-fallback-guardrail-20260315-r2-functional`).
+- [x] Expose structured backend hints (less text-only) in runtime quality metrics: add `hintVersion`, `errorKind`, `recoveryAction`, and `nextAllowedTools` derived from runtime error taxonomy/retry policy, with backend unit-test coverage on `invalid_dataset_id`.
+- [x] Remove solution-biased wording from eval `user_prompt` text where the intended behavior is already enforced by case gates/runtime rules (dataset reuse, clarification fail-closed, post-create validation, held-out limitation/clarification prompts), so functional/adversarial cases stay closer to production phrasing and invariants remain encoded in `forbidden_tools` / `max_tool_calls_by_name` / grounded tool requirements instead of being spoon-fed in the prompt.
+
+## System Engineering Loop Hardening (2026-03-12)
+- [x] Make `quality-gate` enforce `ai-eval-functional` so governance controls tied to runtime behavior are actually checked before merge/release.
+- [x] Preserve `tests/ai-eval/results` during `clean-loop` by default and add an explicit destructive path (`clean-loop-hard`) for intentional baseline resets.
+- [x] Add trace-grading-backed gate coverage for high-risk workflow slices, so request/tool traces are graded instead of only archived.
+- [x] Add held-out or adversarial functional slices outside the deterministic eval prompt to reduce benchmark saturation risk.
+- [x] Add operational KPI gates (`durationMs`, provider transport failures, eventually cost/token budget) alongside correctness gates.
+- [x] Add dedicated cost/token budget gating on functional reports (usage coverage, prompt-budget utilization, token ceilings, optional USD pricing via env) alongside the existing latency/transport audit.
+- [x] Add explicit multi-attempt reliability metrics (`pass^k` / repeated-trial held-out runs) instead of relying only on latest-run and historical-window aggregates.
+- [x] Promote `invalidBaseline` from runtime convention to explicit report contract validated by schema audit.
+- [x] Replace duplicated admin/ranking workflow signal helpers with a shared runtime workflow-state module.
+- [x] Make runtime guardrails consume explicit workflow state (`ranking_active`, `admin_superlative_map_workflow`, `preserve_fit_without_explicit_map_focus`) instead of recomputing ad-hoc boolean combinations.
+
+## KPI Loop Reliability
+- [x] Add a dedicated bootstrap preflight target that validates q-assistant reachability for both `curl` and Node runtime.
+- [x] Add a Makefile hint that surfaces sandbox `EPERM` remediation when `run-ai-eval` fails on `/health` preflight.
+- [x] Track and review KPI deltas after each `loop RUN_ID=<tag>` run in a compact weekly summary.
+
+## KPI / Agent Hardening (2026-03-13)
+- [x] Promote groundedness and failure-quality KPIs from implicit governance/trace signals to explicit eval vocabulary (`grounded_final_answer_rate`, `false_success_claim_rate`, `escalation_compliance_rate`, `guided_vs_heldout_gap`).
+- [x] Tighten the q-map agent prompt on evidence-backed final claims, ambiguity handling, and fail-closed completion language for high-impact or unresolved flows.
+- [x] Wire the first concrete hardening signals into runtime eval artifacts: expose backend `qualityMetrics.falseSuccessClaimCount` in `/chat/completions`, summarize `falseSuccessClaimRate` in `run-ai-eval`, and compare guided runs with the latest held-out/adversarial window.
+- [x] Add first-pass `escalationComplianceRate` scoring for explicit clarification-required cases, so ambiguity handling is visible in eval reports instead of remaining prompt-only guidance.
+- [x] Add first-pass `groundedFinalAnswerRate` scoring for opt-in evidence-backed cases, anchored to backend `qualityMetrics` instead of keyword-only narrative checks.
+- [x] Promote the first response-quality signals to a merge-blocking functional audit (`ai-response-quality-audit`) so `falseSuccessClaimRate`, groundedness, and escalation compliance stop living only in report review.
+- [x] Validate the default response-quality audit thresholds on a real functional run (`runId=response-quality-calibration-direct`): `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, with operational and cost sibling audits also green on the same report.
+- [x] Add explicit local `*-direct` eval helpers/preflight (`:3004`) so the KPI loop remains usable without `QMAP_AI_EVAL_BEARER_TOKEN` when the Kong edge path on `:8000` is auth-protected.
+- [x] Add `EVAL_TRANSPORT=direct` as a loop-wide switch so `quality-gate` and `loop` can run against `:3004` without rewriting target names.
+- [x] Smoke-test the standard target path with `make ai-eval EVAL_TRANSPORT=direct` (`runId=transport-switch-sample-sample`) to verify the transport switch works beyond the compatibility wrapper targets.
+- [x] Run `make quality-gate EVAL_TRANSPORT=direct` end-to-end with local backends healthy; KPI eval, response-quality audit, trace grade, pass^k, variance, prompt lint, worker tests, e2e tools, tool coverage, and backend unit tests all stayed green.
+- [x] Move the post-create/post-wait validation chain out of prompt-only guidance: the runtime now prunes premature style/focus/rank tools and forces `waitForQMapDataset` / `countQMapRows` in the corresponding stages.
+- [x] Validate the new post-create runtime guardrails on a live direct functional run (`runId=postcreate-runtime-guardrail`): `passRate=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, operational audit green.
+- [x] Move provider-recovery fail-closed behavior out of prompt-only guidance: after `invalid_provider_id`, runtime now prunes provider-scoped qcumber tools and forces `listQCumberProviders` before dataset/help/query resumes.
+- [x] Validate the provider-recovery runtime guardrail on a live direct functional run (`runId=provider-recovery-runtime-guardrail`): `passRate=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, response-quality and operational audits green.
+- [x] Move duplicate-call suppression further into runtime: repeated identical successful `tool+args` signatures now trigger a reuse guardrail instead of leaving the loop to prompt-only discipline.
+- [x] Validate the duplicate-success reuse guardrail on a live direct functional run (`runId=duplicate-success-runtime-guardrail`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, response-quality and operational audits green.
+- [x] Move low-distinct metric-color recovery out of prompt-only guidance: backend loop limits now prune identical `setQMapLayerColorByField` retries and heavy recompute/query paths after flat/uniform metric failures, preferring inspect/fallback/finalize steps instead.
+- [x] Move exhausted cloud retry/fallback fail-closed handling out of prompt-only guidance: backend loop limits now finalize with a limitation when cloud load errors already state `no validated fallback available`, unless a later fallback load has been validated with `waitForQMapDataset`.
+- [x] Move cloud retry/fallback confirmation out of prompt-only wording: backend `qualityMetrics` now emit explicit `cloudFailureSeen` / `cloudFailureExhausted` / `cloudRecoveryValidated` signals and the grounded cloud audits consume them instead of relying on narrative confirmation text.
+- [x] Move response-mode inference further out of lexical grading: runtime guardrails now inject explicit `clarification` / `limitation` hints, backend `qualityMetrics` preserve `responseModeHint`, and eval/audit logic consumes that signal before falling back to wording heuristics.
+- [x] Add a structural clarification fallback for catalog-selection loops: when the turn only reaches successful `listQCumberProviders` / `listQCumberDatasets` discovery without a later actionable tool, backend `qualityMetrics` now mark `responseModeHint=clarification` so evals do not depend on one exact phrasing.
+- [x] Move named-place ambiguity fail-closed behavior out of prompt-only guidance: tool results can now carry `clarificationRequired`, runtime classifies `ambiguous_admin_match`, clears further tool-calls, and finalizes with one clarification instead of continuing on guessed administrative levels.
+- [x] Extend eval coverage for structural clarification beyond provider/dataset catalogs: functional/adversarial corpora now include deterministic named-place level ambiguity cases (`queryQCumberTerritorialUnits` -> `clarificationRequired`) so escalation quality is checked on territorial-level disambiguation too.
+- [x] Preserve clarification-specific runtime metrics in aggregated eval reports: `run-ai-eval` now carries `clarificationPending`, `clarificationReason`, `clarificationQuestionSeen`, and `clarificationOptionsCount` through `evalDiagnostics.qualityMetrics` instead of dropping them after per-request normalization.
+- [x] Reduce another prompt-only UI bypass in runtime: `openQMapPanel` is now pruned whenever the user did not explicitly ask for panel/tab navigation and another real operational tool is available, instead of relying only on chart-specific prompt wording.
+- [x] Make aggregated eval diagnostics less brittle for future runtime signals: `run-ai-eval` now preserves unknown scalar/array `qualityMetrics` keys through normalization and per-case aggregation so new backend evidence does not disappear from reports until manual plumbing catches up.
+- [x] Move chart-panel bypass out of prompt-only guidance: when a chart objective has real chart execution tools available, runtime now prunes `openQMapPanel` so UI navigation cannot satisfy chart-generation requests by itself.
+- [x] Reduce prompt-only burden by identifying invariants that should move from `system-prompt.ts` into tool/runtime contracts (`post-create` validation and duplicate-call suppression are now runtime-enforced; keep forbidden silent fallback as next open follow-up in "Next Session Handoff").
+- [x] Add the first deterministic `limitation` quality pack (`mock_tool_results` + flat-metric styling failure cases) so fail-closed behavior is measured on repeatable map UX scenarios instead of only clarification workflows.
+- [x] Extend deterministic `limitation` coverage to map centering/focus (`fitQMapToDataset` failure) so fail-closed UX quality is measured on both styling and visible-focus workflows.
+- [x] Validate the consolidated `limitation` slice on a live direct run (`runId=limitation-pack-slice-direct-rerun5`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, with response-quality and trace-quality audits both green.
+- [x] Extend deterministic `limitation` coverage outside `map_ux` with a cloud-load failure case (`loadCloudMapAndWait` timeout without validated fallback), so backend reliability and retry/fallback truthfulness are measured by the same fail-closed discipline.
+- [x] Validate the low-distinct runtime recovery gate on a live direct slice (`runId=low-distinct-runtime-guardrail`): `arch_flat_metric_coloring_limitation`, `arch_fit_centering_limitation`, and `arch_cloud_postload_validation` all pass with `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, and response-quality/trace-quality audits green.
+- [x] Validate the cloud fail-closed finalize gate on a live direct slice (`runId=cloud-runtime-finalize-guardrail`): `arch_cloud_timeout_retry_fallback`, `arch_cloud_postload_validation`, and `arch_cloud_load_limitation` all pass with `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, and response-quality/trace-quality audits green.
+- [x] Validate the cloud recovery qualityMetrics on the same live direct slice (`runId=cloud-runtime-finalize-guardrail`): grounded cloud validation stays green while `run-ai-eval` and `ai-trace-quality` consume runtime `cloudRecoveryValidated` evidence instead of cloud-specific final-text wording.
+- [x] Validate the cloud limitation slice on a live direct run (`runId=cloud-limitation-slice-direct-rerun`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, with response-quality and trace-quality audits both green.
+- [x] Tighten the first-pass `groundedFinalAnswerRate` / `escalationComplianceRate` heuristics with stricter case contracts: clarification cases can now require explicit response markers and grounded cases can require minimal tool-evidence sets.
+- [x] Validate the stricter response-quality case contracts on a live direct functional run (`runId=response-quality-contract-tightening`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, response-quality and operational audits green.
+- [x] Increase quality-sensitive case coverage and precision strictness: additional functional/adversarial cases now opt into grounded final-answer checks and `max_extra_tool_calls=0` where recent green runs already show stable zero-noise tool paths.
+- [x] Validate the expanded quality-sensitive coverage on a live direct functional run (`runId=response-quality-coverage-tightening`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedAnswerEvaluatedCases=7`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, response-quality and operational audits green.
+- [x] Increase escalation coverage on a stable clarification workflow by adding companion datasetId-disambiguation cases with `max_extra_tool_calls=0` and explicit `datasetId` response markers.
+- [x] Validate the expanded escalation coverage on a live direct functional run (`runId=escalation-coverage-tightening-retry`): `passRate=1`, `avgToolPrecision=1`, `falseSuccessClaimRate=0`, `groundedAnswerEvaluatedCases=7`, `escalationEvaluatedCases=2`, `escalationComplianceRate=1`, response-quality and operational audits green.
+- [x] Add a trace-backed response-quality audit (`ai-trace-quality-audit`) that rechecks groundedness and escalation on `chat-audit` evidence instead of trusting report-level grading alone.
+- [x] Expand escalation coverage beyond `datasetId` ambiguity with explicit `providerId` clarification cases, keeping zero extra-tool tolerance and trace-backed validation.
+- [x] Validate the expanded provider-selection clarification coverage on a live direct functional run (`runId=provider-clarification-coverage-functional`): `passRate=1`, `falseSuccessClaimRate=0`, `groundedAnswerEvaluatedCases=7`, `groundedFinalAnswerRate=1`, `escalationEvaluatedCases=4`, `escalationComplianceRate=1`, response-quality and trace-quality audits green.
+- [x] Remove the eval-finalization latency outlier without losing trace evidence: `run-ai-eval` now uses a compact final summary prompt plus the recent assistant/tool chain, cutting `arch_treviso_province_centering` from `64629ms` to `4722ms` on the targeted slice while keeping `requestToolResults` available for `ai-trace-quality-audit`.
+- [x] Validate the finalize compaction on a full live direct functional run (`runId=finalize-compaction-tracefix-functional`): `passRate=1`, `avgCaseScore=0.995`, `avgDurationMs=7471.805`, `maxDurationMs=13261`, `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationEvaluatedCases=4`, `escalationComplianceRate=1`, with response-quality, trace-quality, and operational audits all green.
+
+## KPI Improvements (Current Sprint)
+- [x] Reduce redundant post-validation visibility calls in H3/sample workflows (target: eliminate `showOnlyQMapLayer` as non-requested extra call in `sample_h3_pipeline`).
+- [x] Reduce lexical overfitting in KPI scoring by increasing semantic/tool-evidence weight vs keyword-only variance.
+- [x] Expand `toolArgumentScore` coverage beyond the initial subset by annotating stable key-level argument expectations on critical functional cases (provider/dataset resolution, cloud load validation, territorial focus, superlative map workflows).
+- [x] Extend `toolArgumentScore` beyond the critical-only subset by supporting grouped `tools_any` expectations and promoting stable standard-workflow argument contracts from real green reports.
+- [x] Close the last functional `toolArgumentScore` gaps (`arch_discovery_inventory`, `arch_base_map_services`, `arch_data_load_save_bridge`) so the functional suite measures semantic argument accuracy on all 38 cases.
+- [x] Reduce keyword-noise in admin-level disambiguation KPI cases by removing mutually exclusive lexical expectations (`comune` and `provincia` in the same branch) and anchoring on disambiguation signals instead.
+- [x] Make `expected_keywords_any` scoring tolerate one missing anchor, so semantically correct answers are not penalized for a single omitted synonym or alternative branch label.
+- [x] Align `prompt-lint` history warnings with the tolerant keyword scorer, so a single unstable anchor no longer reintroduces noise after the runner already treats it as non-blocking.
+- [x] Reduce limitation-mode lexical bias further by letting response-mode grading pass on structural non-success evidence and by aligning the flat-metric case contracts with the real discovery step (`listQMapDatasets`) observed in green runs.
+- [x] Add a multi-run KPI variance gate (latest 3 functional reports) with non-blocking skip behavior when history is insufficient.
+- [x] Remove hardcoded admin-type -> level inference in q-cumber query runtime; resolve `expectedAdminType` via dataset metadata (`ai.profile.adminWorkflows.adminTypeToLevel`) and return explicit clarification when named-place matches are cross-level ambiguous.
+- [x] Add functional `ai-eval` regression case for q-cumber dataset disambiguation requiring explicit `datasetId` (no automatic dataset assumptions when provider catalog is multi-dataset).
+- [x] Harden q-cumber/cloud tool parameter schemas with strict input contracts (`z.object(...).strict()`, non-empty canonical ids, bounded filter/query params) to reduce ambiguous/legacy argument interpretation.
+- [x] Remove locale-biased default admin-level fallback in system prompt for ambiguous place names (H3 flows now require explicit clarification instead of implicit province default).
+- [x] De-bias `run-ai-eval` deterministic prompt/mock fixtures by using neutral defaults with mixed provider catalogs (while keeping `local-assets-it` compatibility coverage).
+- [x] Add non-localized KPI companion cases for locale-specific regressions (Treviso) to keep map-UX KPI coverage balanced.
+
+## KPI Drift Observability (Area-level)
+- [x] Add per-area variance audit (`ai_tool_orchestration`, `geo_processing`, `data_pipeline`, `map_ux`, `backend_reliability`) over the latest functional window.
+- [x] Wire area variance checks into `quality-gate` as non-blocking warning output during stabilization phase.
+- [x] Publish latest per-area drift table in `docs/KPI_WEEKLY_SUMMARY.md` with trend labels (`improving`, `stable`, `regressing`).
+
+## Frontend/Tool Params Hardening (3/4)
+- [x] 3.1 Reduce frontend prompt-level execution heuristics already enforced in backend runtime/tooling.
+- [x] 4.1 Add strict args contract overrides for critical query/control tools (`queryQCumber*`, provider/dataset discovery, cloud map load).
+- [x] 4.2 Enforce contract-based unknown-argument rejection before frontend tool execution.
+- [x] 4.3 Add unit tests for strict contract arg validation and keep tool-contract audits green.
+
+## Next Priority Pack (1/2/3/5)
+- [x] 1) Separate KPI variance windows by `runType` (`baseline` vs `stabilization` vs `debug`) and propagate `runType` across eval report generation, variance audit, and weekly summary selection.
+- [x] 2) Continue backend metadata-driven migration: replace residual hardcoded thematic/admin objective markers in q-assistant rule predicates with dataset/provider metadata contracts where possible.
+- [x] 3) Unify failure taxonomy (`materialization_timeout`, `field_missing`, `join_mismatch`, `validation_zero_rows`, ...) and map each class to deterministic remediation hints/retry policy.
+- [x] 5) Expand non-localized KPI companion coverage beyond Treviso regressions to additional geo/map-UX and data-pipeline place-dependent scenarios.
+
+## Frontend -> Backend Policy Authority
+- [x] Make frontend turn-scoped tool policy enforcement advisory by default as migration step, with backend runtime guardrails authoritative for hard blocking.
+- [x] Move default turn-policy derivation authority to q-assistant backend and expose backend policy summary to frontend (`x-q-assistant-runtime-policy-summary`).
+- [x] Remove frontend thematic/spatial turn-policy heuristics from `tool-manifest.json`/`guardrails.ts`; frontend is now UX hint only while runtime gating is backend-authoritative.
+- [x] Remove frontend fallback turn-policy derivation/enforcement codepath and related env toggle; frontend now consumes backend policy summary only.
+- [x] Prefer backend routing metadata (`routing.isAdministrative` / `datasetClass`) for territorial-vs-thematic pruning when recent tool results expose metadata; keep lexical fallback only when metadata is unavailable.
+- [x] Remove frontend keyword-weighted q-cumber dataset auto-selection heuristics; keep only deterministic metadata-unique auto-selection (otherwise require explicit `datasetId`).
+- [x] Continue backend metadata-driven migration: replace residual hardcoded thematic/admin objective markers in q-assistant rule predicates with dataset/provider metadata contracts where possible.
+
+## E2E Backend/Auth Hardening
+- [x] Add explicit strict toggle `QMAP_E2E_REQUIRE_BACKEND_AUTH` for backend-dependent e2e blocks (cloud/q-cumber/filter materialization).
+- [x] Add deterministic backend readiness probes in `tests/e2e/tools.spec.ts` before backend-dependent assertions.
+- [x] Add compact e2e failure artifact with latest tool runtime envelope (`toolName`, `args`, `details`) for faster triage.
+- [x] Stabilize `prompt-lint` historical keyword warning for `sample_qcumber_admin_query` (reduce lexical variance noise).
+- [x] Separate variance windows by run type (`baseline` vs `stabilization/debug`) to avoid mixed audit windows.
+
+## Reliability Roadmap (Phased)
+- [x] Step 1 - Introduce structured outcome contract in tool results (`objectiveReached`, `warnings`, `blockingErrors`, `producedDatasetRefs`) and consume it in finalize narrative guardrails.
+- [x] Step 2 - Add turn-local dataset lineage map (`alias -> id:<datasetId>`) and prefer canonical refs in chained tool calls.
+- [x] Step 3 - Unify failure taxonomy (`materialization_timeout`, `field_missing`, `join_mismatch`, `validation_zero_rows`, ...) and map each class to deterministic remediation hints/retry policy.
+- [x] Step 4 - Start explicit metric-output contracts for derived/aggregated dataset tools: `spatialJoinByPredicate`, `createDatasetWithGeometryArea`, `createDatasetWithNormalizedField`, and `zonalStatsByAdmin` now expose `fieldCatalog` / `styleableFields` / `defaultStyleField` so q-assistant can repair downstream styling/ranking tool calls from runtime metadata instead of inferred field names.
+- [x] Step 5 - Extend the same explicit metric-output contract pattern to the remaining metric-producing tools (`bufferAndSummarize`, H3/admin population joins, threshold/stat generators where relevant) and add a dedicated production-trace eval pack for invented-field regressions.
+  - [x] Step 5.a - Expose `fieldCatalog` / `numericFields` / `styleableFields` / `defaultStyleField` for `bufferAndSummarize`, `aggregateDatasetToH3`, `joinQMapDatasetsOnH3`, and populated tessellation joins so downstream style/rank recovery can reuse resolved output names.
+  - [x] Step 5.b1 - Add a functional eval regression case for the production-style “existing joined dataset -> color by summed intersected area” recovery path, with exact `fieldName=join_sum`, no recompute tools, and no repeated `setQMapLayerColorByField` retries.
+  - [x] Step 5.b2a - Extend backend metric-field repair to reuse `listQMapDatasets` catalog metadata for existing datasets and apply the same rewrite path to threshold/height styling tools, then add a companion functional regression case for an already-normalized dataset that must reuse `population_per_100k` without rerunning normalization.
+  - [x] Step 5.b2b - Extend explicit metric-output metadata to `nearestFeatureJoin` (`nearest_count`, `nearest_distance_km`) and add a companion functional regression case for reusing an existing nearest-join dataset without rerunning the join.
+  - [x] Step 5.b2c - Extend `zonalStatsByAdmin` metadata with explicit `aggregationOutputs` for the resolved output field and add a companion functional regression case for reusing an existing zonal dataset with threshold styling (`zonal_value`) without rerunning zonal stats.
+  - [x] Step 5.b2d - Extend clip materialization metadata (`qmap_clip_intersection_pct` and related clip metrics / `<clip_field>__count`) and add a companion functional regression case for reusing an existing clipped dataset without rerunning the clip.
+  - [x] Step 5.b2e - Extend `bufferAndSummarize` and populated tessellation outputs with explicit `aggregationOutputs`, then add companion functional regressions for reusing existing `buffer_metric` and collision-resolved tessellation outputs like `population_2` without rerunning the source workflow.
+  - [x] Step 5.b2f - Add companion functional regressions for reusing already-materialized H3 aggregation and H3 join datasets (`count_weighted`, `population_2`) so the remaining invented-field coverage is not limited to polygon/admin workflows.
+  - [x] Step 5.b2 - Extend the same metadata contract to the remaining threshold/stat-style generators and add broader end-to-end eval coverage for invented-field regressions on the remaining metric producers.
+  - [x] Step 5.b2g - Add explicit `fieldAliases` metadata to collision-resolved metric producers and make q-assistant prefer alias-driven rewrites over `defaultStyleField` fallback, so semantic requests like `population` -> `population_2` and `intersection pct` -> `qmap_clip_intersection_pct` stop depending on heuristic pattern matching.
+
+## Security & Compliance Roadmap
+- [x] Step K1 - Add optional Kong API gateway overlay (DB-less) in front of q-assistant/q-cumber/q-storage.
+- [x] Step K2 - Add JWT validation blueprint at gateway level and set Kong routing as default UX/backend integration path.
+- [x] Step K2.1 - Add Swarm production deployment recipe (`docker-stack.prod.yml` + `.env.prod.example`) with Kong as single published edge.
+- [x] Step K3 - Production hardening: disable direct backend public ports, enforce issuer/audience claim checks, and propagate user identity claims to q-storage authorization model.
+  - [x] K3.a - UX bearer propagation baseline: assistant chat, MCP calls, profile `/me`, and cloud provider requests now reuse shared auth token resolver.
+  - [x] K3.auth - Frontend Keycloak OIDC/PKCE bootstrap (optional mode) with token bridge to Kong/assistant requests.
+  - [x] K3.b - Edge token validation hardening: replace static HS256 secret with managed key rotation + issuer/audience checks.
+  - [x] K3.c - Backend claim enforcement: map JWT subject/roles to q-storage/q-cumber authorization policies.
+
+## UX Auth Reliability
+- [x] A1 - Harden frontend bearer-token resolver to ignore malformed/non-JWT values from storage/env by default (opt-in override for opaque tokens), preventing Kong `Bad token; invalid JSON` chat failures.
+
+## Gateway Eval Auth Compatibility
+- [x] Add bearer-token support (`QMAP_AI_EVAL_BEARER_TOKEN`) to ai-eval transport preflight and `/chat/completions` calls so KPI loops can run on JWT-protected Kong edge mode without switching to direct backend exposure.
+
+## Refactor Wave (2026-03-06)
+- [x] R1 - Introduce centralized q-map Redux selectors (`demo.keplerGl.map.*`) and migrate UI/AI/draw modules away from repeated deep state paths.
+- [x] R2 - Split `src/main.tsx` into focused modules (`store/bootstrap`, `locale messages`, `iframe export`) while preserving current runtime wiring and mode behavior.
+  - [x] R2.a - Extract locale message dictionary into `src/i18n/q-map-locale-messages.ts`.
+  - [x] R2.b - Extract iframe export utilities (`is-enabled` + `postMessage`) into `src/utils/iframe-export.ts`.
+  - [x] R2.c - Extract hash preset runtime apply logic (`hashchange` + dispatch chain) into `src/utils/hash-preset-runtime.ts`.
+  - [x] R2.d - Extract auth-aware root render/bootstrap flow into `src/bootstrap/render-with-auth.tsx`.
+  - [x] R2.e - Extract store/reducer/middleware wiring into `src/state/create-qmap-store.ts`.
+- [x] R3 - Start decomposing `src/features/qmap-ai/qmap-ai-assistant-component.tsx` by extracting tool builders into domain modules (`discovery`, `dataset`, `styling-ui`, `spatial`, `h3`) with zero behavior change.
+  - [x] R3.a - Extract runtime custom tool grouping/classification into `src/features/qmap-ai/runtime-tool-groups.ts`.
+  - [x] R3.b - Extract discovery tool builder `listQMapChartTools` into `src/features/qmap-ai/tool-builders/discovery.ts`.
+  - [x] R3.c - Extract styling/UI tool builder `openQMapPanel` into `src/features/qmap-ai/tool-builders/styling-ui.ts`.
+  - [x] R3.d - Extract dataset tool builders `countQMapRows` and `debugQMapActiveFilters` into `src/features/qmap-ai/tool-builders/dataset.ts`.
+  - [x] R3.e - Extract spatial tool builder `deriveQMapDatasetBbox` into `src/features/qmap-ai/tool-builders/spatial.ts`.
+  - [x] R3.f - Extract H3 paint tool builders (`paintQMapH3Cell`, `paintQMapH3Cells`, `paintQMapH3Ring`) into `src/features/qmap-ai/tool-builders/h3-paint.ts`.
+  - [x] R3.g - Extract analytics/discovery tool builders (`summarizeQMapTimeSeries`, `wordCloudTool`, `categoryBarsTool`, `grammarAnalyzeTool`) into dedicated module with unchanged envelope/component behavior.
+  - [x] R3.h - Extract layer styling tool builders (`setQMapLayerColorByField`, `setQMapLayerSolidColor`, `setQMapLayerHeightByField`) into dedicated module with unchanged style payload semantics.
+  - [x] R3.i - Extract advanced styling tool builders (`applyQMapStylePreset`, `setQMapLayerColorByThresholds`, `setQMapLayerColorByStatsThresholds`) into dedicated module with unchanged threshold/preset behavior.
+  - [x] R3.j - Extract layer visibility/order tool builders (`setQMapLayerVisibility`, `showOnlyQMapLayer`, `setQMapLayerOrder`) into dedicated module with unchanged visibility semantics.
+  - [x] R3.k - Extract dataset-mutation tool builders (`createDatasetFromFilter`, `createDatasetFromCurrentFilters`, `mergeQMapDatasets`) into dedicated module with unchanged mutation envelope behavior.
+  - [x] R3.l - Extract derived dataset/CRS tool builders (`createDatasetWithGeometryArea`, `createDatasetWithNormalizedField`, `reprojectQMapDatasetCrs`) into dedicated module with unchanged derivation/reprojection behavior.
+  - [x] R3.m - Extract heavy geometry materialization tool builders (`clipQMapDatasetByGeometry`, `zonalStatsByAdmin`) into dedicated module with unchanged worker/fallback semantics.
+  - [x] R3.n - Extract spatial-join/overlay heavy tool builders (`spatialJoinByPredicate`, `overlayDifference`) into dedicated module with unchanged predicate/aggregation semantics.
+  - [x] R3.o - Extract constructive geometry tool builders (`overlayUnion`, `overlayIntersection`, `overlaySymmetricDifference`, `dissolveQMapDatasetByField`) into dedicated module with unchanged geometry semantics.
+- [x] R4 - Extract shared runtime helpers for tool side-effect components (run-once/idempotency/dedup wiring) to reduce repeated `component: function` boilerplate.
+  - [x] R4.a - Introduce shared run-once/executionKey dedup helper for tool side-effect components and adopt it in initial styling/filter components.
+  - [x] R4.b - Adopt shared run-once/executionKey dedup helper in layer visibility/order side-effect components.
+  - [x] R4.c - Adopt shared run-once/executionKey dedup helper in heavy geo side-effect components using `props.executionKey`.
+  - [x] R4.d - Expand helper adoption across remaining `executionKey` component guards in q-map AI side-effect tools.
+  - [x] R4.e - Add helper for executionKey-only dedup flows and adopt it in the reproject side-effect component.
+- [x] R5 - Reduce `any` usage on critical boundaries (`RootState`, map/ui selectors, draw middleware deps) with incremental typing and no API churn.
+  - [x] R5.a - Introduce shared q-map state types and migrate central selectors/AI component RootState boundary away from `any`.
+  - [x] R5.b - Type q-map draw middleware store/getState boundary with shared `QMapRootState` contract.
+  - [x] R5.c - Type q-map draw runtime store/getState boundary with shared `QMapRootState` contract.
+  - [x] R5.d - Type Redux middleware API boundaries (`store/next/action`) in `create-qmap-store` and align draw dispatch signatures to `Dispatch<AnyAction>`.
+  - [x] R5.e - Type q-map UI/assistant panel state boundaries (`qmap-ai/control` + selector outputs for ui/assistant map state).
+  - [x] R5.f - Add typed selector for `qmapAi` panel state and migrate `qmap-ai/control` to selector-only state access.
+  - [x] R5.g - Add typed selectors for `qmapDraw`/`h3Paint` and migrate draw/h3 middleware reads off direct `state.demo.*` paths.
+- [x] R6 - Backend parity: split `backends/q-assistant/src/q_assistant/main.py` into modules (`audit`, `guardrails`, `provider transport`, `payload compaction`) keeping endpoint contract unchanged.
+  - [x] R6.a - Extract payload token-budget compaction orchestration into `backends/q-assistant/src/q_assistant/payload_compaction.py` and keep `q_assistant.main` compatibility wrappers unchanged for tests/importers.
+  - [x] R6.b - Extract provider transport HTTP/SDK calls into dedicated module with unchanged retry/error mapping.
+    - [x] R6.b1 - Extract OpenAI/OpenRouter SDK transport + SSE normalization helpers into `provider_transport.py` with `main.py` compatibility wrappers (no endpoint contract changes).
+    - [x] R6.b2 - Extract remaining HTTP transport helpers (`_post_json`, `_get_json`, `_stream_proxy`) into `provider_transport.py` with unchanged retry semantics.
+  - [x] R6.c - Extract runtime guardrail pruning/injection helpers into dedicated module with unchanged tool-policy semantics.
+    - [x] R6.c1 - Extract runtime objective/pruning guardrail helpers into dedicated module with `main.py` compatibility wrappers.
+    - [x] R6.c2 - Extract runtime guardrail orchestration (`_enforce_runtime_tool_loop_limits`, `_inject_runtime_guardrail_message`) into dedicated module with unchanged rule scoring/messages.
+      - [x] R6.c2.a - Extract shared runtime guidance-merge helper (`_append_runtime_guidance_lines`) into guardrails module with wrapper compatibility.
+      - [x] R6.c2.b - Extract loop-limit orchestrator (`_enforce_runtime_tool_loop_limits`) into guardrails module with wrapper compatibility.
+      - [x] R6.c2.c - Extract runtime guardrail injection/scoring orchestrator (`_inject_runtime_guardrail_message`) into guardrails module with wrapper compatibility.
+    - [x] R6.c3 - Remove `main.py` compatibility wrappers for already-extracted guardrail helpers and import module entrypoints directly.
+  - [x] R6.d - Extract chat audit/session-id logging helpers into dedicated module with unchanged audit envelope fields.
+    - [x] R6.d1 - Extract audit core/session-id primitives (`sanitize`, `session-id resolve`, `trace headers`, prune helpers) into `audit_logging.py`.
+    - [x] R6.d2 - Extract chat-audit event builder/writer helpers into `audit_logging.py` with dependency hooks for parse/quality-metrics/context sanitization.
+    - [x] R6.d3 - Wire `main.py` to import audit module entrypoints/constants directly and remove local audit helper definitions.
+    - [x] R6.d4 - Update backend tests to target audit module entrypoints (no `main.py` compatibility wrapper dependency).
+  - [x] R6.e - Remove `main.py` compatibility wrappers for already-extracted payload/transport helpers and use module entrypoints directly.
+- [x] R7 - Decouple frontend contract loading from backend source path by introducing a shared generated artifacts location for tool contracts/manifests.
+  - [x] R7.a - Introduce shared canonical tool-contract artifact path (`artifacts/tool-contracts`) and migrate frontend/runtime tooling imports to that path.
+  - [x] R7.b - Update q-assistant contract loader to resolve shared artifact path first (with deterministic fallback for packaged/local runtime).
+  - [x] R7.c - Update tool-contract generation/audit flow to write/audit shared artifact + backend mirror consistency.
+- [x] R8 - Continue decomposing remaining q-map AI geometry-edit tool builders from `qmap-ai-assistant-component.tsx` into dedicated modules with zero behavior change.
+  - [x] R8.a - Extract geometry-edit tool builders (`simplifyQMapDatasetGeometry`, `splitQMapPolygonByLine`, `eraseQMapDatasetByGeometry`, `bufferAndSummarize`) into dedicated module with unchanged simplify/split/erase/buffer semantics.
+  - [x] R8.b - Extract neighborhood/topology tool builders (`nearestFeatureJoin`, `adjacencyGraphFromPolygons`, `coverageQualityReport`) into dedicated module with unchanged proximity/coverage semantics.
+- [x] R9 - Continue decomposing q-map AI runtime tool builders from `qmap-ai-assistant-component.tsx` (non-geometry orchestration set) into dedicated modules with zero behavior change.
+  - [x] R9.a - Extract dataset/map orchestration tool builders (`joinQMapDatasetsOnH3`, `fitQMapToDataset`, `waitForQMapDataset`) into dedicated module with unchanged orchestration and guard semantics.
+    - [x] R9.a1 - Introduce `tool-builders/orchestration.ts` and rewire component callsites for H3 join/map fit/dataset wait tools with unchanged runtime behavior.
+  - [x] R9.b - Extract dataset exploration/filtering tool builders (`previewQMapDatasetRows`, `rankQMapDatasetRows`, `distinctQMapFieldValues`, `searchQMapFieldValues`) into dedicated module with unchanged query/filter semantics.
+    - [x] R9.b1 - Introduce `tool-builders/dataset-exploration.ts` and rewire component callsites for preview/rank/distinct/search tools with unchanged filtering/sorting semantics.
+  - [x] R9.c - Extract remaining dataset-ui query/filter tool builders (`setQMapFieldEqualsFilter`, `setQMapTooltipFields`) into dedicated module with unchanged filter/tooltip semantics.
+    - [x] R9.c1 - Introduce `tool-builders/dataset-ui.ts` and rewire component callsites for equals-filter/tooltip tools with unchanged UI side-effect semantics.
+- [x] R10 - Continue reducing inline tool builders in `qmap-ai-assistant-component.tsx` by extracting low-coupling runtime/discovery tools.
+  - [x] R10.a - Extract discovery/load orchestration tool builders (`listQMapDatasets`, `loadCloudMapAndWait`) into dedicated module with unchanged map introspection/load-wait semantics.
+  - [x] R10.b - Extract remaining map-materialization/tessellation inline tool builders (`clipDatasetByBoundary`, `drawQMapBoundingBox`, `tassellateSelectedGeometry`, `tassellateDatasetLayer`, `aggregateDatasetToH3`, `populateTassellationFromAdminUnits*`) into dedicated modules with unchanged worker/fallback semantics.
+    - [x] R10.b1 - Extract map-materialization tool builders (`clipDatasetByBoundary`, `drawQMapBoundingBox`) into dedicated module with unchanged clip/bbox semantics.
+    - [x] R10.b2 - Extract tessellation/population tool builders (`tassellateSelectedGeometry`, `tassellateDatasetLayer`, `aggregateDatasetToH3`, `populateTassellationFromAdminUnits*`) into dedicated module with unchanged worker/fallback semantics.
+- [x] R11 - Continue q-assistant backend modularization by extracting OpenAI payload/tool-call coercion helpers from `main.py` with no endpoint contract change.
+  - [x] R11.a - Introduce `request_coercion.py` for filter op normalization + tool-call argument repair helpers and wire `main.py` to import module entrypoints.
+  - [x] R11.b - Extract q-map tool-contract manifest loader helpers from `main.py` into dedicated module with unchanged schema/fallback/cache semantics.
+  - [x] R11.c - Extract tool-call parsing/extraction helpers (`_parse_tool_arguments`, request/response tool-call readers) from `main.py` into dedicated module with unchanged normalization semantics.
+  - [x] R11.d - Extract message text/prompt parsing helpers (`_extract_message_text`, `_extract_prompt_from_messages`, finalize-control filtering) into dedicated module with unchanged prompt-selection semantics.
+  - [x] R11.e - Extract token/usage estimation helpers (`_estimate_payload_token_usage`, `_extract_upstream_usage`) from `main.py` into dedicated module with unchanged accounting semantics.
+  - [x] R11.f - Extract tool-result parsing/dataset-hint helpers from `main.py` into dedicated module with unchanged success/dataset-ref inference semantics.
+  - [x] R11.g - Extract request-id marker sanitization helpers from `main.py` into dedicated module with unchanged message cleaning semantics.
+  - [x] R11.h - Extract objective-focus lexical helpers (`_normalize_focus_token`, `_extract_objective_focus_terms` + marker/stopword constants) from `main.py` into dedicated module with unchanged focus-term ranking semantics.
+  - [x] R11.i - Extract OpenAI tool-schema coercion helper (`_coerce_openai_tools`) from `main.py` into dedicated module with unchanged schema-compat normalization semantics.
+  - [x] R11.j - Extract request tool-result extraction/tail helpers (`_extract_request_tool_results`, `*_since_last_user`) from `main.py` into dedicated module with unchanged runtime quality/audit semantics.
+  - [x] R11.k - Extract explicit tool-routing helpers (`_should_skip_agent_for_payload`, `_extract_explicit_tool_choice`, `_maybe_force_tool_choice`) from `main.py` into dedicated module with unchanged routing semantics.
+  - [x] R11.l - Extract provider/retry utility helpers (`_provider_api_key`, `_openrouter_optional_headers`, `_extract_error_message`, `_is_retryable_status`, `_is_retryable_exception`, `_compute_retry_delay`) from `main.py` into dedicated module shared with transport utilities.
+  - [x] R11.m - Extract agent-chain assembly helpers (`_merge_agent`, `_build_chain_agents` + provider constants) from `main.py` into dedicated module with unchanged provider selection/fallback semantics.
+  - [x] R11.n - Extract cloud provider normalization/config resolution helpers (`_normalize_cloud_provider`, `_resolve_cloud_provider_config`) from `main.py` into dedicated module with unchanged q-storage/q-cumber routing semantics.
+  - [x] R11.o - Extract Ollama URL normalization helpers (`_normalize_ollama_base`, `_ollama_chat_url`, `_ollama_openai_chat_completions_url`) from `main.py` into dedicated module with unchanged endpoint URL semantics.
+  - [x] R11.p - Extract q-map context helpers (`_sanitize_qmap_context_payload`, `_inject_qmap_context_message`) from `main.py` into dedicated module with unchanged context-header sanitization/injection semantics.
+  - [x] R11.q - Extract response success-claim detectors (`_response_claims_success`, `_response_claims_operational_success`, `_response_claims_centering_success`) from `main.py` into dedicated module with unchanged lexical guard semantics.
+  - [x] R11.r - Extract `/chat` request coercion helper (`_coerce_chat_request`) from `main.py` into dedicated module with unchanged prompt/message compatibility semantics.
+  - [x] R11.s - Extract OpenAI chat payload coercion helper (`_coerce_openai_chat_payload`) from `main.py` into dedicated module with unchanged message/prompt/instructions/tools normalization semantics.
+  - [x] R11.t - Extract `/chat` response normalization helper (`_normalize`) from `main.py` into dedicated module with unchanged provider-payload text extraction semantics.
+  - [x] R11.u - Remove dead retry helper (`_is_retryable_exception`) and cleanup stale imports from `main.py` introduced by earlier modularization.
+  - [x] R11.v - Remove dead transport compatibility wrappers/imports (`_close_async_resource`, `_openai_sdk_model_to_dict`, `_openrouter_sdk_exception_status_code`, `_openrouter_sdk_exception_detail`, `_normalize_openai_sse_event`) no longer referenced by runtime/tests.
+  - [x] R11.w - Remove dead `main.py` imports left after modularization (`_evaluate_payload_token_budget`, `_infer_model_context_limit_tokens`, `_append_runtime_guidance_lines`, `_objective_requests_charts`) that have no runtime/test callsites.
+  - [x] R11.x - Remove dead `main.py` imports with zero runtime/test references (`asyncio`, `AsyncIterator/Awaitable/Callable`, `_strip_request_id_markers_from_text`) after compatibility checks.
+  - [x] R11.y - Remove test-only `main.py` re-export import (`_extract_explicit_tool_choice`) by switching routing tests to module entrypoint `request_routing.py`.
+  - [x] R11.z - Remove confirmed dead wrappers with zero callsites (`payload_compaction._infer_model_context_limit_tokens`, `runtime_guardrails._append_runtime_guidance_lines`).
+  - [x] R12 - Start module-by-module audit of `backends/q-assistant/src/q_assistant` to classify each module as `core`, `candidate-merge`, or `candidate-remove` with concrete evidence (callsites/tests/runtime dependency).
+    - [x] R12.a - Build first-pass inventory with purpose + callsite signal for each module.
+    - [x] R12.b - Complete first module-by-module classification (keep/merge/remove) for all `src/q_assistant` modules; outcome: no removable full module in current runtime graph, only dead wrappers/functions.
+      - [x] `main.py`: `core` (FastAPI app/route orchestration; package entrypoint).
+      - [x] `config.py`: `core` (settings/env parsing used across runtime + tests).
+      - [x] `models.py`: `core` (pydantic contracts used by request/agent flow).
+      - [x] `agent_chain.py`: `core` (agent/provider chain assembly used by `/chat`).
+      - [x] `audit_logging.py`: `core` (chat-audit/session-id/runtime metrics writer).
+      - [x] `provider_transport.py`: `core` (HTTP/SDK transport + stream normalization).
+      - [x] `provider_retry.py`: `core` (retry policy/status/api-key helpers).
+      - [x] `runtime_guardrails.py`: `core` (tool-loop guardrails/pruning/injection rules).
+      - [x] `payload_compaction.py`: `core` (token-budget policy/compaction orchestration).
+      - [x] `request_routing.py`: `core` (explicit tool routing + skip policy).
+      - [x] `request_tool_results.py`: `core` (tool result extraction from message history).
+      - [x] `request_coercion.py`: `core` (tool-args normalization/repair for payloads).
+      - [x] `openai_chat_payload.py`: `core` (OpenAI chat payload canonicalization).
+      - [x] `chat_request_coercion.py`: `core` (ChatRequest coercion model bridge).
+      - [x] `chat_response_normalization.py`: `core` (provider response text normalization).
+      - [x] `tool_calls.py`: `core` (tool-call extraction/parsing utilities).
+      - [x] `tool_result_parsing.py`: `core` (success/dataset-ref extraction utilities).
+      - [x] `tool_contracts.py`: `core` (tool-contract manifest/schema lookup).
+      - [x] `openai_tool_schema.py`: `core` (tool schema normalization for OpenAI payloads).
+      - [x] `usage_estimation.py`: `core` (token/upstream usage estimation).
+      - [x] `message_text.py`: `core` (message text extraction/prompt parsing).
+      - [x] `objective_focus.py`: `core` (objective focus-term extraction/normalization).
+      - [x] `request_markers.py`: `core` (request-id marker stripping in messages).
+      - [x] `qmap_context.py`: `core` (q-map context sanitize/injection).
+      - [x] `cloud_provider.py`: `core` (cloud-provider normalization/routing config).
+      - [x] `response_claims.py`: `core` (response success-claim detectors).
+      - [x] `ollama_urls.py`: `core` (Ollama endpoint URL normalization/building).
+      - [x] `__init__.py`: `core` (package marker).
+      - [x] `qmap-tool-contracts.json`: `core artifact` (tool contract schema source/fallback).
+    - [x] R12.c - Continue per-function audit inside high-size modules (`main.py`, `runtime_guardrails.py`, `provider_transport.py`, `audit_logging.py`) to remove or consolidate low-value helpers with explicit callsite proof.
+      - [x] R12.c1 - `runtime_guardrails`: remove compatibility wrappers (`_objective_requests_*`, `_is_likely_normalized_metric_field`) by switching `main.py` imports to module entrypoints and updating guardrail tests to import from module.
+      - [x] R12.c2 - `provider_transport`: remove compatibility wrappers (`_post/_stream_*` thin pass-throughs) by using module entrypoints directly and adapting tests to provider module APIs.
+    - [x] R12.c3 - `main.py`: reduce internal helper surface by moving test-targeted pure functions to focused modules when they are not route-local.
+      - [x] R12.c3.a - Move low-coupling tests off `main.py` entrypoint where module entrypoints already exist (`request_routing`, `payload_compaction`, `usage_estimation`, `provider_transport`, `runtime_guardrails`, `request_tool_results`).
+      - [x] R12.c3.b - Extract chat payload compaction/sanitization helpers (`_compact_*`, `_repair_openai_tool_message_sequence`, `_deduplicate_discovery_tool_turns`, `_sanitize_openai_tools_for_gemini_model`) from `main.py` into dedicated module and repoint runtime/tests.
+      - [x] R12.c3.c - Extract objective-anchor and final-text normalization helpers from `main.py` (`_build_objective_focus_terms`, `_normalize_openai_response_final_text`, `_inject_objective_anchor_message`) into dedicated module and repoint runtime/tests.
+      - [x] R12.c3.d - Remove residual `objective_anchor -> main` callback dependency (`_extract_objective_required_focus_phrases`, `_objective_requests_dataset_discovery`) by extracting/relocating those intent helpers into a neutral module.
+    - [x] R12.c4 - `runtime_guardrails`: remove `_prune_*` callback wrappers that import `main` dynamically and call guardrail pruning module APIs directly with explicit dependency wiring from `main.py`.
+    - [x] R12.c5 - `runtime_guardrails`: remove dynamic `main` import from `enforce_runtime_tool_loop_limits` by converting it to explicit dependency-injected API and wiring `main.py`/tests accordingly.
+    - [x] R12.c6 - `audit_logging`: inline one-shot `_write_chat_audit` wrapper into `_write_chat_audit_event` and remove dead helper to reduce module surface.
+    - [x] R12.c7 - `runtime_guardrails`: remove wildcard global binding (`_RUNTIME_GUARDRAILS_MAIN_BOUND` + `main.__dict__`) from `_inject_runtime_guardrail_message` in favor of explicit local symbol binding.
+    - [x] R12.c8 - `payload_compaction`: remove `_evaluate/_apply_payload_token_budget` wrappers with dynamic `main` imports and call module APIs with explicit dependencies from `main.py`/tests.
+    - [x] R12.c9 - `runtime_guardrails`: remove final `from . import main as _main` by converting `_inject_runtime_guardrail_message` to fully dependency-injected API and wiring `main.py` + tests.
+    - [x] R12.c10 - `provider_transport`: inline single-callsite SSE normalizer (`normalize_openai_sse_event`) into stream sanitizer to reduce non-essential module API surface.
+- [x] R13 - Canonicalize cloud provider IDs end-to-end to backend service names (`q-cumber-backend`, `q-storage-backend`) with no legacy alias compatibility.
+  - [x] R13.a - Backend q-assistant cloud provider resolver/build-action defaults use only canonical backend IDs and reject legacy `*-cloud` aliases.
+  - [x] R13.b - Frontend cloud provider registrations and AI runtime defaults use canonical backend IDs.
+  - [x] R13.c - AI cloud tool normalization/guards/prompt strings updated to canonical IDs only (no alias fallback).
+  - [x] R13.d - Update affected tests/docs/changelog and re-run backend + relevant frontend/e2e-targeted tests.
+  - [x] R13.e - Remove residual cross-domain alias mapping from q-cumber dataset-provider resolver (`q-cumber-backend` -> `q-cumber`) to keep cloud-provider IDs and dataset providerIds strictly separated.
+  - [x] R13.f - Remove territorial provider alias heuristics (`kontur/local/...` override path) from q-cumber provider resolution; keep explicit providerId strict and auto-select only when providerId is missing.
+- [x] R14 - Heuristic tightening pass (backend + frontend) to remove implicit fallback/alias behavior not required by canonical contracts.
+  - [x] R14.a - `/chat` input strictness: removed OpenAI-style compatibility coercion (`messages` / `message`); `/chat` now accepts canonical `prompt` payload only, with tests/docs aligned.
+  - [x] R14.b - Tool-arg alias strictness: removed non-canonical alias remaps (`datasetRef/datasetId -> datasetName`, `numeratorField -> numeratorFieldName`, `layerNameOrId -> layerName`, `color -> fillColor`) across backend/frontend normalizers and aligned strictness tests.
+  - [x] R14.c - q-cumber provider selection strictness: removed hardcoded preferred auto-select (`local-assets-it`) and generic first-item fallback when provider is omitted; provider auto-selection now only happens for uniquely resolvable catalogs (single provider), with docs/tests aligned.
+  - [x] R14.d - q-cumber provider refresh fallback: removed retry path that silently swapped provider after `provider not found` during tool execution; tool flows now fail fast on that provider mismatch (no in-turn provider mutation).
+  - [x] R14.e - q-cumber dataset resolution strictness: removed fuzzy dataset-id/name matching and now require exact `datasetId` from provider catalog discovery.
+    - [x] R14.e1 - Remove fuzzy dataset-id/name/substring resolver paths in `cloud-tools.tsx`; keep exact dataset-id matching only.
+    - [x] R14.e2 - Fail fast with explicit guidance when provided `datasetId` is not an exact catalog id.
+  - [x] R14.f - Territorial detection fallback: removed query-time keyword fallback when routing metadata is missing; territorial guardrails now fail explicitly on metadata mismatch.
+    - [x] R14.f1 - Remove query-time territorial keyword fallback (`isTerritorialDataset`) and rely on backend routing metadata for territorial gating.
+    - [x] R14.f2 - Add explicit failure when territorial guardrails are requested but routing metadata is unavailable.
+  - [x] R14.g - Routing key strictness: removed legacy `preferredQueryTool` fallback in runtime and aligned canonical routing guidance.
+    - [x] R14.g1 - Remove runtime fallback to legacy `routing.preferredQueryTool`; accept canonical `queryToolHint.preferredTool`.
+    - [x] R14.g2 - Align docs/prompts from `preferredQueryTool` wording to canonical routing keys.
+  - [x] R14.h - Usage/accounting heuristic audit: removed token estimation fallback (`chars/4`); when tokenizer is unavailable runtime now emits explicit `unknown` estimate and skips token-budget compaction decisions that would be based on synthetic counts.
+- [x] R15 - Routing contract canonicalization: removed residual top-level/flat query-tool aliases and now expose routing choice only via `routing.queryToolHint.preferredTool`.
+  - [x] R15.a - q-cumber backend: remove `routing.preferredQueryTool` and `routing.recommendedQueryTool` fields from emitted routing payloads.
+  - [x] R15.b - q-cumber backend: remove top-level `recommendedQueryTool` / `queryToolHint` aliases from `/providers/*/datasets/*/help` and `/datasets/query` responses.
+  - [x] R15.c - frontend/runtime/docs/tests: remove remaining alias reads/writes and align fixtures/docs to canonical routing key.
+- [x] R16 - q-map tool result envelope cleanup: removed duplicated top-level `llmResult.queryToolHint` and kept routing hints only under `llmResult.routing.queryToolHint`.
+  - [x] R16.a - Remove `queryToolHint` top-level fields from `listQCumberDatasets` and `getQCumberDatasetHelp` tool outputs.
+  - [x] R16.b - Re-run cloud tool e2e coverage and build after envelope cleanup.

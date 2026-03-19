@@ -1,0 +1,196 @@
+{
+  "id": "local-assets-it",
+  "name": "Local Assets (IT)",
+  "locale": "it",
+  "category": "environmental",
+  "organizationType": "internal",
+  "country": "IT",
+  "capabilities": ["query", "geometry", "postgis"],
+  "formats": ["row", "geojson"],
+  "tags": ["italy", "local", "assets"],
+  "notes": "Provider locale minimalista. Dataset letti esclusivamente da tabelle PostGIS.",
+  "datasets": [
+    {
+      "id": "clc-2018-italia",
+      "name": "CLC 2018 Italia",
+      "description": "Corine Land Cover 2018 (intersects Italia)",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "clc_2018",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["clc", "land-cover", "italia", "local"],
+      "ai": {
+        "profile": {
+          "datasetClass": "land_cover",
+          "queryRouting": {
+            "preferredTool": "queryQCumberDatasetSpatial",
+            "requiresSpatialBbox": true,
+            "forbiddenAdminConstraints": ["expectedAdminType", "lv"]
+          },
+          "analysisMetrics": {
+            "metricSemantic": "proxy_environmental_pressure",
+            "biasRisk": "absolute_only_bias",
+            "numeratorFieldCandidates": ["area_ha", "zonal_value", "sum", "sum_area_m2"],
+            "denominatorFieldCandidates": ["area_region_m2", "population"],
+            "preferredRankingFieldCandidates": ["pressure_pct_area", "pressure_ha_per_100k", "zonal_value", "area_ha"],
+            "recommendedDerivedMetrics": [
+              {
+                "name": "pressure_pct_area",
+                "description": "Quota di area regionale classificata come proxy di pressione",
+                "formulaHint": "numerator_m2 / area_region_m2",
+                "unit": "ratio"
+              },
+              {
+                "name": "pressure_ha_per_100k",
+                "description": "Ettari proxy per 100k abitanti",
+                "formulaHint": "(numerator_ha / population) * 100000",
+                "unit": "ha_per_100k"
+              }
+            ],
+            "analysisCaveats": [
+              "Proxy basato su classi CLC e non misura diretta di rischio sanitario/clinico",
+              "Per ranking su \"piu problemi\" affiancare sempre metrica assoluta e metrica normalizzata se disponibili i denominatori"
+            ]
+          },
+          "h3Workflows": {
+            "largeExtentStrategy": "aggregateDatasetToH3",
+            "recommendedGroupByFields": ["code_18", "clc_name_it", "clc_name_en"],
+            "recommendedWeightMode": "intersects",
+            "avoidTools": ["tassellateDatasetLayer"]
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Geometria GeoJSON del poligono CLC",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"],
+            "sortable": false,
+            "rankable": false
+          },
+          "code_18": {
+            "description": "Codice classe Corine Land Cover 2018",
+            "semanticRole": "category_code",
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith", "is_null", "not_null"],
+            "example": "112",
+            "aliases": ["code18", "clc_code"]
+          },
+          "clc_name_it": {
+            "description": "Nome classe CLC in italiano (campo virtuale)",
+            "semanticRole": "category_name",
+            "virtual": true,
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith", "is_null", "not_null"]
+          },
+          "clc_name_en": {
+            "description": "Nome classe CLC in inglese (campo virtuale)",
+            "semanticRole": "category_name",
+            "virtual": true,
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith", "is_null", "not_null"]
+          },
+          "area_ha": {
+            "description": "Superficie del poligono in ettari",
+            "semanticRole": "area",
+            "unit": "ha",
+            "type": "number",
+            "filterOps": ["eq", "ne", "gt", "gte", "lt", "lte", "in", "is_null", "not_null"]
+          }
+        }
+      }
+    },
+    {
+      "id": "kontur-boundaries-italia",
+      "name": "Kontur Boundaries Italia",
+      "description": "Confini amministrativi con livelli/lv e popolazione",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "kontur_boundaries",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["kontur", "boundaries", "italia", "local"],
+      "ai": {
+        "profile": {
+          "datasetClass": "administrative",
+          "queryRouting": {
+            "preferredTool": "queryQCumberTerritorialUnits",
+            "expectedAdminTypeSupported": true
+          },
+          "adminWorkflows": {
+            "levelField": "lv",
+            "nameFields": ["name", "name_en"],
+            "adminTypeToLevel": {
+              "country": 2,
+              "region": 4,
+              "province": 7,
+              "municipality": 9
+            },
+            "parentIdFields": [
+              "kontur_boundaries__lv4_id",
+              "kontur_boundaries__lv7_id",
+              "kontur_boundaries__lv9_id"
+            ],
+            "parentIdPriorityForChildLevel": {
+              "9": ["kontur_boundaries__lv7_id", "kontur_boundaries__lv4_id"],
+              "7": ["kontur_boundaries__lv4_id"]
+            }
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Geometria GeoJSON dell'unita amministrativa",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"],
+            "sortable": false,
+            "rankable": false
+          },
+          "lv": {
+            "description": "Livello amministrativo Kontur (IT: regione=4, provincia=7, comune=9)",
+            "semanticRole": "admin_level",
+            "type": "number",
+            "filterOps": ["eq", "in", "gt", "gte", "lt", "lte", "is_null", "not_null"],
+            "examples": [2, 4, 7, 8, 9, 10, 11, 12]
+          },
+          "name": {
+            "description": "Nome dell'unita amministrativa in italiano",
+            "semanticRole": "name",
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith", "is_null", "not_null"],
+            "aliases": ["nome"]
+          },
+          "name_en": {
+            "description": "Nome dell'unita amministrativa in inglese",
+            "semanticRole": "name",
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith", "is_null", "not_null"]
+          },
+          "population": {
+            "description": "Popolazione residente dell'unita amministrativa",
+            "semanticRole": "population",
+            "type": "number",
+            "filterOps": ["eq", "ne", "gt", "gte", "lt", "lte", "in", "is_null", "not_null"],
+            "unit": "people"
+          },
+          "kontur_boundaries__lv4_id": {
+            "description": "Identificativo della regione (parent id per workflow comuni di regione)",
+            "semanticRole": "admin_parent_id",
+            "adminLevel": 4,
+            "filterOps": ["eq", "in", "is_null", "not_null"]
+          },
+          "kontur_boundaries__lv7_id": {
+            "description": "Identificativo della provincia (parent id per workflow comuni di provincia)",
+            "semanticRole": "admin_parent_id",
+            "adminLevel": 7,
+            "filterOps": ["eq", "in", "is_null", "not_null"]
+          },
+          "kontur_boundaries__lv9_id": {
+            "description": "Identificativo del comune",
+            "semanticRole": "admin_id",
+            "adminLevel": 9,
+            "filterOps": ["eq", "in", "is_null", "not_null"]
+          }
+        }
+      }
+    }
+  ]
+}

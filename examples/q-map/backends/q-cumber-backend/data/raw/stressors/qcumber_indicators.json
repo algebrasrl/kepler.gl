@@ -1,0 +1,3554 @@
+[
+  {
+    "_partial": true,
+    "cod": 1,
+    "name": "PM10",
+    "url": "https://www.q-cumber.org/api/v1/indicators/20/"
+  },
+  {
+    "_partial": true,
+    "cod": 2,
+    "name": "PM2.5",
+    "url": "https://www.q-cumber.org/api/v1/indicators/21/"
+  },
+  {
+    "_partial": true,
+    "cod": 3,
+    "name": "CO2",
+    "url": "https://www.q-cumber.org/api/v1/indicators/22/"
+  },
+  {
+    "_partial": true,
+    "cod": 4,
+    "name": "Odor",
+    "url": "https://www.q-cumber.org/api/v1/indicators/23/"
+  },
+  {
+    "_partial": true,
+    "cod": 5,
+    "name": "BOD-COD",
+    "url": "https://www.q-cumber.org/api/v1/indicators/24/"
+  },
+  {
+    "_partial": true,
+    "cod": 6,
+    "name": "VOC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/25/"
+  },
+  {
+    "_partial": true,
+    "cod": 7,
+    "name": "Noise",
+    "url": "https://www.q-cumber.org/api/v1/indicators/26/"
+  },
+  {
+    "_partial": true,
+    "cod": 8,
+    "name": "Arsenic",
+    "url": "https://www.q-cumber.org/api/v1/indicators/27/"
+  },
+  {
+    "_partial": true,
+    "cod": 9,
+    "name": "Benzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/28/"
+  },
+  {
+    "_partial": true,
+    "cod": 10,
+    "name": "Lead",
+    "url": "https://www.q-cumber.org/api/v1/indicators/29/"
+  },
+  {
+    "_partial": true,
+    "cod": 11,
+    "name": "PAH",
+    "url": "https://www.q-cumber.org/api/v1/indicators/30/"
+  },
+  {
+    "_partial": true,
+    "cod": 12,
+    "name": "NOX",
+    "url": "https://www.q-cumber.org/api/v1/indicators/31/"
+  },
+  {
+    "_partial": true,
+    "cod": 13,
+    "name": "PCB",
+    "url": "https://www.q-cumber.org/api/v1/indicators/32/"
+  },
+  {
+    "_partial": true,
+    "cod": 14,
+    "name": "Electricity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/33/"
+  },
+  {
+    "_partial": true,
+    "cod": 15,
+    "name": "Water Collected",
+    "url": "https://www.q-cumber.org/api/v1/indicators/34/"
+  },
+  {
+    "_partial": true,
+    "cod": 16,
+    "name": "Removal of topsoil",
+    "url": "https://www.q-cumber.org/api/v1/indicators/35/"
+  },
+  {
+    "_partial": true,
+    "cod": 17,
+    "name": "Gravel-sand-mineral material removed",
+    "url": "https://www.q-cumber.org/api/v1/indicators/36/"
+  },
+  {
+    "_partial": true,
+    "cod": 18,
+    "name": "waste",
+    "url": "https://www.q-cumber.org/api/v1/indicators/37/"
+  },
+  {
+    "_partial": true,
+    "cod": 19,
+    "name": "Fuel",
+    "url": "https://www.q-cumber.org/api/v1/indicators/38/"
+  },
+  {
+    "_partial": true,
+    "cod": 20,
+    "name": "Temperature",
+    "url": "https://www.q-cumber.org/api/v1/indicators/39/"
+  },
+  {
+    "_partial": true,
+    "cod": 21,
+    "name": "Wind Direction",
+    "url": "https://www.q-cumber.org/api/v1/indicators/40/"
+  },
+  {
+    "_partial": true,
+    "cod": 22,
+    "name": "Relative Humidity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/41/"
+  },
+  {
+    "_partial": true,
+    "cod": 23,
+    "name": "Net surface Heat Flux",
+    "url": "https://www.q-cumber.org/api/v1/indicators/42/"
+  },
+  {
+    "_partial": true,
+    "cod": 24,
+    "name": "Precipitation",
+    "url": "https://www.q-cumber.org/api/v1/indicators/43/"
+  },
+  {
+    "_partial": true,
+    "cod": 25,
+    "name": "Wind Speed",
+    "url": "https://www.q-cumber.org/api/v1/indicators/44/"
+  },
+  {
+    "_partial": true,
+    "cod": 26,
+    "name": "Cloud",
+    "url": "https://www.q-cumber.org/api/v1/indicators/300/"
+  },
+  {
+    "_partial": true,
+    "cod": 27,
+    "name": "NO",
+    "url": "https://www.q-cumber.org/api/v1/indicators/463/"
+  },
+  {
+    "_partial": true,
+    "cod": 28,
+    "name": "O3",
+    "url": "https://www.q-cumber.org/api/v1/indicators/464/"
+  },
+  {
+    "_partial": true,
+    "cod": 29,
+    "name": "Butadiene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/465/"
+  },
+  {
+    "_partial": true,
+    "cod": 30,
+    "name": "Methanol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/466/"
+  },
+  {
+    "_partial": true,
+    "cod": 100,
+    "name": "pH",
+    "url": "https://www.q-cumber.org/api/v1/indicators/45/"
+  },
+  {
+    "_partial": true,
+    "cod": 101,
+    "name": "Humidity calculated",
+    "url": "https://www.q-cumber.org/api/v1/indicators/46/"
+  },
+  {
+    "_partial": true,
+    "cod": 102,
+    "name": "Dry residual 105 °C",
+    "url": "https://www.q-cumber.org/api/v1/indicators/47/"
+  },
+  {
+    "_partial": true,
+    "cod": 103,
+    "name": "Dry residual 550 °C",
+    "url": "https://www.q-cumber.org/api/v1/indicators/48/"
+  },
+  {
+    "_partial": true,
+    "cod": 104,
+    "name": "Aluminum",
+    "url": "https://www.q-cumber.org/api/v1/indicators/49/"
+  },
+  {
+    "_partial": true,
+    "cod": 105,
+    "name": "Antimony",
+    "url": "https://www.q-cumber.org/api/v1/indicators/50/"
+  },
+  {
+    "_partial": true,
+    "cod": 106,
+    "name": "Barium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/51/"
+  },
+  {
+    "_partial": true,
+    "cod": 107,
+    "name": "Cadmium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/52/"
+  },
+  {
+    "_partial": true,
+    "cod": 108,
+    "name": "cobalt",
+    "url": "https://www.q-cumber.org/api/v1/indicators/53/"
+  },
+  {
+    "_partial": true,
+    "cod": 109,
+    "name": "Total Chromium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/54/"
+  },
+  {
+    "_partial": true,
+    "cod": 110,
+    "name": "Chromium VI",
+    "url": "https://www.q-cumber.org/api/v1/indicators/55/"
+  },
+  {
+    "_partial": true,
+    "cod": 111,
+    "name": "Iron",
+    "url": "https://www.q-cumber.org/api/v1/indicators/56/"
+  },
+  {
+    "_partial": true,
+    "cod": 112,
+    "name": "Manganese",
+    "url": "https://www.q-cumber.org/api/v1/indicators/57/"
+  },
+  {
+    "_partial": true,
+    "cod": 113,
+    "name": "Mercury",
+    "url": "https://www.q-cumber.org/api/v1/indicators/58/"
+  },
+  {
+    "_partial": true,
+    "cod": 114,
+    "name": "Molybdenum",
+    "url": "https://www.q-cumber.org/api/v1/indicators/59/"
+  },
+  {
+    "_partial": true,
+    "cod": 115,
+    "name": "Nickel",
+    "url": "https://www.q-cumber.org/api/v1/indicators/60/"
+  },
+  {
+    "_partial": true,
+    "cod": 116,
+    "name": "Total Copper",
+    "url": "https://www.q-cumber.org/api/v1/indicators/61/"
+  },
+  {
+    "_partial": true,
+    "cod": 117,
+    "name": "Tin",
+    "url": "https://www.q-cumber.org/api/v1/indicators/62/"
+  },
+  {
+    "_partial": true,
+    "cod": 118,
+    "name": "Zinc",
+    "url": "https://www.q-cumber.org/api/v1/indicators/63/"
+  },
+  {
+    "_partial": true,
+    "cod": 119,
+    "name": "Bismuth ",
+    "url": "https://www.q-cumber.org/api/v1/indicators/64/"
+  },
+  {
+    "_partial": true,
+    "cod": 120,
+    "name": "Sulfates",
+    "url": "https://www.q-cumber.org/api/v1/indicators/65/"
+  },
+  {
+    "_partial": true,
+    "cod": 121,
+    "name": "Chlorides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/66/"
+  },
+  {
+    "_partial": true,
+    "cod": 122,
+    "name": "Heavy hydrocarbons C> 12",
+    "url": "https://www.q-cumber.org/api/v1/indicators/67/"
+  },
+  {
+    "_partial": true,
+    "cod": 123,
+    "name": "Light hydrocarbons C> 12",
+    "url": "https://www.q-cumber.org/api/v1/indicators/68/"
+  },
+  {
+    "_partial": true,
+    "cod": 124,
+    "name": "Toluene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/69/"
+  },
+  {
+    "_partial": true,
+    "cod": 125,
+    "name": "Ethylbenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/70/"
+  },
+  {
+    "_partial": true,
+    "cod": 126,
+    "name": "Xylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/71/"
+  },
+  {
+    "_partial": true,
+    "cod": 128,
+    "name": "Cyanides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/73/"
+  },
+  {
+    "_partial": true,
+    "cod": 135,
+    "name": "OCDD",
+    "url": "https://www.q-cumber.org/api/v1/indicators/80/"
+  },
+  {
+    "_partial": true,
+    "cod": 145,
+    "name": "OCDF",
+    "url": "https://www.q-cumber.org/api/v1/indicators/90/"
+  },
+  {
+    "_partial": true,
+    "cod": 146,
+    "name": "SUM of PCDDs,PCDFs",
+    "url": "https://www.q-cumber.org/api/v1/indicators/91/"
+  },
+  {
+    "_partial": true,
+    "cod": 147,
+    "name": "Benzo(a) anthracene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/92/"
+  },
+  {
+    "_partial": true,
+    "cod": 148,
+    "name": "Benzo(a) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/93/"
+  },
+  {
+    "_partial": true,
+    "cod": 149,
+    "name": "Benzo(b) fluoranthene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/94/"
+  },
+  {
+    "_partial": true,
+    "cod": 150,
+    "name": "Benzo(k,) fluoranthene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/95/"
+  },
+  {
+    "_partial": true,
+    "cod": 151,
+    "name": "Benzo(g,h,i,) perylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/96/"
+  },
+  {
+    "_partial": true,
+    "cod": 152,
+    "name": "Chrysene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/97/"
+  },
+  {
+    "_partial": true,
+    "cod": 153,
+    "name": "Dibenzo (a,e) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/98/"
+  },
+  {
+    "_partial": true,
+    "cod": 154,
+    "name": "Dibenzo (a,l) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/99/"
+  },
+  {
+    "_partial": true,
+    "cod": 155,
+    "name": "Dibenzo (a,i) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/100/"
+  },
+  {
+    "_partial": true,
+    "cod": 156,
+    "name": "Dibenzo (a,h) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/101/"
+  },
+  {
+    "_partial": true,
+    "cod": 157,
+    "name": "Dibenzo (a,h) anthracene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/102/"
+  },
+  {
+    "_partial": true,
+    "cod": 158,
+    "name": "Indenopyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/103/"
+  },
+  {
+    "_partial": true,
+    "cod": 159,
+    "name": "Pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/104/"
+  },
+  {
+    "_partial": true,
+    "cod": 160,
+    "name": "Sum of PAHs (from 25 to 34)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/105/"
+  },
+  {
+    "_partial": true,
+    "cod": 161,
+    "name": "Cars",
+    "url": "https://www.q-cumber.org/api/v1/indicators/106/"
+  },
+  {
+    "_partial": true,
+    "cod": 162,
+    "name": "Trucks",
+    "url": "https://www.q-cumber.org/api/v1/indicators/107/"
+  },
+  {
+    "_partial": true,
+    "cod": 163,
+    "name": "Light duty vehicles",
+    "url": "https://www.q-cumber.org/api/v1/indicators/108/"
+  },
+  {
+    "_partial": true,
+    "cod": 164,
+    "name": "Other vehicles",
+    "url": "https://www.q-cumber.org/api/v1/indicators/109/"
+  },
+  {
+    "_partial": true,
+    "cod": 165,
+    "name": "Motos",
+    "url": "https://www.q-cumber.org/api/v1/indicators/110/"
+  },
+  {
+    "_partial": true,
+    "cod": 166,
+    "name": "Buses",
+    "url": "https://www.q-cumber.org/api/v1/indicators/111/"
+  },
+  {
+    "_partial": true,
+    "cod": 167,
+    "name": "Heat flux",
+    "url": "https://www.q-cumber.org/api/v1/indicators/112/"
+  },
+  {
+    "_partial": true,
+    "cod": 168,
+    "name": "Pressure",
+    "url": "https://www.q-cumber.org/api/v1/indicators/113/"
+  },
+  {
+    "_partial": true,
+    "cod": 169,
+    "name": "Piezometric Level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/114/"
+  },
+  {
+    "_partial": true,
+    "cod": 170,
+    "name": "Conductivity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/115/"
+  },
+  {
+    "_partial": true,
+    "cod": 171,
+    "name": "TOC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/116/"
+  },
+  {
+    "_partial": true,
+    "cod": 172,
+    "name": "BOD5",
+    "url": "https://www.q-cumber.org/api/v1/indicators/117/"
+  },
+  {
+    "_partial": true,
+    "cod": 173,
+    "name": "Oxidizability",
+    "url": "https://www.q-cumber.org/api/v1/indicators/118/"
+  },
+  {
+    "_partial": true,
+    "cod": 175,
+    "name": "Calcium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/120/"
+  },
+  {
+    "_partial": true,
+    "cod": 176,
+    "name": "Sodium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/121/"
+  },
+  {
+    "_partial": true,
+    "cod": 177,
+    "name": "Potassium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/122/"
+  },
+  {
+    "_partial": true,
+    "cod": 178,
+    "name": "Magnesium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/123/"
+  },
+  {
+    "_partial": true,
+    "cod": 179,
+    "name": "Chromium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/124/"
+  },
+  {
+    "_partial": true,
+    "cod": 180,
+    "name": "Copper",
+    "url": "https://www.q-cumber.org/api/v1/indicators/125/"
+  },
+  {
+    "_partial": true,
+    "cod": 181,
+    "name": "Fluorides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/126/"
+  },
+  {
+    "_partial": true,
+    "cod": 182,
+    "name": "Nitric Nitrogen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/127/"
+  },
+  {
+    "_partial": true,
+    "cod": 183,
+    "name": "Nitrous Nitrogen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/128/"
+  },
+  {
+    "_partial": true,
+    "cod": 184,
+    "name": "Aromatic Organic Solvents",
+    "url": "https://www.q-cumber.org/api/v1/indicators/129/"
+  },
+  {
+    "_partial": true,
+    "cod": 185,
+    "name": "Nitrogenous Organic Solvents",
+    "url": "https://www.q-cumber.org/api/v1/indicators/130/"
+  },
+  {
+    "_partial": true,
+    "cod": 186,
+    "name": "Halogenates Organic Solvents",
+    "url": "https://www.q-cumber.org/api/v1/indicators/131/"
+  },
+  {
+    "_partial": true,
+    "cod": 187,
+    "name": "Polycyclic aromatic hydrocarbons",
+    "url": "https://www.q-cumber.org/api/v1/indicators/132/"
+  },
+  {
+    "_partial": true,
+    "cod": 188,
+    "name": "Naphtalene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/133/"
+  },
+  {
+    "_partial": true,
+    "cod": 189,
+    "name": "1,2-Dicloroethylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/134/"
+  },
+  {
+    "_partial": true,
+    "cod": 191,
+    "name": "Phenols",
+    "url": "https://www.q-cumber.org/api/v1/indicators/136/"
+  },
+  {
+    "_partial": true,
+    "cod": 192,
+    "name": "Pesticides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/137/"
+  },
+  {
+    "_partial": true,
+    "cod": 193,
+    "name": "NO2",
+    "url": "https://www.q-cumber.org/api/v1/indicators/138/"
+  },
+  {
+    "_partial": true,
+    "cod": 194,
+    "name": "TCDD (dioxins)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/139/"
+  },
+  {
+    "_partial": true,
+    "cod": 195,
+    "name": "1,1 Dicloroethylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/140/"
+  },
+  {
+    "_partial": true,
+    "cod": 196,
+    "name": "1,1,1-trichloroethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/141/"
+  },
+  {
+    "_partial": true,
+    "cod": 197,
+    "name": "1,1,2,2-Tetracloroetano",
+    "url": "https://www.q-cumber.org/api/v1/indicators/142/"
+  },
+  {
+    "_partial": true,
+    "cod": 198,
+    "name": "1,1,2-tetrachloroethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/143/"
+  },
+  {
+    "_partial": true,
+    "cod": 199,
+    "name": "1,1-dichloroethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/144/"
+  },
+  {
+    "_partial": true,
+    "cod": 200,
+    "name": "1,2,3-trichloropropane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/145/"
+  },
+  {
+    "_partial": true,
+    "cod": 201,
+    "name": "1,2,4-trichlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/146/"
+  },
+  {
+    "_partial": true,
+    "cod": 202,
+    "name": "1,2,4,5-TETRACHLOROBENZENE",
+    "url": "https://www.q-cumber.org/api/v1/indicators/147/"
+  },
+  {
+    "_partial": true,
+    "cod": 203,
+    "name": "1,2-dibromoethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/148/"
+  },
+  {
+    "_partial": true,
+    "cod": 204,
+    "name": "1,2-dichloroethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/149/"
+  },
+  {
+    "_partial": true,
+    "cod": 206,
+    "name": "1,2-dichloropropane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/151/"
+  },
+  {
+    "_partial": true,
+    "cod": 207,
+    "name": "1,2-dinitrobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/152/"
+  },
+  {
+    "_partial": true,
+    "cod": 208,
+    "name": "1,3-Dinitrobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/153/"
+  },
+  {
+    "_partial": true,
+    "cod": 209,
+    "name": "2,4,6-trichlorophenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/154/"
+  },
+  {
+    "_partial": true,
+    "cod": 210,
+    "name": "2,4-dichlorophenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/155/"
+  },
+  {
+    "_partial": true,
+    "cod": 211,
+    "name": "2-chlorophenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/156/"
+  },
+  {
+    "_partial": true,
+    "cod": 212,
+    "name": "Para-phthalic acid",
+    "url": "https://www.q-cumber.org/api/v1/indicators/157/"
+  },
+  {
+    "_partial": true,
+    "cod": 213,
+    "name": "acrylamide",
+    "url": "https://www.q-cumber.org/api/v1/indicators/158/"
+  },
+  {
+    "_partial": true,
+    "cod": 214,
+    "name": "Alaclor",
+    "url": "https://www.q-cumber.org/api/v1/indicators/159/"
+  },
+  {
+    "_partial": true,
+    "cod": 215,
+    "name": "Aldehydes",
+    "url": "https://www.q-cumber.org/api/v1/indicators/160/"
+  },
+  {
+    "_partial": true,
+    "cod": 216,
+    "name": "Aldrin",
+    "url": "https://www.q-cumber.org/api/v1/indicators/161/"
+  },
+  {
+    "_partial": true,
+    "cod": 217,
+    "name": "Asbestos",
+    "url": "https://www.q-cumber.org/api/v1/indicators/162/"
+  },
+  {
+    "_partial": true,
+    "cod": 218,
+    "name": "aniline",
+    "url": "https://www.q-cumber.org/api/v1/indicators/163/"
+  },
+  {
+    "_partial": true,
+    "cod": 219,
+    "name": "Silver",
+    "url": "https://www.q-cumber.org/api/v1/indicators/164/"
+  },
+  {
+    "_partial": true,
+    "cod": 220,
+    "name": "atrazine",
+    "url": "https://www.q-cumber.org/api/v1/indicators/165/"
+  },
+  {
+    "_partial": true,
+    "cod": 221,
+    "name": "Ammonia nitrogen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/166/"
+  },
+  {
+    "_partial": true,
+    "cod": 222,
+    "name": "Total nitrogen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/167/"
+  },
+  {
+    "_partial": true,
+    "cod": 223,
+    "name": "Beryllium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/168/"
+  },
+  {
+    "_partial": true,
+    "cod": 224,
+    "name": "Boron",
+    "url": "https://www.q-cumber.org/api/v1/indicators/169/"
+  },
+  {
+    "_partial": true,
+    "cod": 225,
+    "name": "bromodichloromethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/170/"
+  },
+  {
+    "_partial": true,
+    "cod": 226,
+    "name": "Cyanide (free)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/171/"
+  },
+  {
+    "_partial": true,
+    "cod": 228,
+    "name": "chlordane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/173/"
+  },
+  {
+    "_partial": true,
+    "cod": 229,
+    "name": "Free active chlorine",
+    "url": "https://www.q-cumber.org/api/v1/indicators/174/"
+  },
+  {
+    "_partial": true,
+    "cod": 230,
+    "name": "chloromethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/175/"
+  },
+  {
+    "_partial": true,
+    "cod": 231,
+    "name": "Cloronitrobenzeni",
+    "url": "https://www.q-cumber.org/api/v1/indicators/176/"
+  },
+  {
+    "_partial": true,
+    "cod": 232,
+    "name": "Vinyl Chloride",
+    "url": "https://www.q-cumber.org/api/v1/indicators/177/"
+  },
+  {
+    "_partial": true,
+    "cod": 233,
+    "name": "CO",
+    "url": "https://www.q-cumber.org/api/v1/indicators/178/"
+  },
+  {
+    "_partial": true,
+    "cod": 234,
+    "name": "COD",
+    "url": "https://www.q-cumber.org/api/v1/indicators/179/"
+  },
+  {
+    "_partial": true,
+    "cod": 235,
+    "name": "Colour",
+    "url": "https://www.q-cumber.org/api/v1/indicators/180/"
+  },
+  {
+    "_partial": true,
+    "cod": 236,
+    "name": "DDD,DDT,DDE",
+    "url": "https://www.q-cumber.org/api/v1/indicators/181/"
+  },
+  {
+    "_partial": true,
+    "cod": 237,
+    "name": "dibromochloromethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/182/"
+  },
+  {
+    "_partial": true,
+    "cod": 238,
+    "name": "1,4-dichlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/183/"
+  },
+  {
+    "_partial": true,
+    "cod": 239,
+    "name": "1,2-dichlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/184/"
+  },
+  {
+    "_partial": true,
+    "cod": 240,
+    "name": "dichloromethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/185/"
+  },
+  {
+    "_partial": true,
+    "cod": 241,
+    "name": "Dieldrin",
+    "url": "https://www.q-cumber.org/api/v1/indicators/186/"
+  },
+  {
+    "_partial": true,
+    "cod": 242,
+    "name": "diphenylamine",
+    "url": "https://www.q-cumber.org/api/v1/indicators/187/"
+  },
+  {
+    "_partial": true,
+    "cod": 243,
+    "name": "Endrin",
+    "url": "https://www.q-cumber.org/api/v1/indicators/188/"
+  },
+  {
+    "_partial": true,
+    "cod": 244,
+    "name": "hexachlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/189/"
+  },
+  {
+    "_partial": true,
+    "cod": 245,
+    "name": "hexachlorobutadiene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/190/"
+  },
+  {
+    "_partial": true,
+    "cod": 246,
+    "name": "Escherichia coli",
+    "url": "https://www.q-cumber.org/api/v1/indicators/191/"
+  },
+  {
+    "_partial": true,
+    "cod": 247,
+    "name": "Esters of phthalic acid",
+    "url": "https://www.q-cumber.org/api/v1/indicators/192/"
+  },
+  {
+    "_partial": true,
+    "cod": 248,
+    "name": "Total phosphorus",
+    "url": "https://www.q-cumber.org/api/v1/indicators/193/"
+  },
+  {
+    "_partial": true,
+    "cod": 249,
+    "name": "Fats and vegetable oils / animal",
+    "url": "https://www.q-cumber.org/api/v1/indicators/194/"
+  },
+  {
+    "_partial": true,
+    "cod": 250,
+    "name": "Total hydrocarbons",
+    "url": "https://www.q-cumber.org/api/v1/indicators/195/"
+  },
+  {
+    "_partial": true,
+    "cod": 251,
+    "name": "Total hydrocarbons expressed as n-hexane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/196/"
+  },
+  {
+    "_partial": true,
+    "cod": 252,
+    "name": "isodrin",
+    "url": "https://www.q-cumber.org/api/v1/indicators/197/"
+  },
+  {
+    "_partial": true,
+    "cod": 253,
+    "name": "m,p-Anisidina",
+    "url": "https://www.q-cumber.org/api/v1/indicators/198/"
+  },
+  {
+    "_partial": true,
+    "cod": 254,
+    "name": "Coarse Materials",
+    "url": "https://www.q-cumber.org/api/v1/indicators/199/"
+  },
+  {
+    "_partial": true,
+    "cod": 255,
+    "name": "methylphenol(o-, m-, p-)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/200/"
+  },
+  {
+    "_partial": true,
+    "cod": 256,
+    "name": "monochlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/201/"
+  },
+  {
+    "_partial": true,
+    "cod": 257,
+    "name": "Nitriti",
+    "url": "https://www.q-cumber.org/api/v1/indicators/202/"
+  },
+  {
+    "_partial": true,
+    "cod": 258,
+    "name": "Nitrobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/203/"
+  },
+  {
+    "_partial": true,
+    "cod": 260,
+    "name": "o-Anisidina",
+    "url": "https://www.q-cumber.org/api/v1/indicators/205/"
+  },
+  {
+    "_partial": true,
+    "cod": 261,
+    "name": "p-xylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/206/"
+  },
+  {
+    "_partial": true,
+    "cod": 262,
+    "name": "pentachlorobenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/207/"
+  },
+  {
+    "_partial": true,
+    "cod": 263,
+    "name": "pentachlorophenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/208/"
+  },
+  {
+    "_partial": true,
+    "cod": 264,
+    "name": "phosphorus pesticides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/209/"
+  },
+  {
+    "_partial": true,
+    "cod": 265,
+    "name": "Total pesticides (except phosphorus)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/210/"
+  },
+  {
+    "_partial": true,
+    "cod": 266,
+    "name": "p-Toluidina",
+    "url": "https://www.q-cumber.org/api/v1/indicators/211/"
+  },
+  {
+    "_partial": true,
+    "cod": 267,
+    "name": "Toxicity test on Daphnia Magna",
+    "url": "https://www.q-cumber.org/api/v1/indicators/212/"
+  },
+  {
+    "_partial": true,
+    "cod": 268,
+    "name": "SAR",
+    "url": "https://www.q-cumber.org/api/v1/indicators/213/"
+  },
+  {
+    "_partial": true,
+    "cod": 269,
+    "name": "Selenium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/214/"
+  },
+  {
+    "_partial": true,
+    "cod": 270,
+    "name": "SO2",
+    "url": "https://www.q-cumber.org/api/v1/indicators/215/"
+  },
+  {
+    "_partial": true,
+    "cod": 271,
+    "name": "Sulphites",
+    "url": "https://www.q-cumber.org/api/v1/indicators/216/"
+  },
+  {
+    "_partial": true,
+    "cod": 272,
+    "name": "Sulphides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/217/"
+  },
+  {
+    "_partial": true,
+    "cod": 273,
+    "name": "Total suspended solids",
+    "url": "https://www.q-cumber.org/api/v1/indicators/218/"
+  },
+  {
+    "_partial": true,
+    "cod": 274,
+    "name": "Special solid total",
+    "url": "https://www.q-cumber.org/api/v1/indicators/219/"
+  },
+  {
+    "_partial": true,
+    "cod": 275,
+    "name": "Chlorinated solvents",
+    "url": "https://www.q-cumber.org/api/v1/indicators/220/"
+  },
+  {
+    "_partial": true,
+    "cod": 276,
+    "name": "Sum of (31, 32, 33, 36 )",
+    "url": "https://www.q-cumber.org/api/v1/indicators/221/"
+  },
+  {
+    "_partial": true,
+    "cod": 277,
+    "name": "Aromatic Amines sum (73 to 77)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/222/"
+  },
+  {
+    "_partial": true,
+    "cod": 278,
+    "name": "sum of pesticides",
+    "url": "https://www.q-cumber.org/api/v1/indicators/223/"
+  },
+  {
+    "_partial": true,
+    "cod": 279,
+    "name": "Sum of aromatic organic (da 20 a 23)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/224/"
+  },
+  {
+    "_partial": true,
+    "cod": 280,
+    "name": "sum of organohalogen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/225/"
+  },
+  {
+    "_partial": true,
+    "cod": 281,
+    "name": "styrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/226/"
+  },
+  {
+    "_partial": true,
+    "cod": 282,
+    "name": "Thallium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/227/"
+  },
+  {
+    "_partial": true,
+    "cod": 283,
+    "name": "Total surfactants",
+    "url": "https://www.q-cumber.org/api/v1/indicators/228/"
+  },
+  {
+    "_partial": true,
+    "cod": 284,
+    "name": "Tetrachloroethylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/229/"
+  },
+  {
+    "_partial": true,
+    "cod": 285,
+    "name": "Tribromomethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/230/"
+  },
+  {
+    "_partial": true,
+    "cod": 286,
+    "name": "Trichloroethylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/231/"
+  },
+  {
+    "_partial": true,
+    "cod": 287,
+    "name": "trichloromethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/232/"
+  },
+  {
+    "_partial": true,
+    "cod": 288,
+    "name": "Vanadium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/233/"
+  },
+  {
+    "_partial": true,
+    "cod": 289,
+    "name": "alfa-esacloroesano",
+    "url": "https://www.q-cumber.org/api/v1/indicators/234/"
+  },
+  {
+    "_partial": true,
+    "cod": 290,
+    "name": "beta-esacloroesano",
+    "url": "https://www.q-cumber.org/api/v1/indicators/235/"
+  },
+  {
+    "_partial": true,
+    "cod": 291,
+    "name": "gamma-esacloroesano",
+    "url": "https://www.q-cumber.org/api/v1/indicators/236/"
+  },
+  {
+    "_partial": true,
+    "cod": 292,
+    "name": "electrical conductivity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/237/"
+  },
+  {
+    "_partial": true,
+    "cod": 293,
+    "name": "Oxidizability of Kubel",
+    "url": "https://www.q-cumber.org/api/v1/indicators/238/"
+  },
+  {
+    "_partial": true,
+    "cod": 295,
+    "name": "organohalogen compounds",
+    "url": "https://www.q-cumber.org/api/v1/indicators/240/"
+  },
+  {
+    "_partial": true,
+    "cod": 296,
+    "name": "atrazine desethyl",
+    "url": "https://www.q-cumber.org/api/v1/indicators/241/"
+  },
+  {
+    "_partial": true,
+    "cod": 297,
+    "name": "Chlorinated pesticides organ",
+    "url": "https://www.q-cumber.org/api/v1/indicators/242/"
+  },
+  {
+    "_partial": true,
+    "cod": 298,
+    "name": "dissolved oxygen",
+    "url": "https://www.q-cumber.org/api/v1/indicators/243/"
+  },
+  {
+    "_partial": true,
+    "cod": 299,
+    "name": "Total suspended particulate",
+    "url": "https://www.q-cumber.org/api/v1/indicators/244/"
+  },
+  {
+    "_partial": true,
+    "cod": 300,
+    "name": "Piezometric static level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/245/"
+  },
+  {
+    "_partial": true,
+    "cod": 301,
+    "name": "Piezometric dynamic level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/246/"
+  },
+  {
+    "_partial": true,
+    "cod": 302,
+    "name": "flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/247/"
+  },
+  {
+    "_partial": true,
+    "cod": 303,
+    "name": "Groundwater chemical status",
+    "url": "https://www.q-cumber.org/api/v1/indicators/248/"
+  },
+  {
+    "_partial": true,
+    "cod": 304,
+    "name": "total hardness",
+    "url": "https://www.q-cumber.org/api/v1/indicators/249/"
+  },
+  {
+    "_partial": true,
+    "cod": 305,
+    "name": "nitrates",
+    "url": "https://www.q-cumber.org/api/v1/indicators/250/"
+  },
+  {
+    "_partial": true,
+    "cod": 306,
+    "name": "Turbidity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/251/"
+  },
+  {
+    "_partial": true,
+    "cod": 307,
+    "name": "NH3",
+    "url": "https://www.q-cumber.org/api/v1/indicators/252/"
+  },
+  {
+    "_partial": true,
+    "cod": 308,
+    "name": "CH4",
+    "url": "https://www.q-cumber.org/api/v1/indicators/253/"
+  },
+  {
+    "_partial": true,
+    "cod": 309,
+    "name": "Global heat flux",
+    "url": "https://www.q-cumber.org/api/v1/indicators/254/"
+  },
+  {
+    "_partial": true,
+    "cod": 310,
+    "name": "Alfa",
+    "url": "https://www.q-cumber.org/api/v1/indicators/291/"
+  },
+  {
+    "_partial": true,
+    "cod": 311,
+    "name": "Beta",
+    "url": "https://www.q-cumber.org/api/v1/indicators/292/"
+  },
+  {
+    "_partial": true,
+    "cod": 312,
+    "name": "Gamma",
+    "url": "https://www.q-cumber.org/api/v1/indicators/293/"
+  },
+  {
+    "_partial": true,
+    "cod": 313,
+    "name": "Crisotilo",
+    "url": "https://www.q-cumber.org/api/v1/indicators/294/"
+  },
+  {
+    "_partial": true,
+    "cod": 314,
+    "name": "Crocidolite",
+    "url": "https://www.q-cumber.org/api/v1/indicators/295/"
+  },
+  {
+    "_partial": true,
+    "cod": 315,
+    "name": "Tremolite",
+    "url": "https://www.q-cumber.org/api/v1/indicators/296/"
+  },
+  {
+    "_partial": true,
+    "cod": 316,
+    "name": "Fibre totali amianto",
+    "url": "https://www.q-cumber.org/api/v1/indicators/297/"
+  },
+  {
+    "_partial": true,
+    "cod": 317,
+    "name": "Fibre amianto aerodisperse",
+    "url": "https://www.q-cumber.org/api/v1/indicators/298/"
+  },
+  {
+    "_partial": true,
+    "cod": 318,
+    "name": "Alifatici clorurati cancerogeni",
+    "url": "https://www.q-cumber.org/api/v1/indicators/299/"
+  },
+  {
+    "_partial": true,
+    "cod": 401,
+    "name": "CER040106",
+    "url": "https://www.q-cumber.org/api/v1/indicators/255/"
+  },
+  {
+    "_partial": true,
+    "cod": 402,
+    "name": "CER040220",
+    "url": "https://www.q-cumber.org/api/v1/indicators/256/"
+  },
+  {
+    "_partial": true,
+    "cod": 403,
+    "name": "CER060503",
+    "url": "https://www.q-cumber.org/api/v1/indicators/257/"
+  },
+  {
+    "_partial": true,
+    "cod": 404,
+    "name": "CER060603",
+    "url": "https://www.q-cumber.org/api/v1/indicators/258/"
+  },
+  {
+    "_partial": true,
+    "cod": 405,
+    "name": "CER070112",
+    "url": "https://www.q-cumber.org/api/v1/indicators/259/"
+  },
+  {
+    "_partial": true,
+    "cod": 406,
+    "name": "CER070212",
+    "url": "https://www.q-cumber.org/api/v1/indicators/260/"
+  },
+  {
+    "_partial": true,
+    "cod": 407,
+    "name": "CER070213",
+    "url": "https://www.q-cumber.org/api/v1/indicators/261/"
+  },
+  {
+    "_partial": true,
+    "cod": 408,
+    "name": "CER070312",
+    "url": "https://www.q-cumber.org/api/v1/indicators/262/"
+  },
+  {
+    "_partial": true,
+    "cod": 409,
+    "name": "CER070612",
+    "url": "https://www.q-cumber.org/api/v1/indicators/263/"
+  },
+  {
+    "_partial": true,
+    "cod": 410,
+    "name": "CER070712",
+    "url": "https://www.q-cumber.org/api/v1/indicators/264/"
+  },
+  {
+    "_partial": true,
+    "cod": 411,
+    "name": "CER080118",
+    "url": "https://www.q-cumber.org/api/v1/indicators/265/"
+  },
+  {
+    "_partial": true,
+    "cod": 412,
+    "name": "CER080410",
+    "url": "https://www.q-cumber.org/api/v1/indicators/266/"
+  },
+  {
+    "_partial": true,
+    "cod": 413,
+    "name": "CER080412",
+    "url": "https://www.q-cumber.org/api/v1/indicators/267/"
+  },
+  {
+    "_partial": true,
+    "cod": 414,
+    "name": "CER080414",
+    "url": "https://www.q-cumber.org/api/v1/indicators/268/"
+  },
+  {
+    "_partial": true,
+    "cod": 415,
+    "name": "CER100908",
+    "url": "https://www.q-cumber.org/api/v1/indicators/269/"
+  },
+  {
+    "_partial": true,
+    "cod": 416,
+    "name": "CER101008",
+    "url": "https://www.q-cumber.org/api/v1/indicators/270/"
+  },
+  {
+    "_partial": true,
+    "cod": 417,
+    "name": "CER110110",
+    "url": "https://www.q-cumber.org/api/v1/indicators/271/"
+  },
+  {
+    "_partial": true,
+    "cod": 418,
+    "name": "CER120105",
+    "url": "https://www.q-cumber.org/api/v1/indicators/272/"
+  },
+  {
+    "_partial": true,
+    "cod": 419,
+    "name": "CER120115",
+    "url": "https://www.q-cumber.org/api/v1/indicators/273/"
+  },
+  {
+    "_partial": true,
+    "cod": 420,
+    "name": "CER150203",
+    "url": "https://www.q-cumber.org/api/v1/indicators/274/"
+  },
+  {
+    "_partial": true,
+    "cod": 421,
+    "name": "CER160304",
+    "url": "https://www.q-cumber.org/api/v1/indicators/275/"
+  },
+  {
+    "_partial": true,
+    "cod": 422,
+    "name": "CER160306",
+    "url": "https://www.q-cumber.org/api/v1/indicators/276/"
+  },
+  {
+    "_partial": true,
+    "cod": 423,
+    "name": "CER170504",
+    "url": "https://www.q-cumber.org/api/v1/indicators/277/"
+  },
+  {
+    "_partial": true,
+    "cod": 424,
+    "name": "CER170604",
+    "url": "https://www.q-cumber.org/api/v1/indicators/278/"
+  },
+  {
+    "_partial": true,
+    "cod": 425,
+    "name": "CER190203",
+    "url": "https://www.q-cumber.org/api/v1/indicators/279/"
+  },
+  {
+    "_partial": true,
+    "cod": 426,
+    "name": "CER190206",
+    "url": "https://www.q-cumber.org/api/v1/indicators/280/"
+  },
+  {
+    "_partial": true,
+    "cod": 427,
+    "name": "CER190305",
+    "url": "https://www.q-cumber.org/api/v1/indicators/281/"
+  },
+  {
+    "_partial": true,
+    "cod": 428,
+    "name": "CER190501",
+    "url": "https://www.q-cumber.org/api/v1/indicators/282/"
+  },
+  {
+    "_partial": true,
+    "cod": 429,
+    "name": "CER190801",
+    "url": "https://www.q-cumber.org/api/v1/indicators/283/"
+  },
+  {
+    "_partial": true,
+    "cod": 430,
+    "name": "CER190802",
+    "url": "https://www.q-cumber.org/api/v1/indicators/284/"
+  },
+  {
+    "_partial": true,
+    "cod": 431,
+    "name": "CER190805",
+    "url": "https://www.q-cumber.org/api/v1/indicators/285/"
+  },
+  {
+    "_partial": true,
+    "cod": 432,
+    "name": "CER190812",
+    "url": "https://www.q-cumber.org/api/v1/indicators/286/"
+  },
+  {
+    "_partial": true,
+    "cod": 433,
+    "name": "CER190814",
+    "url": "https://www.q-cumber.org/api/v1/indicators/287/"
+  },
+  {
+    "_partial": true,
+    "cod": 434,
+    "name": "CER191106",
+    "url": "https://www.q-cumber.org/api/v1/indicators/288/"
+  },
+  {
+    "_partial": true,
+    "cod": 435,
+    "name": "CER191205",
+    "url": "https://www.q-cumber.org/api/v1/indicators/289/"
+  },
+  {
+    "_partial": true,
+    "cod": 436,
+    "name": "CER191212",
+    "url": "https://www.q-cumber.org/api/v1/indicators/290/"
+  },
+  {
+    "_partial": true,
+    "cod": 437,
+    "name": "PTS",
+    "url": "https://www.q-cumber.org/api/v1/indicators/336/"
+  },
+  {
+    "_partial": true,
+    "cod": 438,
+    "name": "TCDD",
+    "url": "https://www.q-cumber.org/api/v1/indicators/337/"
+  },
+  {
+    "_partial": true,
+    "cod": 439,
+    "name": "ODOUR",
+    "url": "https://www.q-cumber.org/api/v1/indicators/338/"
+  },
+  {
+    "_partial": true,
+    "cod": 440,
+    "name": "cov",
+    "url": "https://www.q-cumber.org/api/v1/indicators/339/"
+  },
+  {
+    "_partial": true,
+    "cod": 441,
+    "name": "SST",
+    "url": "https://www.q-cumber.org/api/v1/indicators/340/"
+  },
+  {
+    "_partial": true,
+    "cod": 442,
+    "name": "N",
+    "url": "https://www.q-cumber.org/api/v1/indicators/341/"
+  },
+  {
+    "_partial": true,
+    "cod": 443,
+    "name": "water",
+    "url": "https://www.q-cumber.org/api/v1/indicators/342/"
+  },
+  {
+    "_partial": true,
+    "cod": 444,
+    "name": "N2O",
+    "url": "https://www.q-cumber.org/api/v1/indicators/344/"
+  },
+  {
+    "_partial": true,
+    "cod": 445,
+    "name": "SOX",
+    "url": "https://www.q-cumber.org/api/v1/indicators/345/"
+  },
+  {
+    "_partial": true,
+    "cod": 446,
+    "name": "Silice libera cristallina",
+    "url": "https://www.q-cumber.org/api/v1/indicators/346/"
+  },
+  {
+    "_partial": true,
+    "cod": 447,
+    "name": "IPA",
+    "url": "https://www.q-cumber.org/api/v1/indicators/347/"
+  },
+  {
+    "_partial": true,
+    "cod": 448,
+    "name": "Cyanide",
+    "url": "https://www.q-cumber.org/api/v1/indicators/409/"
+  },
+  {
+    "_partial": true,
+    "cod": 449,
+    "name": "Free Chlorine",
+    "url": "https://www.q-cumber.org/api/v1/indicators/410/"
+  },
+  {
+    "_partial": true,
+    "cod": 450,
+    "name": "H2S",
+    "url": "https://www.q-cumber.org/api/v1/indicators/412/"
+  },
+  {
+    "_partial": true,
+    "cod": 451,
+    "name": "Oil Mist",
+    "url": "https://www.q-cumber.org/api/v1/indicators/424/"
+  },
+  {
+    "_partial": true,
+    "cod": 452,
+    "name": "HCl",
+    "url": "https://www.q-cumber.org/api/v1/indicators/425/"
+  },
+  {
+    "_partial": true,
+    "cod": 453,
+    "name": "PCDD+PCDF",
+    "url": "https://www.q-cumber.org/api/v1/indicators/426/"
+  },
+  {
+    "_partial": true,
+    "cod": 454,
+    "name": "Sum of Pb, Cu, Cr, Mn, V, sn",
+    "url": "https://www.q-cumber.org/api/v1/indicators/427/"
+  },
+  {
+    "_partial": true,
+    "cod": 455,
+    "name": "Sum of CrVI, Ni, Co, As",
+    "url": "https://www.q-cumber.org/api/v1/indicators/428/"
+  },
+  {
+    "_partial": true,
+    "cod": 456,
+    "name": "HF",
+    "url": "https://www.q-cumber.org/api/v1/indicators/434/"
+  },
+  {
+    "_partial": true,
+    "cod": 457,
+    "name": "Generic",
+    "url": "https://www.q-cumber.org/api/v1/indicators/447/"
+  },
+  {
+    "_partial": true,
+    "cod": 458,
+    "name": "Volatile inorganic compounds",
+    "url": "https://www.q-cumber.org/api/v1/indicators/458/"
+  },
+  {
+    "_partial": true,
+    "cod": 459,
+    "name": "Formaldehyde",
+    "url": "https://www.q-cumber.org/api/v1/indicators/459/"
+  },
+  {
+    "_partial": true,
+    "cod": 460,
+    "name": "O3",
+    "url": "https://www.q-cumber.org/api/v1/indicators/475/"
+  },
+  {
+    "_partial": true,
+    "cod": 461,
+    "name": "Butadiene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/476/"
+  },
+  {
+    "_partial": true,
+    "cod": 462,
+    "name": "NO",
+    "url": "https://www.q-cumber.org/api/v1/indicators/477/"
+  },
+  {
+    "_partial": true,
+    "cod": 463,
+    "name": "Thermal energy",
+    "url": "https://www.q-cumber.org/api/v1/indicators/478/"
+  },
+  {
+    "_partial": true,
+    "cod": 464,
+    "name": "Heavy duty vehicles >3,5t flow - lane 1",
+    "url": "https://www.q-cumber.org/api/v1/indicators/479/"
+  },
+  {
+    "_partial": true,
+    "cod": 465,
+    "name": "Heavy duty vehicles >3,5t flow - lane 2",
+    "url": "https://www.q-cumber.org/api/v1/indicators/480/"
+  },
+  {
+    "_partial": true,
+    "cod": 466,
+    "name": "CO2lorda",
+    "url": "https://www.q-cumber.org/api/v1/indicators/499/"
+  },
+  {
+    "_partial": true,
+    "cod": 467,
+    "name": "NMVOC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/513/"
+  },
+  {
+    "_partial": true,
+    "cod": 468,
+    "name": "Emissioni acustiche",
+    "url": "https://www.q-cumber.org/api/v1/indicators/514/"
+  },
+  {
+    "_partial": true,
+    "cod": 469,
+    "name": "Immissioni acustiche",
+    "url": "https://www.q-cumber.org/api/v1/indicators/515/"
+  },
+  {
+    "_partial": true,
+    "cod": 470,
+    "name": "CER100299",
+    "url": "https://www.q-cumber.org/api/v1/indicators/516/"
+  },
+  {
+    "_partial": true,
+    "cod": 471,
+    "name": "CER150104",
+    "url": "https://www.q-cumber.org/api/v1/indicators/517/"
+  },
+  {
+    "_partial": true,
+    "cod": 472,
+    "name": "CER160106",
+    "url": "https://www.q-cumber.org/api/v1/indicators/518/"
+  },
+  {
+    "_partial": true,
+    "cod": 473,
+    "name": "CER160117",
+    "url": "https://www.q-cumber.org/api/v1/indicators/519/"
+  },
+  {
+    "_partial": true,
+    "cod": 474,
+    "name": "CER160118",
+    "url": "https://www.q-cumber.org/api/v1/indicators/520/"
+  },
+  {
+    "_partial": true,
+    "cod": 475,
+    "name": "CER160122",
+    "url": "https://www.q-cumber.org/api/v1/indicators/521/"
+  },
+  {
+    "_partial": true,
+    "cod": 476,
+    "name": "CER160214",
+    "url": "https://www.q-cumber.org/api/v1/indicators/522/"
+  },
+  {
+    "_partial": true,
+    "cod": 477,
+    "name": "CER160216",
+    "url": "https://www.q-cumber.org/api/v1/indicators/523/"
+  },
+  {
+    "_partial": true,
+    "cod": 478,
+    "name": "CER170402",
+    "url": "https://www.q-cumber.org/api/v1/indicators/524/"
+  },
+  {
+    "_partial": true,
+    "cod": 479,
+    "name": "CER170404",
+    "url": "https://www.q-cumber.org/api/v1/indicators/525/"
+  },
+  {
+    "_partial": true,
+    "cod": 480,
+    "name": "CER170405",
+    "url": "https://www.q-cumber.org/api/v1/indicators/526/"
+  },
+  {
+    "_partial": true,
+    "cod": 481,
+    "name": "CER170407",
+    "url": "https://www.q-cumber.org/api/v1/indicators/527/"
+  },
+  {
+    "_partial": true,
+    "cod": 482,
+    "name": "CER190102",
+    "url": "https://www.q-cumber.org/api/v1/indicators/528/"
+  },
+  {
+    "_partial": true,
+    "cod": 483,
+    "name": "CER190112",
+    "url": "https://www.q-cumber.org/api/v1/indicators/529/"
+  },
+  {
+    "_partial": true,
+    "cod": 484,
+    "name": "CER191001",
+    "url": "https://www.q-cumber.org/api/v1/indicators/530/"
+  },
+  {
+    "_partial": true,
+    "cod": 485,
+    "name": "CER191002",
+    "url": "https://www.q-cumber.org/api/v1/indicators/531/"
+  },
+  {
+    "_partial": true,
+    "cod": 486,
+    "name": "CER191004",
+    "url": "https://www.q-cumber.org/api/v1/indicators/532/"
+  },
+  {
+    "_partial": true,
+    "cod": 487,
+    "name": "CER191006",
+    "url": "https://www.q-cumber.org/api/v1/indicators/533/"
+  },
+  {
+    "_partial": true,
+    "cod": 488,
+    "name": "CER191202",
+    "url": "https://www.q-cumber.org/api/v1/indicators/534/"
+  },
+  {
+    "_partial": true,
+    "cod": 489,
+    "name": "CER191203",
+    "url": "https://www.q-cumber.org/api/v1/indicators/535/"
+  },
+  {
+    "_partial": true,
+    "cod": 490,
+    "name": "CER200140",
+    "url": "https://www.q-cumber.org/api/v1/indicators/536/"
+  },
+  {
+    "_partial": true,
+    "cod": 491,
+    "name": "Gas naturale",
+    "url": "https://www.q-cumber.org/api/v1/indicators/537/"
+  },
+  {
+    "_partial": true,
+    "cod": 492,
+    "name": "Freon 141 B",
+    "url": "https://www.q-cumber.org/api/v1/indicators/538/"
+  },
+  {
+    "_partial": true,
+    "cod": 493,
+    "name": "Gasolio",
+    "url": "https://www.q-cumber.org/api/v1/indicators/539/"
+  },
+  {
+    "_partial": true,
+    "cod": 494,
+    "name": "Enterococchi Intestinali",
+    "url": "https://www.q-cumber.org/api/v1/indicators/540/"
+  },
+  {
+    "_partial": true,
+    "cod": 495,
+    "name": "Coliformi totali",
+    "url": "https://www.q-cumber.org/api/v1/indicators/541/"
+  },
+  {
+    "_partial": true,
+    "cod": 496,
+    "name": "Solar radiation",
+    "url": "https://www.q-cumber.org/api/v1/indicators/542/"
+  },
+  {
+    "_partial": true,
+    "cod": 497,
+    "name": "CH3COOH",
+    "url": "https://www.q-cumber.org/api/v1/indicators/543/"
+  },
+  {
+    "_partial": true,
+    "cod": 498,
+    "name": "Total particle counting",
+    "url": "https://www.q-cumber.org/api/v1/indicators/544/"
+  },
+  {
+    "_partial": true,
+    "cod": 499,
+    "name": "m,p-xylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/545/"
+  },
+  {
+    "_partial": true,
+    "cod": 500,
+    "name": "PM1",
+    "url": "https://www.q-cumber.org/api/v1/indicators/546/"
+  },
+  {
+    "_partial": true,
+    "cod": 501,
+    "name": "Housing temperature",
+    "url": "https://www.q-cumber.org/api/v1/indicators/547/"
+  },
+  {
+    "_partial": true,
+    "cod": 502,
+    "name": "PM10 daily average",
+    "url": "https://www.q-cumber.org/api/v1/indicators/548/"
+  },
+  {
+    "_partial": true,
+    "cod": 503,
+    "name": "o-xylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/549/"
+  },
+  {
+    "_partial": true,
+    "cod": 504,
+    "name": "PM2.5 daily average",
+    "url": "https://www.q-cumber.org/api/v1/indicators/550/"
+  },
+  {
+    "_partial": true,
+    "cod": 505,
+    "name": "NMHC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/551/"
+  },
+  {
+    "_partial": true,
+    "cod": 506,
+    "name": "THC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/552/"
+  },
+  {
+    "_partial": true,
+    "cod": 507,
+    "name": "Radon",
+    "url": "https://www.q-cumber.org/api/v1/indicators/553/"
+  },
+  {
+    "_partial": true,
+    "cod": 508,
+    "name": "Net solar radiation",
+    "url": "https://www.q-cumber.org/api/v1/indicators/554/"
+  },
+  {
+    "_partial": true,
+    "cod": 509,
+    "name": "Wind pitch",
+    "url": "https://www.q-cumber.org/api/v1/indicators/555/"
+  },
+  {
+    "_partial": true,
+    "cod": 510,
+    "name": "Speed of sound",
+    "url": "https://www.q-cumber.org/api/v1/indicators/556/"
+  },
+  {
+    "_partial": true,
+    "cod": 511,
+    "name": "Sonic temperature",
+    "url": "https://www.q-cumber.org/api/v1/indicators/557/"
+  },
+  {
+    "_partial": true,
+    "cod": 512,
+    "name": "Methyl mercaptan",
+    "url": "https://www.q-cumber.org/api/v1/indicators/558/"
+  },
+  {
+    "_partial": true,
+    "cod": 513,
+    "name": "Ethyl mercaptan",
+    "url": "https://www.q-cumber.org/api/v1/indicators/559/"
+  },
+  {
+    "_partial": true,
+    "cod": 514,
+    "name": "Dimethyl sulfide",
+    "url": "https://www.q-cumber.org/api/v1/indicators/560/"
+  },
+  {
+    "_partial": true,
+    "cod": 515,
+    "name": "Isopropyl mercaptan",
+    "url": "https://www.q-cumber.org/api/v1/indicators/561/"
+  },
+  {
+    "_partial": true,
+    "cod": 516,
+    "name": "Equivalent sound level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/562/"
+  },
+  {
+    "_partial": true,
+    "cod": 517,
+    "name": "Weather-adjusted equivalent sound level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/563/"
+  },
+  {
+    "_partial": true,
+    "cod": 518,
+    "name": "Am241",
+    "url": "https://www.q-cumber.org/api/v1/indicators/564/"
+  },
+  {
+    "_partial": true,
+    "cod": 519,
+    "name": "Be7",
+    "url": "https://www.q-cumber.org/api/v1/indicators/565/"
+  },
+  {
+    "_partial": true,
+    "cod": 520,
+    "name": "Co60",
+    "url": "https://www.q-cumber.org/api/v1/indicators/566/"
+  },
+  {
+    "_partial": true,
+    "cod": 521,
+    "name": "Cs134",
+    "url": "https://www.q-cumber.org/api/v1/indicators/567/"
+  },
+  {
+    "_partial": true,
+    "cod": 522,
+    "name": "Cs137",
+    "url": "https://www.q-cumber.org/api/v1/indicators/568/"
+  },
+  {
+    "_partial": true,
+    "cod": 523,
+    "name": "I131",
+    "url": "https://www.q-cumber.org/api/v1/indicators/569/"
+  },
+  {
+    "_partial": true,
+    "cod": 524,
+    "name": "Kr85",
+    "url": "https://www.q-cumber.org/api/v1/indicators/570/"
+  },
+  {
+    "_partial": true,
+    "cod": 525,
+    "name": "Gamma dose rate in air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/571/"
+  },
+  {
+    "_partial": true,
+    "cod": 526,
+    "name": "Number of cases",
+    "url": "https://www.q-cumber.org/api/v1/indicators/572/"
+  },
+  {
+    "_partial": true,
+    "cod": 527,
+    "name": "Number of items",
+    "url": "https://www.q-cumber.org/api/v1/indicators/573/"
+  },
+  {
+    "_partial": true,
+    "cod": 528,
+    "name": "Risk",
+    "url": "https://www.q-cumber.org/api/v1/indicators/574/"
+  },
+  {
+    "_partial": true,
+    "cod": 529,
+    "name": "Battery Voltage",
+    "url": "https://www.q-cumber.org/api/v1/indicators/575/"
+  },
+  {
+    "_partial": true,
+    "cod": 530,
+    "name": "HNO3",
+    "url": "https://www.q-cumber.org/api/v1/indicators/576/"
+  },
+  {
+    "_partial": true,
+    "cod": 531,
+    "name": "Ethylbenzene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/577/"
+  },
+  {
+    "_partial": true,
+    "cod": 532,
+    "name": "m-xylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/578/"
+  },
+  {
+    "_partial": true,
+    "cod": 533,
+    "name": "H2SO4",
+    "url": "https://www.q-cumber.org/api/v1/indicators/608/"
+  },
+  {
+    "_partial": true,
+    "cod": 534,
+    "name": "H3PO4",
+    "url": "https://www.q-cumber.org/api/v1/indicators/609/"
+  },
+  {
+    "_partial": true,
+    "cod": 535,
+    "name": "Polyvinyl alcohol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/610/"
+  },
+  {
+    "_partial": true,
+    "cod": 536,
+    "name": "Trichlorethylene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/611/"
+  },
+  {
+    "_partial": true,
+    "cod": 537,
+    "name": "Dimethylformamide",
+    "url": "https://www.q-cumber.org/api/v1/indicators/612/"
+  },
+  {
+    "_partial": true,
+    "cod": 538,
+    "name": "Tellurium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/613/"
+  },
+  {
+    "_partial": true,
+    "cod": 539,
+    "name": "Copernicium",
+    "url": "https://www.q-cumber.org/api/v1/indicators/614/"
+  },
+  {
+    "_partial": true,
+    "cod": 540,
+    "name": "Inorganic Acid",
+    "url": "https://www.q-cumber.org/api/v1/indicators/615/"
+  },
+  {
+    "_partial": true,
+    "cod": 541,
+    "name": "Basic Substances",
+    "url": "https://www.q-cumber.org/api/v1/indicators/616/"
+  },
+  {
+    "_partial": true,
+    "cod": 542,
+    "name": "Sum of Pb, Zn, Fe",
+    "url": "https://www.q-cumber.org/api/v1/indicators/617/"
+  },
+  {
+    "_partial": true,
+    "cod": 543,
+    "name": "Amines",
+    "url": "https://www.q-cumber.org/api/v1/indicators/618/"
+  },
+  {
+    "_partial": true,
+    "cod": 544,
+    "name": "Consumed soil",
+    "url": "https://www.q-cumber.org/api/v1/indicators/619/"
+  },
+  {
+    "_partial": true,
+    "cod": 545,
+    "name": "O3 daily average",
+    "url": "https://www.q-cumber.org/api/v1/indicators/620/"
+  },
+  {
+    "_partial": true,
+    "cod": 546,
+    "name": "NO2 daily average",
+    "url": "https://www.q-cumber.org/api/v1/indicators/621/"
+  },
+  {
+    "_partial": true,
+    "cod": 547,
+    "name": "LPG",
+    "url": "https://www.q-cumber.org/api/v1/indicators/622/"
+  },
+  {
+    "_partial": true,
+    "cod": 548,
+    "name": "LNG",
+    "url": "https://www.q-cumber.org/api/v1/indicators/623/"
+  },
+  {
+    "_partial": true,
+    "cod": 549,
+    "name": "Butane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/630/"
+  },
+  {
+    "_partial": true,
+    "cod": 550,
+    "name": "Limonene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/629/"
+  },
+  {
+    "_partial": true,
+    "cod": 551,
+    "name": "Power supply voltage",
+    "url": "https://www.q-cumber.org/api/v1/indicators/631/"
+  },
+  {
+    "_partial": true,
+    "cod": 552,
+    "name": "Reciprocal of Monin-Obukhov length",
+    "url": "https://www.q-cumber.org/api/v1/indicators/632/"
+  },
+  {
+    "_partial": true,
+    "cod": 553,
+    "name": "Dioxins and Furans",
+    "url": "https://www.q-cumber.org/api/v1/indicators/633/"
+  },
+  {
+    "_partial": true,
+    "cod": 554,
+    "name": "M-cresol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/634/"
+  },
+  {
+    "_partial": true,
+    "cod": 555,
+    "name": "P-cresol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/635/"
+  },
+  {
+    "_partial": true,
+    "cod": 556,
+    "name": "O-cresol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/636/"
+  },
+  {
+    "_partial": true,
+    "cod": 557,
+    "name": "2,4-Dimethylphenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/637/"
+  },
+  {
+    "_partial": true,
+    "cod": 558,
+    "name": "4-Chlorophenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/638/"
+  },
+  {
+    "_partial": true,
+    "cod": 559,
+    "name": "4-Chloro-3-methylphenol",
+    "url": "https://www.q-cumber.org/api/v1/indicators/639/"
+  },
+  {
+    "_partial": true,
+    "cod": 560,
+    "name": "Indeno (1,2,3-c,d) pyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/640/"
+  },
+  {
+    "_partial": true,
+    "cod": 561,
+    "name": "Sum of Benzo(a)fluoranthene, Benzo(k)fluoranthene, Benzo(g,h,i)perylene, Indenopyrene",
+    "url": "https://www.q-cumber.org/api/v1/indicators/641/"
+  },
+  {
+    "_partial": true,
+    "cod": 562,
+    "name": "Alkalinity (as CaCO3)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/642/"
+  },
+  {
+    "_partial": true,
+    "cod": 563,
+    "name": "1,1,2-Trichloroethane",
+    "url": "https://www.q-cumber.org/api/v1/indicators/643/"
+  },
+  {
+    "_partial": true,
+    "cod": 564,
+    "name": "CFC",
+    "url": "https://www.q-cumber.org/api/v1/indicators/644/"
+  },
+  {
+    "_partial": true,
+    "cod": 565,
+    "name": "Sum of Sb, As, Co, Cr, Mn, Ni, Pb, Cu, V",
+    "url": "https://www.q-cumber.org/api/v1/indicators/651/"
+  },
+  {
+    "_partial": true,
+    "cod": 566,
+    "name": "Sum of Tl, Cd",
+    "url": "https://www.q-cumber.org/api/v1/indicators/650/"
+  },
+  {
+    "_partial": true,
+    "cod": 567,
+    "name": "Hydrometric level",
+    "url": "https://www.q-cumber.org/api/v1/indicators/652/"
+  },
+  {
+    "_partial": true,
+    "cod": 10000,
+    "name": "Area",
+    "url": "https://www.q-cumber.org/api/v1/indicators/301/"
+  },
+  {
+    "_partial": true,
+    "cod": 10001,
+    "name": "Length",
+    "url": "https://www.q-cumber.org/api/v1/indicators/302/"
+  },
+  {
+    "_partial": true,
+    "cod": 10002,
+    "name": "",
+    "url": "https://www.q-cumber.org/api/v1/indicators/303/"
+  },
+  {
+    "_partial": true,
+    "cod": 10003,
+    "name": "Amount of processed material",
+    "url": "https://www.q-cumber.org/api/v1/indicators/304/"
+  },
+  {
+    "_partial": true,
+    "cod": 10004,
+    "name": "Volume of processed material",
+    "url": "https://www.q-cumber.org/api/v1/indicators/305/"
+  },
+  {
+    "_partial": true,
+    "cod": 10005,
+    "name": "Material Humidity",
+    "url": "https://www.q-cumber.org/api/v1/indicators/306/"
+  },
+  {
+    "_partial": true,
+    "cod": 10006,
+    "name": "Drop height",
+    "url": "https://www.q-cumber.org/api/v1/indicators/307/"
+  },
+  {
+    "_partial": true,
+    "cod": 10007,
+    "name": "Material silt content",
+    "url": "https://www.q-cumber.org/api/v1/indicators/308/"
+  },
+  {
+    "_partial": true,
+    "cod": 10008,
+    "name": "Wind Speed",
+    "url": "https://www.q-cumber.org/api/v1/indicators/309/"
+  },
+  {
+    "_partial": true,
+    "cod": 10009,
+    "name": "Average weight of the vehicle",
+    "url": "https://www.q-cumber.org/api/v1/indicators/310/"
+  },
+  {
+    "_partial": true,
+    "cod": 10010,
+    "name": "Vehicles flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/311/"
+  },
+  {
+    "_partial": true,
+    "cod": 10011,
+    "name": "Drilling frequency",
+    "url": "https://www.q-cumber.org/api/v1/indicators/312/"
+  },
+  {
+    "_partial": true,
+    "cod": 10012,
+    "name": "Movement frequency",
+    "url": "https://www.q-cumber.org/api/v1/indicators/313/"
+  },
+  {
+    "_partial": true,
+    "cod": 10013,
+    "name": "Traveled distance",
+    "url": "https://www.q-cumber.org/api/v1/indicators/314/"
+  },
+  {
+    "_partial": true,
+    "cod": 10014,
+    "name": "Number of operating vehicles",
+    "url": "https://www.q-cumber.org/api/v1/indicators/315/"
+  },
+  {
+    "_partial": true,
+    "cod": 10015,
+    "name": "Smoke flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/316/"
+  },
+  {
+    "_partial": true,
+    "cod": 10016,
+    "name": "PM10 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/317/"
+  },
+  {
+    "_partial": true,
+    "cod": 10017,
+    "name": "Diameter",
+    "url": "https://www.q-cumber.org/api/v1/indicators/318/"
+  },
+  {
+    "_partial": true,
+    "cod": 10018,
+    "name": "Gas speed",
+    "url": "https://www.q-cumber.org/api/v1/indicators/319/"
+  },
+  {
+    "_partial": true,
+    "cod": 10019,
+    "name": "Outlet temperature",
+    "url": "https://www.q-cumber.org/api/v1/indicators/320/"
+  },
+  {
+    "_partial": true,
+    "cod": 10020,
+    "name": "Height",
+    "url": "https://www.q-cumber.org/api/v1/indicators/321/"
+  },
+  {
+    "_partial": true,
+    "cod": 10021,
+    "name": "Width",
+    "url": "https://www.q-cumber.org/api/v1/indicators/322/"
+  },
+  {
+    "_partial": true,
+    "cod": 10022,
+    "name": "Odour concentration",
+    "url": "https://www.q-cumber.org/api/v1/indicators/323/"
+  },
+  {
+    "_partial": true,
+    "cod": 10023,
+    "name": "PM10 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/324/"
+  },
+  {
+    "_partial": true,
+    "cod": 10024,
+    "name": "Cars flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/325/"
+  },
+  {
+    "_partial": true,
+    "cod": 10025,
+    "name": "Light duty vehicles <3,5t flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/326/"
+  },
+  {
+    "_partial": true,
+    "cod": 10026,
+    "name": "Heavy duty vehicles >3,5t flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/327/"
+  },
+  {
+    "_partial": true,
+    "cod": 10027,
+    "name": "BOD5 concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/328/"
+  },
+  {
+    "_partial": true,
+    "cod": 10028,
+    "name": "Wastewater flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/329/"
+  },
+  {
+    "_partial": true,
+    "cod": 10029,
+    "name": "Annual heating demand of the building",
+    "url": "https://www.q-cumber.org/api/v1/indicators/330/"
+  },
+  {
+    "_partial": true,
+    "cod": 10030,
+    "name": "Population equivalent",
+    "url": "https://www.q-cumber.org/api/v1/indicators/331/"
+  },
+  {
+    "_partial": true,
+    "cod": 10031,
+    "name": "Surface processed per hour",
+    "url": "https://www.q-cumber.org/api/v1/indicators/332/"
+  },
+  {
+    "_partial": true,
+    "cod": 10032,
+    "name": "Elevation angle, measured upwards from the horizontal",
+    "url": "https://www.q-cumber.org/api/v1/indicators/333/"
+  },
+  {
+    "_partial": true,
+    "cod": 10033,
+    "name": "Horizontal direction, measured anticlockwise from a line running from west to east (90°=North)",
+    "url": "https://www.q-cumber.org/api/v1/indicators/334/"
+  },
+  {
+    "_partial": true,
+    "cod": 10034,
+    "name": "Collected flow",
+    "url": "https://www.q-cumber.org/api/v1/indicators/335/"
+  },
+  {
+    "_partial": true,
+    "cod": 10035,
+    "name": "Number of animal",
+    "url": "https://www.q-cumber.org/api/v1/indicators/343/"
+  },
+  {
+    "_partial": true,
+    "cod": 10036,
+    "name": "PM2.5 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/348/"
+  },
+  {
+    "_partial": true,
+    "cod": 10037,
+    "name": "NOx concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/349/"
+  },
+  {
+    "_partial": true,
+    "cod": 10038,
+    "name": "TCDD concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/350/"
+  },
+  {
+    "_partial": true,
+    "cod": 10039,
+    "name": "NH3 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/351/"
+  },
+  {
+    "_partial": true,
+    "cod": 10040,
+    "name": "CO2 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/352/"
+  },
+  {
+    "_partial": true,
+    "cod": 10041,
+    "name": "CO concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/353/"
+  },
+  {
+    "_partial": true,
+    "cod": 10042,
+    "name": "SO2 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/354/"
+  },
+  {
+    "_partial": true,
+    "cod": 10043,
+    "name": "PTS concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/355/"
+  },
+  {
+    "_partial": true,
+    "cod": 10044,
+    "name": "TCDD emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/356/"
+  },
+  {
+    "_partial": true,
+    "cod": 10045,
+    "name": "PM2.5 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/357/"
+  },
+  {
+    "_partial": true,
+    "cod": 10046,
+    "name": "NOx emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/358/"
+  },
+  {
+    "_partial": true,
+    "cod": 10047,
+    "name": "COD concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/359/"
+  },
+  {
+    "_partial": true,
+    "cod": 10048,
+    "name": "TSS concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/360/"
+  },
+  {
+    "_partial": true,
+    "cod": 10049,
+    "name": "Time interval between water applications",
+    "url": "https://www.q-cumber.org/api/v1/indicators/361/"
+  },
+  {
+    "_partial": true,
+    "cod": 10050,
+    "name": "Amount of water applied",
+    "url": "https://www.q-cumber.org/api/v1/indicators/362/"
+  },
+  {
+    "_partial": true,
+    "cod": 10051,
+    "name": "TOC concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/363/"
+  },
+  {
+    "_partial": true,
+    "cod": 10052,
+    "name": "VOC concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/364/"
+  },
+  {
+    "_partial": true,
+    "cod": 10053,
+    "name": "Aluminum concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/365/"
+  },
+  {
+    "_partial": true,
+    "cod": 10054,
+    "name": "Arsenic concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/366/"
+  },
+  {
+    "_partial": true,
+    "cod": 10055,
+    "name": "Barium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/367/"
+  },
+  {
+    "_partial": true,
+    "cod": 10056,
+    "name": "Boron concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/368/"
+  },
+  {
+    "_partial": true,
+    "cod": 10057,
+    "name": "Cadmium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/369/"
+  },
+  {
+    "_partial": true,
+    "cod": 10058,
+    "name": "Total Chromium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/370/"
+  },
+  {
+    "_partial": true,
+    "cod": 10059,
+    "name": "Chromium VI concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/371/"
+  },
+  {
+    "_partial": true,
+    "cod": 10060,
+    "name": "Iron concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/372/"
+  },
+  {
+    "_partial": true,
+    "cod": 10061,
+    "name": "Manganese concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/373/"
+  },
+  {
+    "_partial": true,
+    "cod": 10062,
+    "name": "Mercury concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/374/"
+  },
+  {
+    "_partial": true,
+    "cod": 10063,
+    "name": "Nickel concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/375/"
+  },
+  {
+    "_partial": true,
+    "cod": 10064,
+    "name": "Lead concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/376/"
+  },
+  {
+    "_partial": true,
+    "cod": 10065,
+    "name": "Copper concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/377/"
+  },
+  {
+    "_partial": true,
+    "cod": 10066,
+    "name": "Selenium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/378/"
+  },
+  {
+    "_partial": true,
+    "cod": 10067,
+    "name": "Tin concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/379/"
+  },
+  {
+    "_partial": true,
+    "cod": 10068,
+    "name": "Zinc concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/380/"
+  },
+  {
+    "_partial": true,
+    "cod": 10069,
+    "name": "Total cyanide concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/381/"
+  },
+  {
+    "_partial": true,
+    "cod": 10070,
+    "name": "Free chlorine concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/382/"
+  },
+  {
+    "_partial": true,
+    "cod": 10071,
+    "name": "Sulphide (as H2S) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/383/"
+  },
+  {
+    "_partial": true,
+    "cod": 10072,
+    "name": "Sulfites (as SO3) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/384/"
+  },
+  {
+    "_partial": true,
+    "cod": 10073,
+    "name": "Sulfates (as SO4) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/385/"
+  },
+  {
+    "_partial": true,
+    "cod": 10074,
+    "name": "Chlorides concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/386/"
+  },
+  {
+    "_partial": true,
+    "cod": 10075,
+    "name": "Fluorides concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/387/"
+  },
+  {
+    "_partial": true,
+    "cod": 10076,
+    "name": "Total phosphorus (as P) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/388/"
+  },
+  {
+    "_partial": true,
+    "cod": 10077,
+    "name": "Ammonia nitrogen (as NH4) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/389/"
+  },
+  {
+    "_partial": true,
+    "cod": 10078,
+    "name": "Nitrous Nitrogen (as N) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/390/"
+  },
+  {
+    "_partial": true,
+    "cod": 10079,
+    "name": "Nitric Nitrogen (as N) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/391/"
+  },
+  {
+    "_partial": true,
+    "cod": 10080,
+    "name": "Vegetal/animal oils and fats concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/392/"
+  },
+  {
+    "_partial": true,
+    "cod": 10081,
+    "name": "Total hydrocarbons concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/393/"
+  },
+  {
+    "_partial": true,
+    "cod": 10082,
+    "name": "Phenols concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/394/"
+  },
+  {
+    "_partial": true,
+    "cod": 10083,
+    "name": "Aldehydes concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/395/"
+  },
+  {
+    "_partial": true,
+    "cod": 10084,
+    "name": "Aromatic organic solvents concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/396/"
+  },
+  {
+    "_partial": true,
+    "cod": 10085,
+    "name": "Nitrogenous organic solvents concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/397/"
+  },
+  {
+    "_partial": true,
+    "cod": 10086,
+    "name": "Surfactants concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/398/"
+  },
+  {
+    "_partial": true,
+    "cod": 10087,
+    "name": "Phosphorus pesticides concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/399/"
+  },
+  {
+    "_partial": true,
+    "cod": 10088,
+    "name": "Total pesticides (except phosphorus) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/400/"
+  },
+  {
+    "_partial": true,
+    "cod": 10089,
+    "name": "Aldrin concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/401/"
+  },
+  {
+    "_partial": true,
+    "cod": 10090,
+    "name": "Dieldrin concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/402/"
+  },
+  {
+    "_partial": true,
+    "cod": 10091,
+    "name": "Endrin concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/403/"
+  },
+  {
+    "_partial": true,
+    "cod": 10092,
+    "name": "Isodrin concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/404/"
+  },
+  {
+    "_partial": true,
+    "cod": 10093,
+    "name": "Chlorinated solvents concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/405/"
+  },
+  {
+    "_partial": true,
+    "cod": 10094,
+    "name": "Total nitrogen concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/406/"
+  },
+  {
+    "_partial": true,
+    "cod": 10095,
+    "name": "Beryllium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/407/"
+  },
+  {
+    "_partial": true,
+    "cod": 10096,
+    "name": "Vanadium concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/408/"
+  },
+  {
+    "_partial": true,
+    "cod": 10097,
+    "name": "H2S concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/411/"
+  },
+  {
+    "_partial": true,
+    "cod": 10098,
+    "name": "Oil Mist concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/413/"
+  },
+  {
+    "_partial": true,
+    "cod": 10099,
+    "name": "Engine nominal power",
+    "url": "https://www.q-cumber.org/api/v1/indicators/414/"
+  },
+  {
+    "_partial": true,
+    "cod": 10100,
+    "name": "Engine load factor",
+    "url": "https://www.q-cumber.org/api/v1/indicators/415/"
+  },
+  {
+    "_partial": true,
+    "cod": 10101,
+    "name": "IPA concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/416/"
+  },
+  {
+    "_partial": true,
+    "cod": 10102,
+    "name": "PCB concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/417/"
+  },
+  {
+    "_partial": true,
+    "cod": 10103,
+    "name": "HCl concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/418/"
+  },
+  {
+    "_partial": true,
+    "cod": 10104,
+    "name": "PCDD+PCDF concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/419/"
+  },
+  {
+    "_partial": true,
+    "cod": 10105,
+    "name": "Cadmium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/420/"
+  },
+  {
+    "_partial": true,
+    "cod": 10106,
+    "name": "Mercury concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/421/"
+  },
+  {
+    "_partial": true,
+    "cod": 10107,
+    "name": "Sum of Pb, Cu, Cr, Mn, V, Sn concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/422/"
+  },
+  {
+    "_partial": true,
+    "cod": 10108,
+    "name": "Sum of CrVI, Ni, Co, As concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/423/"
+  },
+  {
+    "_partial": true,
+    "cod": 10109,
+    "name": "Index manufacturability land",
+    "url": "https://www.q-cumber.org/api/v1/indicators/429/"
+  },
+  {
+    "_partial": true,
+    "cod": 10110,
+    "name": "Number of floors",
+    "url": "https://www.q-cumber.org/api/v1/indicators/430/"
+  },
+  {
+    "_partial": true,
+    "cod": 10111,
+    "name": "Building height",
+    "url": "https://www.q-cumber.org/api/v1/indicators/431/"
+  },
+  {
+    "_partial": true,
+    "cod": 10112,
+    "name": "Free crystalline silica concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/432/"
+  },
+  {
+    "_partial": true,
+    "cod": 10113,
+    "name": "HF concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/433/"
+  },
+  {
+    "_partial": true,
+    "cod": 10114,
+    "name": "NH3 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/435/"
+  },
+  {
+    "_partial": true,
+    "cod": 10115,
+    "name": "CH4 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/436/"
+  },
+  {
+    "_partial": true,
+    "cod": 10116,
+    "name": "N20 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/437/"
+  },
+  {
+    "_partial": true,
+    "cod": 10117,
+    "name": "Odor emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/438/"
+  },
+  {
+    "_partial": true,
+    "cod": 10118,
+    "name": " Floor space ratio",
+    "url": "https://www.q-cumber.org/api/v1/indicators/439/"
+  },
+  {
+    "_partial": true,
+    "cod": 10119,
+    "name": "Non hazardous waste amount - Project data",
+    "url": "https://www.q-cumber.org/api/v1/indicators/440/"
+  },
+  {
+    "_partial": true,
+    "cod": 10120,
+    "name": "Hazardous waste amount - Project data",
+    "url": "https://www.q-cumber.org/api/v1/indicators/441/"
+  },
+  {
+    "_partial": true,
+    "cod": 10121,
+    "name": "Non hazardous waste storage volume - Project data",
+    "url": "https://www.q-cumber.org/api/v1/indicators/442/"
+  },
+  {
+    "_partial": true,
+    "cod": 10122,
+    "name": "Hazardous waste storage volume - Project data",
+    "url": "https://www.q-cumber.org/api/v1/indicators/443/"
+  },
+  {
+    "_partial": true,
+    "cod": 10123,
+    "name": "Authorized waste amount",
+    "url": "https://www.q-cumber.org/api/v1/indicators/444/"
+  },
+  {
+    "_partial": true,
+    "cod": 10124,
+    "name": "Authorized waste storage volume",
+    "url": "https://www.q-cumber.org/api/v1/indicators/445/"
+  },
+  {
+    "_partial": true,
+    "cod": 10125,
+    "name": "Wrecker area",
+    "url": "https://www.q-cumber.org/api/v1/indicators/446/"
+  },
+  {
+    "_partial": true,
+    "cod": 10126,
+    "name": "Cyanide concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/448/"
+  },
+  {
+    "_partial": true,
+    "cod": 10127,
+    "name": " Co concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/449/"
+  },
+  {
+    "_partial": true,
+    "cod": 10128,
+    "name": "Ni concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/450/"
+  },
+  {
+    "_partial": true,
+    "cod": 10129,
+    "name": "Pb concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/451/"
+  },
+  {
+    "_partial": true,
+    "cod": 10130,
+    "name": " CrVI concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/452/"
+  },
+  {
+    "_partial": true,
+    "cod": 10131,
+    "name": "Volatile Inorganic Compounds concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/453/"
+  },
+  {
+    "_partial": true,
+    "cod": 10132,
+    "name": "Formaldehyde concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/454/"
+  },
+  {
+    "_partial": true,
+    "cod": 10133,
+    "name": "Hourly rainfall",
+    "url": "https://www.q-cumber.org/api/v1/indicators/455/"
+  },
+  {
+    "_partial": true,
+    "cod": 10134,
+    "name": "Draining surface",
+    "url": "https://www.q-cumber.org/api/v1/indicators/456/"
+  },
+  {
+    "_partial": true,
+    "cod": 10135,
+    "name": "Runoff coefficient",
+    "url": "https://www.q-cumber.org/api/v1/indicators/457/"
+  },
+  {
+    "_partial": true,
+    "cod": 10136,
+    "name": "Benzene emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/467/"
+  },
+  {
+    "_partial": true,
+    "cod": 10137,
+    "name": "VOC emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/468/"
+  },
+  {
+    "_partial": true,
+    "cod": 10138,
+    "name": "HCl emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/469/"
+  },
+  {
+    "_partial": true,
+    "cod": 10139,
+    "name": "O3 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/470/"
+  },
+  {
+    "_partial": true,
+    "cod": 10140,
+    "name": "Butadiene emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/471/"
+  },
+  {
+    "_partial": true,
+    "cod": 10141,
+    "name": "SO2 emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/472/"
+  },
+  {
+    "_partial": true,
+    "cod": 10142,
+    "name": "NO emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/473/"
+  },
+  {
+    "_partial": true,
+    "cod": 10143,
+    "name": "Formaldehyde emission Flux in the air",
+    "url": "https://www.q-cumber.org/api/v1/indicators/474/"
+  },
+  {
+    "_partial": true,
+    "cod": 10144,
+    "name": "Electric power",
+    "url": "https://www.q-cumber.org/api/v1/indicators/481/"
+  },
+  {
+    "_partial": true,
+    "cod": 10145,
+    "name": "Methane consumption",
+    "url": "https://www.q-cumber.org/api/v1/indicators/482/"
+  },
+  {
+    "_partial": true,
+    "cod": 10146,
+    "name": "Antimony concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/484/"
+  },
+  {
+    "_partial": true,
+    "cod": 10147,
+    "name": "Cobalt concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/485/"
+  },
+  {
+    "_partial": true,
+    "cod": 10148,
+    "name": "Benzo(a) anthracene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/486/"
+  },
+  {
+    "_partial": true,
+    "cod": 10149,
+    "name": "Benzo(a) pyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/487/"
+  },
+  {
+    "_partial": true,
+    "cod": 10150,
+    "name": "Benzo(b) fluoranthene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/488/"
+  },
+  {
+    "_partial": true,
+    "cod": 10151,
+    "name": "Benzo(k) fluoranthene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/489/"
+  },
+  {
+    "_partial": true,
+    "cod": 10152,
+    "name": "Benzo(g,h,i,) perylene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/490/"
+  },
+  {
+    "_partial": true,
+    "cod": 10153,
+    "name": "Chrysene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/491/"
+  },
+  {
+    "_partial": true,
+    "cod": 10154,
+    "name": "Dibenzo (a,e) pyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/492/"
+  },
+  {
+    "_partial": true,
+    "cod": 10155,
+    "name": "Dibenzo (a,l) pyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/493/"
+  },
+  {
+    "_partial": true,
+    "cod": 10156,
+    "name": "Dibenzo (a,h) pyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/494/"
+  },
+  {
+    "_partial": true,
+    "cod": 10157,
+    "name": "Dibenzo (a,h)  anthracene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/495/"
+  },
+  {
+    "_partial": true,
+    "cod": 10158,
+    "name": "Dibenzo Indenopyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/496/"
+  },
+  {
+    "_partial": true,
+    "cod": 10159,
+    "name": "Pyrene concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/497/"
+  },
+  {
+    "_partial": true,
+    "cod": 10160,
+    "name": "Sum of PAHs (from 25 to 34) concentration in wastewater",
+    "url": "https://www.q-cumber.org/api/v1/indicators/498/"
+  },
+  {
+    "_partial": true,
+    "cod": 10161,
+    "name": "Termic power",
+    "url": "https://www.q-cumber.org/api/v1/indicators/500/"
+  },
+  {
+    "_partial": true,
+    "cod": 10162,
+    "name": "Pro-capite urban waste production",
+    "url": "https://www.q-cumber.org/api/v1/indicators/501/"
+  },
+  {
+    "_partial": true,
+    "cod": 10163,
+    "name": "Arsenic concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/579/"
+  },
+  {
+    "_partial": true,
+    "cod": 10164,
+    "name": "Chromium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/580/"
+  },
+  {
+    "_partial": true,
+    "cod": 10165,
+    "name": "Zinc concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/581/"
+  },
+  {
+    "_partial": true,
+    "cod": 10166,
+    "name": "Iron concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/582/"
+  },
+  {
+    "_partial": true,
+    "cod": 10167,
+    "name": "Copper concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/583/"
+  },
+  {
+    "_partial": true,
+    "cod": 10168,
+    "name": "Manganese concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/584/"
+  },
+  {
+    "_partial": true,
+    "cod": 10169,
+    "name": "H2SO4 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/585/"
+  },
+  {
+    "_partial": true,
+    "cod": 10170,
+    "name": "H3PO4 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/586/"
+  },
+  {
+    "_partial": true,
+    "cod": 10171,
+    "name": "HNO3 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/587/"
+  },
+  {
+    "_partial": true,
+    "cod": 10172,
+    "name": "CH3COOH concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/588/"
+  },
+  {
+    "_partial": true,
+    "cod": 10173,
+    "name": "Benzene concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/589/"
+  },
+  {
+    "_partial": true,
+    "cod": 10174,
+    "name": "Aldehydes concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/590/"
+  },
+  {
+    "_partial": true,
+    "cod": 10175,
+    "name": "Polyvinyl alcohol concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/591/"
+  },
+  {
+    "_partial": true,
+    "cod": 10176,
+    "name": "Trichlorethylene concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/592/"
+  },
+  {
+    "_partial": true,
+    "cod": 10177,
+    "name": "Dimethylformamide concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/593/"
+  },
+  {
+    "_partial": true,
+    "cod": 10178,
+    "name": "NO2 concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/594/"
+  },
+  {
+    "_partial": true,
+    "cod": 10179,
+    "name": "Thallium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/595/"
+  },
+  {
+    "_partial": true,
+    "cod": 10180,
+    "name": "Tellurium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/596/"
+  },
+  {
+    "_partial": true,
+    "cod": 10181,
+    "name": "Selenium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/597/"
+  },
+  {
+    "_partial": true,
+    "cod": 10182,
+    "name": "Copernicium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/598/"
+  },
+  {
+    "_partial": true,
+    "cod": 10183,
+    "name": "Antimony concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/599/"
+  },
+  {
+    "_partial": true,
+    "cod": 10184,
+    "name": "Beryllium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/600/"
+  },
+  {
+    "_partial": true,
+    "cod": 10185,
+    "name": "Inorganic Acids concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/601/"
+  },
+  {
+    "_partial": true,
+    "cod": 10186,
+    "name": "Basic substances in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/602/"
+  },
+  {
+    "_partial": true,
+    "cod": 10187,
+    "name": "Sum of Pb, Zn, Fe concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/603/"
+  },
+  {
+    "_partial": true,
+    "cod": 10188,
+    "name": "Amines concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/604/"
+  },
+  {
+    "_partial": true,
+    "cod": 10189,
+    "name": "Number of trees",
+    "url": "https://www.q-cumber.org/api/v1/indicators/605/"
+  },
+  {
+    "_partial": true,
+    "cod": 10190,
+    "name": "Number of beds",
+    "url": "https://www.q-cumber.org/api/v1/indicators/606/"
+  },
+  {
+    "_partial": true,
+    "cod": 10191,
+    "name": "kg/bed of waste production",
+    "url": "https://www.q-cumber.org/api/v1/indicators/607/"
+  },
+  {
+    "_partial": true,
+    "cod": 10192,
+    "name": "Power",
+    "url": "https://www.q-cumber.org/api/v1/indicators/627/"
+  },
+  {
+    "_partial": true,
+    "cod": 10193,
+    "name": "Number of air purifiers",
+    "url": "https://www.q-cumber.org/api/v1/indicators/628/"
+  },
+  {
+    "_partial": true,
+    "cod": 10194,
+    "name": "CFC concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/645/"
+  },
+  {
+    "_partial": true,
+    "cod": 10195,
+    "name": "Sum of Sb, As, Co, Cr, Mn, Ni, Pb, Cu, V concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/647/"
+  },
+  {
+    "_partial": true,
+    "cod": 10196,
+    "name": "Sum of Tl, Cd concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/648/"
+  },
+  {
+    "_partial": true,
+    "cod": 10197,
+    "name": "Vanadium concentration in flue gas",
+    "url": "https://www.q-cumber.org/api/v1/indicators/649/"
+  }
+]

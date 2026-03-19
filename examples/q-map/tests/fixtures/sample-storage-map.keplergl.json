@@ -1,0 +1,147 @@
+{
+  "map": {
+    "datasets": [
+      {
+        "version": "v1",
+        "data": {
+          "id": "sample-storage-map",
+          "label": "Sample Cities q-hive",
+          "color": [
+            26,
+            43,
+            60
+          ],
+          "allData": [
+            [
+              "Milano",
+              3,
+              "urban",
+              {
+                "type": "Point",
+                "coordinates": [
+                  9.19,
+                  45.4642
+                ]
+              }
+            ],
+            [
+              "Roma",
+              2,
+              "traffic",
+              {
+                "type": "Point",
+                "coordinates": [
+                  12.4964,
+                  41.9028
+                ]
+              }
+            ],
+            [
+              "Napoli",
+              1,
+              "port",
+              {
+                "type": "Point",
+                "coordinates": [
+                  14.2681,
+                  40.8518
+                ]
+              }
+            ]
+          ],
+          "fields": [
+            {
+              "name": "name",
+              "type": "string",
+              "format": "",
+              "analyzerType": "STRING"
+            },
+            {
+              "name": "severity",
+              "type": "integer",
+              "format": "",
+              "analyzerType": "INT"
+            },
+            {
+              "name": "stressor_class",
+              "type": "string",
+              "format": "",
+              "analyzerType": "STRING"
+            },
+            {
+              "name": "_geojson",
+              "type": "geojson",
+              "format": "",
+              "analyzerType": "GEOMETRY"
+            }
+          ],
+          "metadata": {
+            "format": "row"
+          }
+        }
+      }
+    ],
+    "config": {
+      "version": "v1",
+      "config": {
+        "visState": {
+          "filters": [],
+          "layers": [],
+          "effects": [],
+          "interactionConfig": {
+            "tooltip": {
+              "fieldsToShow": {},
+              "compareMode": false,
+              "compareType": "absolute",
+              "enabled": true
+            },
+            "brush": {
+              "size": 0.5,
+              "enabled": false
+            },
+            "geocoder": {
+              "enabled": false
+            },
+            "coordinate": {
+              "enabled": false
+            }
+          },
+          "layerBlending": "normal",
+          "overlayBlending": "normal",
+          "splitMaps": [],
+          "animationConfig": {
+            "currentTime": null,
+            "speed": 1
+          }
+        },
+        "mapState": {
+          "bearing": 0,
+          "dragRotate": false,
+          "latitude": 42.5,
+          "longitude": 12.5,
+          "pitch": 0,
+          "zoom": 4.8,
+          "isSplit": false
+        },
+        "mapStyle": {
+          "styleType": "dark",
+          "topLayerGroups": {},
+          "visibleLayerGroups": {},
+          "threeDBuildingColor": [
+            9.665468314072013,
+            17.18305478057247,
+            31.1442867897876
+          ],
+          "mapStyles": {}
+        }
+      }
+    },
+    "info": {
+      "app": "kepler.gl",
+      "created_at": "2026-03-10T00:00:00.000Z",
+      "title": "Sample Cities q-hive",
+      "description": "Fixture map for q-storage E2E coverage"
+    }
+  },
+  "format": "keplergl"
+}

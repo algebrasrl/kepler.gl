@@ -1,0 +1,45 @@
+services:
+  q-map-ui:
+    build:
+      context: ../../..
+      dockerfile: examples/q-map/Dockerfile.ui
+      args:
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+        VITE_QMAP_AUTH_TOKEN_STORAGE_KEYS: ${VITE_QMAP_AUTH_TOKEN_STORAGE_KEYS:-qmap_gateway_jwt,qmap_auth_token,qmap_access_token}
+        VITE_QMAP_AUTH_ALLOW_OPAQUE_BEARER: ${VITE_QMAP_AUTH_ALLOW_OPAQUE_BEARER:-false}
+        VITE_QMAP_AI_PROXY_BASE: ${VITE_QMAP_AI_PROXY_BASE:-/api/q-assistant}
+        VITE_QCUMBER_CLOUD_API_BASE: ${VITE_QCUMBER_CLOUD_API_BASE:-/api/q-cumber}
+        VITE_QCUMBER_CLOUD_DISPLAY_NAME: ${VITE_QCUMBER_CLOUD_DISPLAY_NAME:-Q-cumber}
+        VITE_QCUMBER_CLOUD_MANAGEMENT_URL: ${VITE_QCUMBER_CLOUD_MANAGEMENT_URL:-/api/q-cumber/maps}
+        VITE_QSTORAGE_CLOUD_API_BASE: ${VITE_QSTORAGE_CLOUD_API_BASE:-/api/q-storage}
+        VITE_QSTORAGE_CLOUD_DISPLAY_NAME: ${VITE_QSTORAGE_CLOUD_DISPLAY_NAME:-Le mie mappe}
+        VITE_QSTORAGE_CLOUD_MANAGEMENT_URL: ${VITE_QSTORAGE_CLOUD_MANAGEMENT_URL:-/api/q-storage/maps}
+        VITE_QCUMBER_TILESET_BASE: ${VITE_QCUMBER_TILESET_BASE:-/api/q-cumber}
+    container_name: q-map-ui
+    depends_on:
+      q-cumber-backend:
+        condition: service_healthy
+      q-storage-backend:
+        condition: service_healthy
+      q-assistant:
+        condition: service_healthy
+    restart: unless-stopped
+
+  q-map-shell:
+    image: nginx:alpine
+    container_name: q-map-shell
+    command: ["/bin/sh", "/etc/q-map-shell/run-same-origin-shell.sh"]
+    depends_on:
+      q-map-ui:
+        condition: service_started
+      kong:
+        condition: service_started
+    environment:
+      QMAP_AUTH_RUNTIME_TOKEN: ${QMAP_AUTH_RUNTIME_TOKEN:-}
+      QMAP_MAPBOX_TOKEN: ${QMAP_MAPBOX_TOKEN:-${VITE_MAPBOX_TOKEN:-}}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../docker/nginx.same-origin.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../docker/run-same-origin-shell.sh:/etc/q-map-shell/run-same-origin-shell.sh:ro
+    restart: unless-stopped

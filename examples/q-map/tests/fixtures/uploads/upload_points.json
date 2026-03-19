@@ -1,0 +1,23 @@
+[
+  {
+    "lat": 45.4642,
+    "lng": 9.19,
+    "category": "A",
+    "value": 10,
+    "city": "Milano"
+  },
+  {
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "category": "B",
+    "value": 20,
+    "city": "Roma"
+  },
+  {
+    "lat": 40.8518,
+    "lng": 14.2681,
+    "category": "A",
+    "value": 30,
+    "city": "Napoli"
+  }
+]

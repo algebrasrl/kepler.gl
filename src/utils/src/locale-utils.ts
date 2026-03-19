@@ -29,13 +29,15 @@ export const mergeMessages = (defaultMessages, userMessages) => {
   }
 
   const userEnFlat = flattenMessages(userMessages.en);
-  return Object.keys(defaultMessages).reduce(
+  // Include both built-in locales and any extra locales provided by the consumer.
+  const allLocales = new Set([...Object.keys(defaultMessages), ...Object.keys(userMessages)]);
+  return Array.from(allLocales).reduce(
     (acc, key) => ({
       ...acc,
       [key]:
         key === 'en'
           ? {...defaultMessages.en, ...userEnFlat}
-          : {...defaultMessages[key], ...userEnFlat, ...flattenMessages(userMessages[key] || {})}
+          : {...(defaultMessages[key] ?? defaultMessages.en), ...userEnFlat, ...flattenMessages(userMessages[key] || {})}
     }),
     {}
   );

@@ -1,0 +1,23 @@
+services:
+  q-map-ui:
+    build:
+      context: ../../..
+      dockerfile: examples/q-map/Dockerfile.ui
+      args:
+        VITE_MAPBOX_TOKEN: ${VITE_MAPBOX_TOKEN:-}
+        VITE_QMAP_AI_PROXY_BASE: ${VITE_QMAP_AI_PROXY_BASE:-http://localhost:3004}
+        VITE_QCUMBER_CLOUD_API_BASE: ${VITE_QCUMBER_CLOUD_API_BASE:-http://localhost:3001}
+        VITE_QCUMBER_CLOUD_DISPLAY_NAME: ${VITE_QCUMBER_CLOUD_DISPLAY_NAME:-Q-cumber}
+        VITE_QCUMBER_CLOUD_MANAGEMENT_URL: ${VITE_QCUMBER_CLOUD_MANAGEMENT_URL:-http://localhost:3001/maps}
+        VITE_QSTORAGE_CLOUD_API_BASE: ${VITE_QSTORAGE_CLOUD_API_BASE:-http://localhost:3005}
+        VITE_QSTORAGE_CLOUD_DISPLAY_NAME: ${VITE_QSTORAGE_CLOUD_DISPLAY_NAME:-Le mie mappe}
+        VITE_QSTORAGE_CLOUD_MANAGEMENT_URL: ${VITE_QSTORAGE_CLOUD_MANAGEMENT_URL:-http://localhost:3005/maps}
+        VITE_QCUMBER_TILESET_BASE: ${VITE_QCUMBER_TILESET_BASE:-http://localhost:3002}
+    container_name: q-map-ui
+    ports:
+      - "8081:8081"
+    depends_on:
+      - q-cumber-backend
+      - q-storage-backend
+      - q-assistant
+    profiles: ["ui"]

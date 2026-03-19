@@ -1,6 +1,32 @@
 dist/
+build/
+coverage/
+.nyc_output/
+jest-coverage/
+tape-coverage/
+typedoc/
 .venv/
 .conda/
-node_modules/
 __pycache__/
-build/
+.git/
+.env
+.env.*
+node_modules/
+**/node_modules/
+**/dist/
+
+# q-map UI builds need the repo root plus examples/q-map, not the other examples.
+examples/*
+!examples/q-map/
+!examples/q-map/**
+
+# UI image doesn't need backend sources, local data, test artifacts, or local package caches.
+examples/q-map/backends/
+examples/q-map/.yarn/
+examples/q-map/.tmp/
+examples/q-map/artifacts/*
+!examples/q-map/artifacts/tool-contracts/
+!examples/q-map/artifacts/tool-contracts/**
+examples/q-map/test-results/
+examples/q-map/playwright-report/
+examples/q-map/tsconfig*.tsbuildinfo

@@ -1,0 +1,179 @@
+x-backend-user: &backend_user "${QMAP_DOCKER_UID:-1000}:${QMAP_DOCKER_GID:-1000}"
+
+services:
+  q-cumber-postgis:
+    build:
+      context: ./q-cumber-postgis
+    container_name: q-map-q-cumber-postgis
+    environment:
+      POSTGRES_DB: ${QCUMBER_POSTGIS_DB:-qvt}
+      POSTGRES_USER: ${QCUMBER_POSTGIS_USER:-qvt}
+      POSTGRES_PASSWORD: ${QCUMBER_POSTGIS_PASSWORD:-qvt}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./q-cumber-postgis/data:/var/lib/postgresql/data
+      - ./q-cumber-postgis/dumps:/dumps:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${QCUMBER_POSTGIS_USER:-qvt} -d ${QCUMBER_POSTGIS_DB:-qvt}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  q-cumber-backend:
+    build:
+      context: .
+      dockerfile: q-cumber-backend/Dockerfile
+    user: *backend_user
+    container_name: q-map-q-cumber-backend
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      q-cumber-postgis:
+        condition: service_healthy
+    environment:
+      QCUMBER_BACKEND_TOKEN: ${QCUMBER_BACKEND_TOKEN:-}
+      QCUMBER_JWT_AUTH_ENABLED: ${QCUMBER_JWT_AUTH_ENABLED:-false}
+      QCUMBER_JWT_HS256_SECRETS: ${QCUMBER_JWT_HS256_SECRETS:-}
+      QCUMBER_JWT_ALLOWED_ISSUERS: ${QCUMBER_JWT_ALLOWED_ISSUERS:-}
+      QCUMBER_JWT_ALLOWED_AUDIENCES: ${QCUMBER_JWT_ALLOWED_AUDIENCES:-}
+      QCUMBER_JWT_REQUIRE_AUDIENCE: ${QCUMBER_JWT_REQUIRE_AUDIENCE:-false}
+      QCUMBER_JWT_ROLES_CLAIM_PATHS: ${QCUMBER_JWT_ROLES_CLAIM_PATHS:-roles,realm_access.roles,resource_access.q-map.roles}
+      QCUMBER_JWT_ALLOWED_SUBJECTS: ${QCUMBER_JWT_ALLOWED_SUBJECTS:-}
+      QCUMBER_JWT_READ_ROLES: ${QCUMBER_JWT_READ_ROLES:-}
+      QCUMBER_USER_NAME: ${QCUMBER_USER_NAME:-Q-cumber User}
+      QCUMBER_USER_EMAIL: ${QCUMBER_USER_EMAIL:-qcumber@example.com}
+      QCUMBER_DATA_DIR: /data
+      QCUMBER_PROVIDERS_DIR: /providers
+      QCUMBER_CORS_ORIGINS: ${QCUMBER_CORS_ORIGINS:-http://localhost:8081,http://127.0.0.1:8081}
+      QCUMBER_POSTGIS_DSN: ${QCUMBER_POSTGIS_DSN:-}
+      QCUMBER_POSTGIS_HOST: ${QCUMBER_POSTGIS_HOST:-q-cumber-postgis}
+      QCUMBER_POSTGIS_PORT: ${QCUMBER_POSTGIS_PORT:-5432}
+      QCUMBER_POSTGIS_DB: ${QCUMBER_POSTGIS_DB:-qvt}
+      QCUMBER_POSTGIS_USER: ${QCUMBER_POSTGIS_USER:-qvt}
+      QCUMBER_POSTGIS_PASSWORD: ${QCUMBER_POSTGIS_PASSWORD:-qvt}
+      QCUMBER_POSTGIS_POOL_MIN: ${QCUMBER_POSTGIS_POOL_MIN:-1}
+      QCUMBER_POSTGIS_POOL_MAX: ${QCUMBER_POSTGIS_POOL_MAX:-5}
+      QCUMBER_WORKERS: ${QCUMBER_WORKERS:-1}
+      QCUMBER_UPSTREAM_TOKEN: ${QCUMBER_UPSTREAM_TOKEN:-}
+      QCUMBER_GEOAPI_KEY: ${QCUMBER_GEOAPI_KEY:-}
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3001/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./q-cumber-backend:/app
+      - ./q-cumber-backend/data:/data
+      - ${QCUMBER_PROVIDERS_HOST_DIR:-./q-cumber-backend/provider-descriptors}:/providers:ro
+    restart: unless-stopped
+
+  q-storage-backend:
+    build:
+      context: .
+      dockerfile: q-storage-backend/Dockerfile
+    user: *backend_user
+    container_name: q-map-q-storage-backend
+    environment:
+      QSTORAGE_API_TOKEN: ${QSTORAGE_API_TOKEN:-}
+      QSTORAGE_TOKEN_USERS_JSON: ${QSTORAGE_TOKEN_USERS_JSON:-}
+      QSTORAGE_ALLOW_INSECURE_DEFAULT_USER: ${QSTORAGE_ALLOW_INSECURE_DEFAULT_USER:-false}
+      QSTORAGE_JWT_AUTH_ENABLED: ${QSTORAGE_JWT_AUTH_ENABLED:-false}
+      QSTORAGE_JWT_HS256_SECRETS: ${QSTORAGE_JWT_HS256_SECRETS:-}
+      QSTORAGE_JWT_ALLOWED_ISSUERS: ${QSTORAGE_JWT_ALLOWED_ISSUERS:-}
+      QSTORAGE_JWT_ALLOWED_AUDIENCES: ${QSTORAGE_JWT_ALLOWED_AUDIENCES:-}
+      QSTORAGE_JWT_REQUIRE_AUDIENCE: ${QSTORAGE_JWT_REQUIRE_AUDIENCE:-false}
+      QSTORAGE_JWT_ROLES_CLAIM_PATHS: ${QSTORAGE_JWT_ROLES_CLAIM_PATHS:-roles,realm_access.roles,resource_access.q-map.roles}
+      QSTORAGE_JWT_ALLOWED_SUBJECTS: ${QSTORAGE_JWT_ALLOWED_SUBJECTS:-}
+      QSTORAGE_JWT_READ_ROLES: ${QSTORAGE_JWT_READ_ROLES:-}
+      QSTORAGE_JWT_WRITE_ROLES: ${QSTORAGE_JWT_WRITE_ROLES:-qmap-editor,qmap-admin}
+      QSTORAGE_USER_ID: ${QSTORAGE_USER_ID:-local-user}
+      QSTORAGE_USER_NAME: ${QSTORAGE_USER_NAME:-Q-storage User}
+      QSTORAGE_USER_EMAIL: ${QSTORAGE_USER_EMAIL:-qstorage@example.com}
+      QSTORAGE_USER_REGISTERED_AT: ${QSTORAGE_USER_REGISTERED_AT:-2026-01-01}
+      QSTORAGE_USER_COUNTRY: ${QSTORAGE_USER_COUNTRY:-IT}
+      QSTORAGE_DATA_DIR: /data
+      QSTORAGE_PORT: 3005
+      QSTORAGE_CORS_ORIGINS: ${QSTORAGE_CORS_ORIGINS:-http://localhost:8081,http://127.0.0.1:8081}
+    ports:
+      - "3005:3005"
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3005/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./q-storage-backend:/app
+      - ./q-storage-backend/data:/data
+    restart: unless-stopped
+
+  q-assistant:
+    build:
+      context: .
+      dockerfile: q-assistant/Dockerfile
+    user: *backend_user
+    container_name: q-map-q-assistant
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      q-cumber-backend:
+        condition: service_healthy
+      q-storage-backend:
+        condition: service_healthy
+    environment:
+      Q_ASSISTANT_HOST: 0.0.0.0
+      Q_ASSISTANT_PORT: 3004
+      Q_ASSISTANT_CORS_ORIGINS: ${Q_ASSISTANT_CORS_ORIGINS:-http://localhost:8081,http://127.0.0.1:8081}
+      Q_ASSISTANT_PROVIDER: ${Q_ASSISTANT_PROVIDER:-openrouter}
+      Q_ASSISTANT_MODEL: ${Q_ASSISTANT_MODEL:-google/gemini-3-flash-preview}
+      Q_ASSISTANT_BASE_URL: ${Q_ASSISTANT_BASE_URL:-https://openrouter.ai/api/v1}
+      Q_ASSISTANT_AGENT_CHAIN: ${Q_ASSISTANT_AGENT_CHAIN:-}
+      Q_ASSISTANT_API_KEY: ${Q_ASSISTANT_API_KEY:-}
+      Q_ASSISTANT_ALLOW_CALLER_API_KEY_FALLBACK: ${Q_ASSISTANT_ALLOW_CALLER_API_KEY_FALLBACK:-false}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_HTTP_REFERER: ${OPENROUTER_HTTP_REFERER:-}
+      OPENROUTER_X_TITLE: ${OPENROUTER_X_TITLE:-}
+      Q_ASSISTANT_TIMEOUT: ${Q_ASSISTANT_TIMEOUT:-45}
+      Q_ASSISTANT_UPSTREAM_RETRY_ATTEMPTS: ${Q_ASSISTANT_UPSTREAM_RETRY_ATTEMPTS:-2}
+      Q_ASSISTANT_UPSTREAM_RETRY_BASE_DELAY: ${Q_ASSISTANT_UPSTREAM_RETRY_BASE_DELAY:-1.0}
+      Q_ASSISTANT_UPSTREAM_RETRY_MAX_DELAY: ${Q_ASSISTANT_UPSTREAM_RETRY_MAX_DELAY:-8}
+      Q_ASSISTANT_UPSTREAM_RETRY_JITTER_RATIO: ${Q_ASSISTANT_UPSTREAM_RETRY_JITTER_RATIO:-0.2}
+      Q_ASSISTANT_UPSTREAM_RETRY_TIMEOUT_INCREMENT: ${Q_ASSISTANT_UPSTREAM_RETRY_TIMEOUT_INCREMENT:-5}
+      Q_ASSISTANT_QCUMBER_CLOUD_API_BASE: ${Q_ASSISTANT_QCUMBER_CLOUD_API_BASE:-http://q-cumber-backend:3001}
+      Q_ASSISTANT_QCUMBER_CLOUD_TOKEN: ${Q_ASSISTANT_QCUMBER_CLOUD_TOKEN:-}
+      Q_ASSISTANT_QCUMBER_CLOUD_TIMEOUT: ${Q_ASSISTANT_QCUMBER_CLOUD_TIMEOUT:-20}
+      Q_ASSISTANT_QSTORAGE_CLOUD_API_BASE: ${Q_ASSISTANT_QSTORAGE_CLOUD_API_BASE:-http://q-storage-backend:3005}
+      Q_ASSISTANT_QSTORAGE_CLOUD_TOKEN: ${Q_ASSISTANT_QSTORAGE_CLOUD_TOKEN:-}
+      Q_ASSISTANT_QSTORAGE_CLOUD_TIMEOUT: ${Q_ASSISTANT_QSTORAGE_CLOUD_TIMEOUT:-20}
+      Q_ASSISTANT_PROFILE_NAME: ${Q_ASSISTANT_PROFILE_NAME:-Q-hive User}
+      Q_ASSISTANT_PROFILE_EMAIL: ${Q_ASSISTANT_PROFILE_EMAIL:-user@q-hive.local}
+      Q_ASSISTANT_PROFILE_REGISTERED_AT: ${Q_ASSISTANT_PROFILE_REGISTERED_AT:-2025-01-01}
+      Q_ASSISTANT_PROFILE_COUNTRY: ${Q_ASSISTANT_PROFILE_COUNTRY:-IT}
+      Q_ASSISTANT_CHAT_AUDIT_ENABLED: ${Q_ASSISTANT_CHAT_AUDIT_ENABLED:-true}
+      Q_ASSISTANT_CHAT_AUDIT_LOG_PATH: ${Q_ASSISTANT_CHAT_AUDIT_LOG_PATH:-/var/log/q-assistant/chat-audit}
+      Q_ASSISTANT_CHAT_AUDIT_MAX_CHARS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_CHARS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_MAX_LIST_ITEMS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_LIST_ITEMS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_MAX_STRING_CHARS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_STRING_CHARS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_INCLUDE_PAYLOADS: ${Q_ASSISTANT_CHAT_AUDIT_INCLUDE_PAYLOADS:-true}
+      Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT: ${Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT:-false}
+      Q_ASSISTANT_CHAT_AUDIT_STDOUT_ENABLED: ${Q_ASSISTANT_CHAT_AUDIT_STDOUT_ENABLED:-false}
+    ports:
+      - "3004:3004"
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3004/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./q-assistant:/app
+      - ${Q_ASSISTANT_AUDIT_HOST_DIR:-./logs/q-assistant}:/var/log/q-assistant
+    restart: unless-stopped

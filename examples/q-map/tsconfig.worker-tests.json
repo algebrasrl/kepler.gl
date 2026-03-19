@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".tmp/worker-tests",
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/types/h3-js-v4.d.ts",
+    "src/workers/clip-ops.worker.ts",
+    "src/workers/h3-ops.worker.ts",
+    "src/workers/reproject-ops.worker.ts",
+    "src/workers/zonal-ops.worker.ts",
+    "src/workers/spatial-ops.worker.ts",
+    "src/features/qmap-ai/geometry-ops.ts",
+    "src/features/qmap-ai/execution-trace.ts",
+    "src/features/qmap-ai/post-validation.ts",
+    "src/features/qmap-ai/tool-args-normalization.ts",
+    "src/features/qmap-ai/tool-idempotency.ts",
+    "src/features/qmap-ai/async-mutex.ts",
+    "src/geo/geometry.ts",
+    "tests/unit/workers/**/*.ts"
+  ]
+}

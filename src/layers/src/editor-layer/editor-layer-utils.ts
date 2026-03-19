@@ -13,7 +13,10 @@ import {EDITOR_LAYER_ID, EDITOR_MODES} from '@kepler.gl/constants';
  */
 export function isDrawingActive(editorMenuActive: boolean, mode: string): boolean {
   return (
-    editorMenuActive && (mode === EDITOR_MODES.DRAW_POLYGON || mode === EDITOR_MODES.DRAW_RECTANGLE)
+    editorMenuActive &&
+    (mode === EDITOR_MODES.DRAW_POLYGON ||
+      mode === EDITOR_MODES.DRAW_RECTANGLE ||
+      mode === EDITOR_MODES.DRAW_CIRCLE)
   );
 }
 

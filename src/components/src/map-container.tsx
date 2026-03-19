@@ -102,6 +102,9 @@ const DEBOUNCE_MOUSE_MOVE_PROPAGATE = 10;
 
 // How long should we wait between layer loading state changes before triggering a UI update
 const DEBOUNCE_LOADING_STATE_PROPAGATE = 100;
+const MAP_DRAW_SETTING_FORCE_CROSSHAIR = 'forceCrosshair';
+const MAP_DRAW_SETTING_DISABLE_DOUBLE_CLICK_ZOOM = 'disableDoubleClickZoom';
+const MAP_DRAW_SETTING_BYPASS_EDITOR_CLICK = 'bypassEditorClick';
 
 const MAP_STYLE: {[key: string]: React.CSSProperties} = {
   container: {
@@ -804,6 +807,12 @@ export default function MapContainerFactory(
       // disable double click zoom when editor is in any draw mode
       const {mapDraw} = mapControls;
       const {active: editorMenuActive = false} = mapDraw || {};
+      const mapDrawSettings = mapDraw?.settings || {};
+      const forceCrosshairCursor = Boolean(mapDrawSettings[MAP_DRAW_SETTING_FORCE_CROSSHAIR]);
+      const disableDoubleClickZoomBySetting = Boolean(
+        mapDrawSettings[MAP_DRAW_SETTING_DISABLE_DOUBLE_CLICK_ZOOM]
+      );
+      const bypassEditorClick = Boolean(mapDrawSettings[MAP_DRAW_SETTING_BYPASS_EDITOR_CLICK]);
       const isEditorDrawingMode = EditorLayerUtils.isDrawingActive(editorMenuActive, editor.mode);
 
       const internalViewState = this.context?.getInternalViewState(index);
@@ -873,6 +882,8 @@ export default function MapContainerFactory(
         };
 
         extraDeckParams.getCursor = ({isDragging}: {isDragging: boolean}) => {
+          if (forceCrosshairCursor) return 'crosshair';
+
           const editorCursor = EditorLayerUtils.getCursor({
             editorMenuActive,
             editor,
@@ -934,7 +945,7 @@ export default function MapContainerFactory(
             controller={
               isInteractive
                 ? {
-                    doubleClickZoom: !isEditorDrawingMode,
+                    doubleClickZoom: !isEditorDrawingMode && !disableDoubleClickZoomBySetting,
                     dragRotate: this.props.mapState.dragRotate
                   }
                 : false
@@ -960,14 +971,16 @@ export default function MapContainerFactory(
             onClick={(data, event) => {
               // @ts-ignore
               normalizeEvent(event.srcEvent, viewport);
-              const res = EditorLayerUtils.onClick(data, event, {
-                editorMenuActive,
-                editor,
-                onLayerClick,
-                setSelectedFeature,
-                mapIndex: index
-              });
-              if (res) return;
+              if (!bypassEditorClick) {
+                const res = EditorLayerUtils.onClick(data, event, {
+                  editorMenuActive,
+                  editor,
+                  onLayerClick,
+                  setSelectedFeature,
+                  mapIndex: index
+                });
+                if (res) return;
+              }
 
               visStateActions.onLayerClick(data);
             }}

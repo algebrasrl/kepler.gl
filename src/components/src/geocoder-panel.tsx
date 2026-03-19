@@ -72,8 +72,7 @@ const StyledGeocoderPanel: IStyledComponent<
         : `${props.theme.geocoderRight}px` // unsynced right geocoder (index 1)
       : // 1 geocoder: single mode OR split mode and synced viewports
         `${props.theme.geocoderRight}px`};
-  width: ${props => (Number.isFinite(props.width) ? props.width : props.theme.geocoderWidth)}px;
-  box-shadow: ${props => props.theme.boxShadow};
+  width: auto;
   z-index: 100;
 `;
 

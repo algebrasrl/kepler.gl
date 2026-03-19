@@ -1,0 +1,646 @@
+[
+  {
+    "id": "adv_dataset_id_clarification_heldout",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "expected_response_mode": "clarification",
+    "max_extra_tool_calls": 0,
+    "response_mode_markers_any": [
+      "datasetId"
+    ],
+    "user_prompt": "Voglio usare dati ambientali del provider local-assets-it ma non so quale datasetId scegliere. Mostrami i dataset candidati, spiegami in breve la differenza e aiutami a decidere.",
+    "required_tools_all": [
+      "listQCumberDatasets"
+    ],
+    "expected_tools_any": [
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "datasetid",
+      "dataset",
+      "quale"
+    ]
+  },
+  {
+    "id": "adv_dataset_id_clarification_companion",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "datasetId"
+    ],
+    "user_prompt": "Sul provider local-assets-it devo ancora scegliere il dataset. Mostrami solo i dataset candidati, differenziali al minimo e aiutami a capire quale datasetId usare.",
+    "required_tools_all": [
+      "listQCumberDatasets"
+    ],
+    "expected_tools_any": [
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "datasetid",
+      "candidati",
+      "quale"
+    ]
+  },
+  {
+    "id": "adv_provider_id_clarification_heldout",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "providerId"
+    ],
+    "user_prompt": "Devo usare un provider remoto ma non so quale providerId scegliere. Mostrami i provider disponibili e aiutami a decidere.",
+    "required_tools_all": [
+      "listQCumberProviders"
+    ],
+    "forbidden_tools": [
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "providerid",
+      "provider",
+      "quale"
+    ]
+  },
+  {
+    "id": "adv_named_place_level_clarification_heldout",
+    "area": "data_pipeline",
+    "kpi_id": "admin_level_resolution_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "user_prompt": "Devo lavorare su Salerno ma non so se intendo il comune o la provincia. Aiutami a chiarire il livello amministrativo corretto.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "rankQMapDatasetRows",
+      "fitQMapToDataset",
+      "tassellateDatasetLayer",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Salerno",
+      "livello",
+      "provincia",
+      "comune"
+    ],
+    "mock_tool_results": {
+      "queryQCumberTerritorialUnits": {
+        "success": false,
+        "clarificationRequired": true,
+        "clarificationQuestion": "Vuoi provincia, comune, regione o stato?",
+        "clarificationOptions": [
+          "province",
+          "municipality",
+          "region",
+          "country"
+        ],
+        "details": "Ambiguous administrative match for name filter (Salerno). Matched multiple levels (7, 9). Retry with expectedAdminType (province/municipality/region/country) or add explicit lv filter."
+      }
+    }
+  },
+  {
+    "id": "adv_flat_metric_coloring_limitation",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 1,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile",
+      "non e stato possibile",
+      "non applicabile"
+    ],
+    "user_prompt": "Applica un gradiente sul campo flat_metric del layer Admin Boundaries. Se non puoi ottenere un gradiente metrico reale, dimmelo chiaramente.",
+    "required_tools_any": [
+      "setQMapLayerColorByField",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "setQMapLayerSolidColor",
+      "previewQMapDatasetRows",
+      "distinctQMapFieldValues"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "gradiente",
+      "non possibile",
+      "piatta"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "setQMapLayerColorByField",
+          "setQMapLayerColorByStatsThresholds"
+        ],
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "setQMapLayerColorByField": {
+        "success": false,
+        "details": "Metric is flat (distinct=1)."
+      }
+    }
+  },
+  {
+    "id": "adv_fit_centering_limitation",
+    "area": "map_ux",
+    "kpi_id": "territorial_focus_centering_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile"
+    ],
+    "user_prompt": "Centra la vista sul layer Admin Boundaries e dimmi chiaramente se il centraggio della mappa non puo essere confermato.",
+    "required_tools_all": [
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "centr",
+      "non possibile",
+      "mappa"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "fitQMapToDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "fitQMapToDataset": {
+        "success": false,
+        "details": "Map centering could not be confirmed."
+      }
+    }
+  },
+  {
+    "id": "adv_cloud_validation_before_success_claim",
+    "area": "backend_reliability",
+    "kpi_id": "cloud_recovery_validation",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "loadCloudMapAndWait",
+      "waitForQMapDataset"
+    ],
+    "user_prompt": "Carica una cloud map in modo affidabile e dimmi quando il dataset finale e davvero disponibile.",
+    "required_tools_all": [
+      "loadCloudMapAndWait",
+      "waitForQMapDataset"
+    ],
+    "expected_tools_any": [
+      "listQMapCloudMaps",
+      "listQMapDatasets",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "dataset",
+      "retry",
+      "disponibile"
+    ]
+  },
+  {
+    "id": "adv_cloud_load_limitation",
+    "area": "backend_reliability",
+    "kpi_id": "retry_fallback_truthfulness",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile",
+      "non e stato possibile"
+    ],
+    "user_prompt": "Con la cloud map `cloud-timeout-map`, evita claim di successo: se retry o fallback non validano alcun dataset, chiudi con una limitazione esplicita senza usare bridge load/save.",
+    "required_tools_any": [
+      "loadCloudMapAndWait",
+      "loadQMapCloudMap"
+    ],
+    "expected_tools_any": [
+      "listQMapCloudMaps",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset",
+      "loadData",
+      "saveDataToMap"
+    ],
+    "expected_keywords_any": [
+      "cloud",
+      "caricamento",
+      "non possibile"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "loadCloudMapAndWait",
+          "loadQMapCloudMap"
+        ],
+        "required_keys_all": [
+          "mapId"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "loadCloudMapAndWait": {
+        "success": false,
+        "details": "Cloud map load timed out after retry; no validated fallback available."
+      },
+      "loadQMapCloudMap": {
+        "success": false,
+        "details": "Cloud map load timed out after retry; no validated fallback available."
+      }
+    }
+  },
+  {
+    "id": "adv_area_weighted_tessellation_validation",
+    "area": "geo_processing",
+    "kpi_id": "h3_population_transfer_accuracy",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "user_prompt": "Partendo dai layer gia disponibili in mappa, crea una tassellazione H3 e popolala con allocazione area-weighted dalle unita amministrative, poi verifica che il risultato finale abbia celle valorizzate prima di confermarlo.",
+    "required_tools_any": [
+      "tassellateDatasetLayer",
+      "populateTassellationFromAdminUnits"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "countQMapRows",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "area-weighted",
+      "tassellazione",
+      "celle"
+    ]
+  },
+  {
+    "id": "adv_post_create_validation_normalized_no_retry_loop_heldout",
+    "area": "geo_processing",
+    "kpi_id": "post_create_validation_discipline",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 1,
+    "max_tool_calls_by_name": {
+      "listQMapDatasets": 1,
+      "createDatasetWithNormalizedField": 1,
+      "waitForQMapDataset": 2,
+      "countQMapRows": 2,
+      "setQMapLayerColorByField": 1,
+      "setQMapLayerColorByStatsThresholds": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "createDatasetWithNormalizedField",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "user_prompt": "In mappa c e gia un layer con area e popolazione per i comuni. Ricava un indice area per abitante, applica una colorazione leggibile e conferma il risultato solo dopo verifica materiale del dataset.",
+    "required_tools_all": [
+      "createDatasetWithNormalizedField",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField",
+      "setQMapLayerColorByStatsThresholds",
+      "showOnlyQMapLayer",
+      "setQMapTooltipFields"
+    ],
+    "forbidden_tools": [
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "area per abitante",
+      "comuni",
+      "verifica",
+      "dataset"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "createDatasetWithNormalizedField",
+        "required_keys_all": [
+          "datasetName",
+          "numeratorFieldName",
+          "denominatorFieldName"
+        ]
+      },
+      {
+        "tool": "waitForQMapDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "adv_superlative_show_on_map_heldout",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "superlative_admin_unit_show_on_map",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "user_prompt": "Trova l'unita amministrativa con il valore piu alto, materializza il risultato vincente e portalo in primo piano sulla mappa.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "rankQMapDatasetRows",
+      "createDatasetFromFilter",
+      "previewQMapDatasetRows",
+      "countQMapRows",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "alto",
+      "mappa",
+      "risultato"
+    ]
+  },
+  {
+    "id": "adv_population_style_focus_heldout",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "standard",
+    "deterministic_constraints": false,
+    "user_prompt": "Partendo da un layer territoriale gia disponibile, applica uno stile leggibile basato sulla popolazione, aggiorna solo i tooltip essenziali e centra la vista sul layer finale senza passaggi di UI non necessari.",
+    "required_tools_any": [
+      "setQMapLayerColorByField",
+      "setQMapTooltipFields",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "setQMapLayerColorByThresholds"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "popolazione",
+      "tooltip",
+      "vista"
+    ]
+  },
+  {
+    "id": "adv_lisa_high_null_field_limitation",
+    "area": "geo_processing",
+    "kpi_id": "spatial_autocorrelation_analysis",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 1,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "null",
+      "mancanti",
+      "qualita",
+      "missing",
+      "non validi"
+    ],
+    "user_prompt": "Esegui autocorrelazione spaziale LISA sul campo inquiry_rate del dataset Admin Boundaries. Il campo ha valori mancanti per l 85% delle feature.",
+    "required_tools_any": [
+      "computeQMapSpatialAutocorrelation",
+      "computeQMapDataQualityReport",
+      "describeQMapField"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "describeQMapField",
+      "computeQMapDataQualityReport"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "null",
+      "mancanti",
+      "qualita",
+      "missing",
+      "85"
+    ],
+    "mock_tool_results": {
+      "computeQMapSpatialAutocorrelation": {
+        "success": false,
+        "details": "Insufficient valid values: 85% of features have null inquiry_rate. LISA requires at least 3 non-null features; found 12 valid out of 80."
+      }
+    }
+  },
+  {
+    "id": "adv_lisa_too_few_features_limitation",
+    "area": "geo_processing",
+    "kpi_id": "spatial_autocorrelation_analysis",
+    "criticality": "critical",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "feature",
+      "insufficienti",
+      "troppo poche",
+      "too few",
+      "almeno"
+    ],
+    "user_prompt": "Il dataset Pilot Zones ha solo 6 poligoni. Prova a calcolare LISA sul campo pm10_avg e dimmi chiaramente se non e fattibile.",
+    "required_tools_any": [
+      "computeQMapSpatialAutocorrelation"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "countQMapRows",
+      "describeQMapField"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "feature",
+      "insufficienti",
+      "troppo poche",
+      "almeno",
+      "3"
+    ],
+    "mock_tool_results": {
+      "computeQMapSpatialAutocorrelation": {
+        "success": false,
+        "details": "Need at least 3 features for LISA. Dataset has 6 features but only 2 have valid pm10_avg values."
+      }
+    }
+  },
+  {
+    "id": "adv_hotspot_invalid_weight_type_fallback",
+    "area": "geo_processing",
+    "kpi_id": "hotspot_analysis",
+    "criticality": "standard",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 1,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "queen",
+      "knn",
+      "weightType",
+      "pesi",
+      "contiguo"
+    ],
+    "user_prompt": "Esegui hotspot Gi* sul dataset Punti Misurazioni con weightType=queen. I dati sono punti non contigui: spiega la limitazione e suggerisci l alternativa.",
+    "required_tools_any": [
+      "computeQMapHotspotAnalysis"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "describeQMapField"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "queen",
+      "knn",
+      "punti",
+      "contiguit",
+      "alternativa"
+    ],
+    "mock_tool_results": {
+      "computeQMapHotspotAnalysis": {
+        "success": false,
+        "details": "Queen contiguity produced zero neighbors for all 47 point features (no shared vertices found). Use weightType=knn for point datasets."
+      }
+    }
+  },
+  {
+    "id": "adv_equity_constant_field_limitation",
+    "area": "geo_processing",
+    "kpi_id": "equity_segregation_analysis",
+    "criticality": "standard",
+    "deterministic_constraints": false,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "costante",
+      "zero",
+      "varianza",
+      "constant",
+      "non applicabile"
+    ],
+    "user_prompt": "Calcola gli indici di equity Gini e Theil sul campo flat_density del dataset Comuni. Il campo ha valore costante 1.0 per tutti i record.",
+    "required_tools_any": [
+      "computeQMapEquityIndices"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "describeQMapField",
+      "computeQMapDataQualityReport"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "costante",
+      "zero",
+      "gini",
+      "equita",
+      "non applicabile"
+    ],
+    "mock_tool_results": {
+      "computeQMapEquityIndices": {
+        "success": true,
+        "gini": 0.0,
+        "theilT": 0.0,
+        "details": "Field flat_density has zero variance (all values = 1.0). Gini=0 and Theil=0 indicate perfect equality, but this result is likely a data quality issue rather than a meaningful equity finding."
+      }
+    }
+  }
+]

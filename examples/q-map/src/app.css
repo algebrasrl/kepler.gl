@@ -1,0 +1,415 @@
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 375px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+}
+
+.qmap-custom-ai-panel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  --qmap-user-chat-bg: #d1d5db;
+}
+
+/* q-map AI panel contrast fixes (OpenAssistant/HeroUI classes) */
+
+.qmap-custom-ai-panel .text-foreground,
+.qmap-custom-ai-panel .text-default-500,
+.qmap-custom-ai-panel .text-default-600,
+.qmap-custom-ai-panel .text-default-700 {
+  color: #1f2937 !important;
+}
+
+.qmap-custom-ai-panel .prose,
+.qmap-custom-ai-panel .prose p,
+.qmap-custom-ai-panel .prose li,
+.qmap-custom-ai-panel .prose span,
+.qmap-custom-ai-panel .prose code {
+  color: #1f2937 !important;
+}
+
+.qmap-custom-ai-panel .bg-content1,
+.qmap-custom-ai-panel .bg-content2,
+.qmap-custom-ai-panel .bg-content3,
+.qmap-custom-ai-panel .bg-default-100,
+.qmap-custom-ai-panel .bg-default-200 {
+  color: #1f2937 !important;
+}
+
+/* Keep text bright inside dark chat balloons */
+.qmap-custom-ai-panel .bg-content3,
+.qmap-custom-ai-panel .bg-content3 *,
+.qmap-custom-ai-panel .bg-content4,
+.qmap-custom-ai-panel .bg-content4 * {
+  color: #f8fafc !important;
+}
+
+/* Tool-call blocks: remove faded look and increase contrast */
+.qmap-custom-ai-panel .opacity-50 {
+  opacity: 1 !important;
+}
+
+.qmap-custom-ai-panel .bg-content2 {
+  background: #f3f4f6 !important;
+}
+
+.qmap-custom-ai-panel .text-green-500 {
+  color: #15803d !important;
+}
+
+.qmap-custom-ai-panel .text-orange-500 {
+  color: #b45309 !important;
+}
+
+/* Assistant chat text: darker for readability */
+.qmap-custom-ai-panel .bg-transparent,
+.qmap-custom-ai-panel .bg-transparent *,
+.qmap-custom-ai-panel .prose,
+.qmap-custom-ai-panel .prose * {
+  color: #111111 !important;
+}
+
+/* Prompt input on dark background: keep text and placeholder readable */
+.qmap-custom-ai-panel textarea[aria-label='Prompt'],
+.qmap-custom-ai-panel input[aria-label='Prompt'],
+.qmap-custom-ai-panel [aria-label='Prompt'] {
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+  caret-color: #111111 !important;
+}
+
+.qmap-custom-ai-panel textarea[aria-label='Prompt']::placeholder,
+.qmap-custom-ai-panel input[aria-label='Prompt']::placeholder,
+.qmap-custom-ai-panel [aria-label='Prompt']::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Chat avatar icons: force high contrast */
+.qmap-custom-ai-panel .relative.flex-none svg,
+.qmap-custom-ai-panel .relative.flex-none [data-icon],
+.qmap-custom-ai-panel .relative.flex-none [aria-hidden='true'] {
+  color: #111111 !important;
+}
+
+/* Chat avatars: default user style matches user chat bubble gray */
+.qmap-custom-ai-panel .relative.flex-none [data-slot='base'] {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  background: var(--qmap-user-chat-bg) !important;
+}
+
+.qmap-custom-ai-panel .relative.flex-none [data-slot='img'] {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: cover !important;
+  transform: scale(1.03) !important;
+  transform-origin: center center !important;
+}
+
+/* HeroUI avatar actual DOM node */
+.qmap-custom-ai-panel .relative.flex-none [tabindex='-1'] {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  background-color: var(--qmap-user-chat-bg) !important;
+}
+
+.qmap-custom-ai-panel .relative.flex-none [tabindex='-1'] img {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: cover !important;
+  transform: scale(1.03) !important;
+  transform-origin: center center !important;
+}
+
+/* Assistant avatar keeps light yellow background */
+.qmap-custom-ai-panel .relative.flex-none [data-slot='base']:has(img[src*='assistant.png']) {
+  background: #fff3bf !important;
+}
+
+.qmap-custom-ai-panel .relative.flex-none [tabindex='-1']:has(img[src*='assistant.png']) {
+  background-color: #fff3bf !important;
+}
+
+/* Keep tool-card text readable after removing generic text overrides */
+.qmap-custom-ai-panel .opacity-50 .text-tiny,
+.qmap-custom-ai-panel .opacity-50 .text-sm,
+.qmap-custom-ai-panel .opacity-50 td,
+.qmap-custom-ai-panel .opacity-50 th,
+.qmap-custom-ai-panel .opacity-50 span,
+.qmap-custom-ai-panel .opacity-50 div {
+  color: #111827 !important;
+}
+
+/* Robust assistant text color override */
+.qmap-custom-ai-panel #chat-message-list .min-h-8,
+.qmap-custom-ai-panel #chat-message-list .min-h-8 * {
+  color: #111111 !important;
+}
+
+/* User bubble text aligned with assistant text */
+.qmap-custom-ai-panel #chat-message-list .bg-content3,
+.qmap-custom-ai-panel #chat-message-list .bg-content3 * {
+  color: #111111 !important;
+}
+
+.qmap-custom-ai-panel #chat-message-list .bg-content3 {
+  background: var(--qmap-user-chat-bg) !important;
+}
+
+/* AI send button: match Add Data yellow style */
+.qmap-custom-ai-panel [data-testid='send-button'] {
+  background: #f7c600 !important;
+  border-color: #f7c600 !important;
+  color: #111111 !important;
+}
+
+.qmap-custom-ai-panel [data-testid='stop-button'] {
+  background: #f7c600 !important;
+  border-color: #f7c600 !important;
+  color: #111111 !important;
+}
+
+.qmap-custom-ai-panel [data-testid='send-button']:hover:not(:disabled) {
+  background: #ffd336 !important;
+  border-color: #ffd336 !important;
+  color: #111111 !important;
+}
+
+.qmap-custom-ai-panel [data-testid='stop-button']:hover:not(:disabled) {
+  background: #ffd336 !important;
+  border-color: #ffd336 !important;
+  color: #111111 !important;
+}
+
+.qmap-custom-ai-panel [data-testid='send-button']:disabled {
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+  color: #9ca3af !important;
+}
+
+.qmap-custom-ai-panel [data-testid='stop-button']:disabled {
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+  color: #9ca3af !important;
+}
+
+.qmap-custom-ai-panel [data-testid='send-button'] .text-primary-foreground,
+.qmap-custom-ai-panel [data-testid='stop-button'] .text-primary-foreground,
+.qmap-custom-ai-panel [data-testid='send-button'] svg,
+.qmap-custom-ai-panel [data-testid='stop-button'] svg,
+.qmap-custom-ai-panel [data-testid='send-button'] [class*='text-primary-foreground'] {
+  color: #111111 !important;
+}
+
+/* Footer disclaimer spacing: keep visible above bottom handle/border */
+.qmap-custom-ai-panel p.text-gray-400.dark\:text-gray-600 {
+  margin-bottom: 10px !important;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+  z-index: 2000 !important;
+}
+
+.ReactModalPortal .list-selector {
+  background: #ffffff !important;
+  border: 1px solid #cfd6e4 !important;
+}
+
+.ReactModalPortal .list-selector .list__item {
+  background: transparent !important;
+}
+
+.ReactModalPortal .list-selector .list__item:hover {
+  background: #eef2f7 !important;
+}
+
+.ReactModalPortal .list-selector .list__item__anchor {
+  color: #111827 !important;
+}
+
+/* q-map: wider "Aggiungi dati" button in left side panel */
+.side-panel--container .add-data-button {
+  width: 120px !important;
+}
+
+/* Keep custom profile tab as first item in side-panel toggle row */
+.side-panel__tab[data-for='profile-nav'] {
+  order: -1;
+}
+
+/* q-map: side panel collapse button hover text/icon color */
+.side-bar__close:hover {
+  color: #ffffff !important;
+}
+
+.side-bar__close:hover svg,
+.side-bar__close:hover .data-ex-icons-arrowright,
+.side-bar__close:hover .data-ex-icons-arrowright path {
+  color: #ffffff !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.qmap-iframe-export-container {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1200;
+  pointer-events: none;
+}
+
+.qmap-iframe-export-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.qmap-iframe-export-button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid rgba(208, 43, 219, 0.72);
+  border-radius: 0;
+  padding: 0.62rem 0.9rem;
+  background: rgba(11, 14, 20, 0.95);
+  color: var(--qh-magenta, #d02bdb);
+  opacity: 1;
+  font-family: 'Rajdhani', 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(208, 43, 219, 0.3),
+    0 0 9px rgba(208, 43, 219, 0.22);
+  text-shadow: 0 0 6px rgba(208, 43, 219, 0.34);
+  animation: map-overlay-toggle-neon 4.8s ease-in-out infinite;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, opacity 0.24s ease;
+}
+
+.qmap-iframe-cancel-button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(170, 180, 200, 0.55);
+  border-radius: 0;
+  padding: 0.62rem 0.9rem;
+  background: rgba(11, 14, 20, 0.88);
+  color: #cbd5e1;
+  font-family: 'Rajdhani', 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(170, 180, 200, 0.18);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, opacity 0.24s ease;
+}
+
+.qmap-iframe-cancel-button:hover {
+  border-color: rgba(203, 213, 225, 0.8);
+  color: #f1f5f9;
+  box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.24);
+}
+
+.qmap-iframe-cancel-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.qmap-iframe-export-button:hover {
+  border-color: rgba(234, 110, 241, 0.85);
+  color: #ea6ef1;
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgba(234, 110, 241, 0.36),
+    0 0 13px rgba(234, 110, 241, 0.3);
+}
+
+.qmap-iframe-export-button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+  animation: none;
+  box-shadow:
+    0 0 0 1px rgba(208, 43, 219, 0.22),
+    0 0 7px rgba(208, 43, 219, 0.15);
+}
+
+@keyframes map-overlay-toggle-neon {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(208, 43, 219, 0.3),
+      0 0 9px rgba(208, 43, 219, 0.22);
+    text-shadow: 0 0 6px rgba(208, 43, 219, 0.34);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(234, 110, 241, 0.4),
+      0 0 14px rgba(234, 110, 241, 0.34);
+    text-shadow: 0 0 8px rgba(234, 110, 241, 0.45);
+  }
+}
+
+.qmap-iframe-export-button .map-overlay-toggle-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qmap-iframe-export-button > span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.qmap-iframe-export-button .map-overlay-toggle-label {
+  transform: translateY(-1px);
+}
+
+.qmap-iframe-export-button .map-overlay-toggle-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.qmap-iframe-export-error {
+  pointer-events: auto;
+  margin-top: 8px;
+  max-width: 320px;
+  padding: 8px 10px;
+  border: 1px solid rgba(239, 68, 68, 0.7);
+  background: rgba(35, 12, 12, 0.92);
+  color: #fecaca;
+  font-size: 12px;
+  line-height: 1.35;
+}

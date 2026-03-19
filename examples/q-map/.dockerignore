@@ -1,0 +1,7 @@
+node_modules
+test-results
+playwright-report
+.tmp
+backends/logs
+backends/q-storage-backend/data
+backends/q-vector-tiles/postgres/data

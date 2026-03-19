@@ -1,0 +1,141 @@
+name: q-map UX Regression
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'examples/q-map/**'
+      - 'src/**'
+      - '.github/workflows/q-map-ux-regression.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'examples/q-map/**'
+      - 'src/**'
+      - '.github/workflows/q-map-ux-regression.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '30 2 * * *'
+
+jobs:
+  ux-regression:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Project pins Node 18 / Yarn 4 via Volta.
+      - uses: volta-cli/action@v4
+
+      - name: Install q-map dependencies
+        working-directory: examples/q-map
+        run: yarn install
+
+      - name: Install Playwright browser
+        working-directory: examples/q-map
+        run: npx playwright install --with-deps chromium
+
+      - name: Start q-map backends
+        working-directory: examples/q-map/backends
+        run: docker compose up -d --build
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:3001/health >/dev/null \
+              && curl -fsS http://127.0.0.1:3005/health >/dev/null \
+              && curl -fsS http://127.0.0.1:3004/health >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backends did not become healthy in time" >&2
+          docker compose -f examples/q-map/backends/docker-compose.yaml ps || true
+          exit 1
+
+      - name: Run UX regression suite
+        working-directory: examples/q-map
+        run: yarn test:e2e tests/e2e/ux-regression.spec.ts
+
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q-map-playwright-artifacts
+          path: |
+            examples/q-map/test-results
+            examples/q-map/playwright-report
+          if-no-files-found: ignore
+
+      - name: Stop q-map backends
+        if: always()
+        working-directory: examples/q-map/backends
+        run: docker compose down -v
+
+  assistant-live-strict-nightly:
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      Q_ASSISTANT_API_KEY: ${{ secrets.Q_ASSISTANT_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: volta-cli/action@v4
+
+      - name: Validate assistant provider secret
+        run: |
+          if [ -z "${Q_ASSISTANT_API_KEY}" ] && [ -z "${OPENROUTER_API_KEY}" ]; then
+            echo "Missing Q_ASSISTANT_API_KEY/OPENROUTER_API_KEY secret required for live assistant nightly gate." >&2
+            exit 1
+          fi
+
+      - name: Install q-map dependencies
+        working-directory: examples/q-map
+        run: yarn install
+
+      - name: Install Playwright browser
+        working-directory: examples/q-map
+        run: npx playwright install --with-deps chromium
+
+      - name: Start q-map backends
+        working-directory: examples/q-map/backends
+        run: docker compose up -d --build
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..90}; do
+            if curl -fsS http://127.0.0.1:3001/health >/dev/null \
+              && curl -fsS http://127.0.0.1:3005/health >/dev/null \
+              && curl -fsS http://127.0.0.1:3004/health >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backends did not become healthy in time" >&2
+          docker compose -f examples/q-map/backends/docker-compose.yaml ps || true
+          exit 1
+
+      - name: Run strict assistant live gate
+        working-directory: examples/q-map
+        run: PW_SKIP_WEBSERVER=0 make assistant-live-gate-strict
+
+      - name: Upload assistant-live artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: q-map-assistant-live-strict-artifacts
+          path: |
+            examples/q-map/test-results
+            examples/q-map/playwright-report
+            examples/q-map/backends/logs
+          if-no-files-found: ignore
+
+      - name: Stop q-map backends
+        if: always()
+        working-directory: examples/q-map/backends
+        run: docker compose down -v

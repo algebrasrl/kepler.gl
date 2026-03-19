@@ -58,6 +58,7 @@ export function AiAssistantComponent() {
   const [datasetMetaData, setDatasetMetaData] = useState<string>('');
 
   const [ideas, setIdeas] = useState<{title: string; description: string}[]>([]);
+  const [ideasFetchDisabled, setIdeasFetchDisabled] = useState<boolean>(false);
 
   const [restartKey, setRestartKey] = useState<number>(0);
 
@@ -78,6 +79,10 @@ export function AiAssistantComponent() {
   restartChatRef.current = libraryRestartChat;
 
   const generateIdeas = async () => {
+    if (ideasFetchDisabled) {
+      return;
+    }
+
     try {
       const response = await temporaryPrompt({
         prompt: PROMPT_IDEAS,
@@ -90,17 +95,26 @@ export function AiAssistantComponent() {
         setIdeas(json);
       }
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const isQuotaOrRateLimit =
+        /quota exceeded|rate limit|too many requests|429/i.test(message);
+
+      if (isQuotaOrRateLimit) {
+        // Prevent repeated background calls when the provider rejects requests.
+        setIdeasFetchDisabled(true);
+      }
+
       console.error('Error generating ideas', error);
     }
   };
 
   useEffect(() => {
     // get ideas UI component
-    if (ideas.length === 0 && datasetMetaData.length > 0) {
+    if (!ideasFetchDisabled && ideas.length === 0 && datasetMetaData.length > 0) {
       generateIdeas();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datasetMetaData]);
+  }, [datasetMetaData, ideasFetchDisabled]);
 
   const onRestartAssistant = async () => {
     dispatch(updateAiAssistantMessages([]));

@@ -520,8 +520,12 @@ function KeplerGlFactory(
 
     /* private methods */
     _validateMapboxToken() {
-      const {mapboxApiAccessToken} = this.props;
-      if (!validateToken(mapboxApiAccessToken)) {
+      const {mapboxApiAccessToken, mapStyle} = this.props;
+      const currentStyle = mapStyle?.mapStyles?.[mapStyle?.styleType];
+      const requiresMapboxToken =
+        Boolean(currentStyle?.accessToken) || String(currentStyle?.url || '').trim().startsWith('mapbox://');
+
+      if (requiresMapboxToken && !validateToken(mapboxApiAccessToken)) {
         Console.warn(MISSING_MAPBOX_TOKEN);
       }
     }

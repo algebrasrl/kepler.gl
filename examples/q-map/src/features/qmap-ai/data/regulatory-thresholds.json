@@ -1,0 +1,340 @@
+{
+  "schema": "qmap.regulatory_thresholds.v2",
+  "sources": {
+    "eu_current": "Direttiva 2008/50/CE + Direttiva 2004/107/CE",
+    "italy": "D.Lgs. 155/2010",
+    "eu_2030": "Direttiva UE 2024/2881 (in vigore dal 2030-01-01, recepimento entro 2026-12-11)",
+    "who": "WHO Air Quality Guidelines 2021"
+  },
+  "note": "I limiti EU/Italy sono identici (recepimento diretto). Le linee guida WHO sono più restrittive e non vincolanti.",
+  "thresholds": [
+    {
+      "parameter": "PM10",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "pm10_annual",
+          "description": "Valore limite annuale per la protezione della salute umana",
+          "averaging": "annual",
+          "value": 40,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "pm10_daily",
+          "description": "Valore limite giornaliero (media 24h)",
+          "averaging": "daily",
+          "value": 50,
+          "maxExceedances": 35,
+          "percentileEquivalent": 90.4,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "pm10_who_annual", "averaging": "annual", "value": 15, "reference": "WHO AQG 2021" },
+        { "id": "pm10_who_daily", "averaging": "daily", "value": 45, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "annual", "value": 20, "reference": "Direttiva UE 2024/2881" },
+        { "averaging": "daily", "value": 45, "maxExceedances": 18, "reference": "Direttiva UE 2024/2881" }
+      ]
+    },
+    {
+      "parameter": "PM2.5",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "pm25_annual",
+          "description": "Valore limite annuale",
+          "averaging": "annual",
+          "value": 25,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "pm25_exposure_obligation",
+          "description": "Obbligo di concentrazione dell'esposizione (nazionale)",
+          "averaging": "annual",
+          "value": 20,
+          "maxExceedances": null,
+          "reference": "Allegato XIV Sezione B, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "pm25_who_annual", "averaging": "annual", "value": 5, "reference": "WHO AQG 2021" },
+        { "id": "pm25_who_daily", "averaging": "daily", "value": 15, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "annual", "value": 10, "reference": "Direttiva UE 2024/2881" },
+        { "averaging": "daily", "value": 25, "maxExceedances": 18, "reference": "Direttiva UE 2024/2881", "note": "Nuovo limite giornaliero introdotto dalla revisione 2024" }
+      ]
+    },
+    {
+      "parameter": "NO2",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "no2_annual",
+          "description": "Valore limite annuale",
+          "averaging": "annual",
+          "value": 40,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "no2_hourly",
+          "description": "Valore limite orario",
+          "averaging": "hourly",
+          "value": 200,
+          "maxExceedances": 18,
+          "percentileEquivalent": 99.8,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "no2_alert",
+          "description": "Soglia di allarme (3h consecutive)",
+          "averaging": "hourly",
+          "value": 400,
+          "maxExceedances": null,
+          "reference": "Allegato XII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "no2_critical_vegetation",
+          "description": "Livello critico per la protezione della vegetazione",
+          "averaging": "annual",
+          "value": 30,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "no2_who_annual", "averaging": "annual", "value": 10, "reference": "WHO AQG 2021" },
+        { "id": "no2_who_daily", "averaging": "daily", "value": 25, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "annual", "value": 20, "reference": "Direttiva UE 2024/2881" },
+        { "averaging": "hourly", "value": 200, "maxExceedances": 3, "reference": "Direttiva UE 2024/2881", "note": "Superamenti ridotti da 18 a 3" }
+      ]
+    },
+    {
+      "parameter": "O3",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "o3_info",
+          "description": "Soglia di informazione (media 1h)",
+          "averaging": "hourly",
+          "value": 180,
+          "maxExceedances": null,
+          "reference": "Allegato XII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "o3_alert",
+          "description": "Soglia di allarme (media 1h)",
+          "averaging": "hourly",
+          "value": 240,
+          "maxExceedances": null,
+          "reference": "Allegato XII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "o3_target",
+          "description": "Valore obiettivo per la salute (massima media giornaliera su 8h)",
+          "averaging": "8h_daily_max",
+          "value": 120,
+          "maxExceedances": 25,
+          "note": "Media su 3 anni",
+          "reference": "Allegato VII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "o3_longterm",
+          "description": "Obiettivo a lungo termine (massima media giornaliera su 8h, nessun superamento)",
+          "averaging": "8h_daily_max",
+          "value": 120,
+          "maxExceedances": 0,
+          "reference": "Allegato VII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "o3_aot40_vegetation",
+          "description": "AOT40 per la protezione della vegetazione (maggio-luglio)",
+          "averaging": "aot40_seasonal",
+          "value": 18000,
+          "unit_override": "µg/m³·h",
+          "maxExceedances": null,
+          "note": "Media su 5 anni",
+          "reference": "Allegato VII, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "o3_who_8h", "averaging": "8h_daily_max", "value": 100, "reference": "WHO AQG 2021" },
+        { "id": "o3_who_peak_season", "averaging": "peak_season", "value": 60, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "8h_daily_max", "value": 120, "maxExceedances": 18, "reference": "Direttiva UE 2024/2881", "note": "Diventa valore LIMITE (vincolante), superamenti ridotti da 25 a 18" }
+      ]
+    },
+    {
+      "parameter": "SO2",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "so2_hourly",
+          "description": "Valore limite orario",
+          "averaging": "hourly",
+          "value": 350,
+          "maxExceedances": 24,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "so2_daily",
+          "description": "Valore limite giornaliero (media 24h)",
+          "averaging": "daily",
+          "value": 125,
+          "maxExceedances": 3,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        },
+        {
+          "id": "so2_alert",
+          "description": "Soglia di allarme (3h consecutive)",
+          "averaging": "hourly",
+          "value": 500,
+          "maxExceedances": null,
+          "reference": "Allegato XII, D.Lgs. 155/2010"
+        },
+        {
+          "id": "so2_critical_vegetation",
+          "description": "Livello critico per la protezione della vegetazione e degli ecosistemi",
+          "averaging": "annual",
+          "value": 20,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "so2_who_daily", "averaging": "daily", "value": 40, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "daily", "value": 50, "maxExceedances": 18, "reference": "Direttiva UE 2024/2881", "note": "Ridotto da 125 a 50 µg/m³" }
+      ]
+    },
+    {
+      "parameter": "CO",
+      "unit": "mg/m³",
+      "limits": [
+        {
+          "id": "co_8h",
+          "description": "Massima media giornaliera su 8h",
+          "averaging": "8h_daily_max",
+          "value": 10,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "co_who_24h", "averaging": "daily", "value": 4, "reference": "WHO AQG 2021" },
+        { "id": "co_who_8h", "averaging": "8h_daily_max", "value": 10, "reference": "WHO AQG 2021" },
+        { "id": "co_who_1h", "averaging": "hourly", "value": 35, "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": []
+    },
+    {
+      "parameter": "Benzene",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "benzene_annual",
+          "description": "Valore limite annuale",
+          "averaging": "annual",
+          "value": 5,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [
+        { "id": "benzene_who_note", "note": "Cancerogeno classe 1 IARC, nessuna soglia sicura identificata", "reference": "WHO AQG 2021" }
+      ],
+      "eu_2030": [
+        { "averaging": "annual", "value": 3.4, "reference": "Direttiva UE 2024/2881" }
+      ]
+    },
+    {
+      "parameter": "Pb",
+      "unit": "µg/m³",
+      "limits": [
+        {
+          "id": "pb_annual",
+          "description": "Valore limite annuale (piombo)",
+          "averaging": "annual",
+          "value": 0.5,
+          "maxExceedances": null,
+          "reference": "Allegato XI, D.Lgs. 155/2010"
+        }
+      ],
+      "who": [],
+      "eu_2030": []
+    },
+    {
+      "parameter": "As",
+      "unit": "ng/m³",
+      "limits": [
+        {
+          "id": "as_annual",
+          "description": "Valore obiettivo annuale (arsenico nel PM10)",
+          "averaging": "annual",
+          "value": 6,
+          "maxExceedances": null,
+          "reference": "D.Lgs. 155/2010 (Direttiva 2004/107/CE)"
+        }
+      ],
+      "who": [],
+      "eu_2030": []
+    },
+    {
+      "parameter": "Cd",
+      "unit": "ng/m³",
+      "limits": [
+        {
+          "id": "cd_annual",
+          "description": "Valore obiettivo annuale (cadmio nel PM10)",
+          "averaging": "annual",
+          "value": 5,
+          "maxExceedances": null,
+          "reference": "D.Lgs. 155/2010 (Direttiva 2004/107/CE)"
+        }
+      ],
+      "who": [],
+      "eu_2030": []
+    },
+    {
+      "parameter": "Ni",
+      "unit": "ng/m³",
+      "limits": [
+        {
+          "id": "ni_annual",
+          "description": "Valore obiettivo annuale (nichel nel PM10)",
+          "averaging": "annual",
+          "value": 20,
+          "maxExceedances": null,
+          "reference": "D.Lgs. 155/2010 (Direttiva 2004/107/CE)"
+        }
+      ],
+      "who": [],
+      "eu_2030": []
+    },
+    {
+      "parameter": "BaP",
+      "unit": "ng/m³",
+      "limits": [
+        {
+          "id": "bap_annual",
+          "description": "Valore obiettivo annuale (benzo[a]pirene nel PM10)",
+          "averaging": "annual",
+          "value": 1,
+          "maxExceedances": null,
+          "reference": "D.Lgs. 155/2010 (Direttiva 2004/107/CE)"
+        }
+      ],
+      "who": [],
+      "eu_2030": []
+    }
+  ]
+}

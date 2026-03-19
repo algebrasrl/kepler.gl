@@ -154,6 +154,7 @@ export function LayerColorLegendFactory(
     actionIcons
   }) => {
     const intl = useIntl();
+    const intlMessages = (intl as any).messages || {};
     const enableColorBy = description.measure;
     const {scale, field, domain, range, property, fixed} = colorChannel;
     const [colorScale, colorField, colorDomain] = [scale, field, domain].map(k => config[k]);
@@ -212,13 +213,17 @@ export function LayerColorLegendFactory(
               ) : (
                 <SingleColorLegend
                   color={config.visConfig[property] || config[property] || config.color}
-                  label={intl.formatMessage({
-                    id: `mapLegend.layers.${layer.type}.singleColor.${colorChannel.key}`,
-                    defaultMessage: intl.formatMessage({
-                      id: `mapLegend.layers.default.singleColor.${colorChannel.key}`,
+                  label={(() => {
+                    const typedLabelKey = `mapLegend.layers.${layer.type}.singleColor.${colorChannel.key}`;
+                    const defaultLabelKey = `mapLegend.layers.default.singleColor.${colorChannel.key}`;
+                    const resolvedLabelKey = intlMessages[typedLabelKey]
+                      ? typedLabelKey
+                      : defaultLabelKey;
+                    return intl.formatMessage({
+                      id: resolvedLabelKey,
                       defaultMessage: ' ' // mustn't be empty string or id will be used
-                    })
-                  })}
+                    });
+                  })()}
                 />
               )}
             </div>

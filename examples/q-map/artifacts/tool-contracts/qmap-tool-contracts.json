@@ -1,0 +1,3187 @@
+{
+  "schema": "qmap.tool_contracts.v1",
+  "version": "2026-03-18",
+  "source": {
+    "manifestSchema": "qmap.tool_manifest.v1",
+    "manifestVersion": "2026-03-04"
+  },
+  "defaults": {
+    "argsSchema": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true
+    },
+    "responseContract": {
+      "schema": "qmap.tool_result.v1",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": "string"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "datasetName": {
+          "type": "string"
+        },
+        "datasetId": {
+          "type": "string"
+        },
+        "datasetRef": {
+          "type": "string"
+        },
+        "loadedDatasetName": {
+          "type": "string"
+        },
+        "loadedDatasetRef": {
+          "type": "string"
+        },
+        "outputFieldName": {
+          "type": "string"
+        },
+        "fieldCatalog": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "numericFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "styleableFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "defaultStyleField": {
+          "type": "string"
+        },
+        "aggregationOutputs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "fieldAliases": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "clarificationRequired": {
+          "type": "boolean"
+        },
+        "clarificationQuestion": {
+          "type": "string"
+        },
+        "clarificationOptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "details",
+        "success"
+      ],
+      "allowAdditionalProperties": true
+    }
+  },
+  "tools": {
+    "addComputedField": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "expression",
+        "outputFieldName",
+        "useActiveFilters",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "adjacencyGraphFromPolygons": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField",
+        "idField",
+        "predicate",
+        "useActiveFilters",
+        "maxFeatures",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "aggregateDatasetToH3": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "resolution",
+        "valueField",
+        "operations",
+        "distinctField",
+        "groupByFields",
+        "weightMode",
+        "targetDatasetName",
+        "maxFeatures",
+        "useActiveFilters",
+        "showOnMap"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "aggregationOutputs",
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "aggregateQMapTimeSeries": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "timeFieldName",
+        "valueFieldName",
+        "windowUnit",
+        "windowSize",
+        "aggregation",
+        "groupFieldName",
+        "groupValue",
+        "detectTrend",
+        "materialize",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "applyQMapStylePreset": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "presetName",
+        "datasetName",
+        "layerName"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "basemap": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "boxplotTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "bubbleChartTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "bufferAndSummarize": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
+        "radiusKm",
+        "targetValueField",
+        "aggregation",
+        "outputFieldName",
+        "useActiveFilters",
+        "maxSourceFeatures",
+        "maxTargetFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "aggregationOutputs",
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "outputFieldName",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "categoryBarsTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "clipDatasetByBoundary": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "boundaryDatasetName",
+        "mode"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "clipQMapDatasetByGeometry": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "clipDatasetName",
+        "sourceGeometryField",
+        "clipGeometryField",
+        "mode",
+        "useActiveFilters",
+        "maxSourceFeatures",
+        "maxClipFeatures",
+        "includeIntersectionMetrics",
+        "includeDistinctPropertyCounts",
+        "includeDistinctPropertyValueCounts",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapBivariateCorrelation": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldA",
+        "fieldB",
+        "weightType",
+        "k",
+        "permutations",
+        "significance",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapCompositeIndex": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapDataQualityReport": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapDatasetDelta": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "baselineDatasetName",
+        "currentDatasetName",
+        "joinKeyField",
+        "numericFields",
+        "deltaMode",
+        "changeThresholdPct",
+        "includeUnchangedRows",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapEquityIndices": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "valueField",
+        "totalField",
+        "groupAField",
+        "groupBField",
+        "topK",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapHotspotAnalysis": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "valueField",
+        "weightType",
+        "k",
+        "significance",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "computeQMapSpatialAutocorrelation": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "valueField",
+        "weightType",
+        "k",
+        "permutations",
+        "significance",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "countQMapRows": {
+      "categories": [
+        "workflow-control"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "operator",
+        "value"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "datasetName": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "datasetName"
+        ],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "coverageQualityReport": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "leftDatasetName",
+        "rightDatasetName",
+        "leftGeometryField",
+        "rightGeometryField",
+        "predicate",
+        "rightValueField",
+        "useActiveFilters",
+        "maxLeftFeatures",
+        "maxRightFeatures"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "createDatasetFromCurrentFilters": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "createDatasetFromFilter": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "createDatasetWithGeometryArea": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "outputFieldName",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "createDatasetWithNormalizedField": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "outputFieldName",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "debugQMapActiveFilters": {
+      "categories": [
+        "workflow-control"
+      ],
+      "inputKeys": [
+        "datasetName"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "deriveQMapDatasetBbox": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField",
+        "sampleLimit",
+        "paddingPercent"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "describeQMapField": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "useActiveFilters",
+        "percentiles"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "dissolveQMapDatasetByField": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField",
+        "groupByField",
+        "useActiveFilters",
+        "maxFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "distinctQMapFieldValues": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "limit"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "drawQMapBoundingBox": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField",
+        "minLon",
+        "minLat",
+        "maxLon",
+        "maxLat",
+        "centerLon",
+        "centerLat",
+        "halfSizeKm",
+        "useActiveFilters",
+        "maxFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "eraseQMapDatasetByGeometry": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "maskDatasetName",
+        "sourceGeometryField",
+        "maskGeometryField",
+        "useActiveFilters",
+        "maxSourceFeatures",
+        "maxMaskFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "fitQMapToDataset": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "useActiveFilters",
+        "maxFeatures"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "geocoding": {
+      "categories": [
+        "mobility-access"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "getQCumberDatasetHelp": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [
+        "providerId",
+        "datasetId"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "datasetId",
+          "providerId"
+        ],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "grammarAnalyzeTool": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "histogramTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "isochrone": {
+      "categories": [
+        "mobility-access"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "joinQMapDatasetsOnH3": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "leftDatasetName",
+        "rightDatasetName",
+        "leftH3Field",
+        "rightH3Field",
+        "includeRightFields",
+        "metric",
+        "joinType",
+        "showOnMap",
+        "minCoveragePct",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "lineChartTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "listQCumberDatasets": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [
+        "providerId"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQCumberProviders": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [
+        "locale"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQMapChartTools": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQMapCloudMaps": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [
+        "provider"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "maps": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "details",
+          "maps",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQMapDatasets": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "datasets": {
+            "type": "array"
+          },
+          "layers": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "datasets",
+          "details",
+          "layers",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQMapToolCategories": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "listQMapToolsByCategory": {
+      "categories": [
+        "discovery"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "loadCloudMapAndWait": {
+      "categories": [
+        "map-io"
+      ],
+      "inputKeys": [
+        "provider",
+        "mapId",
+        "timeoutMs"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "mapId": {
+            "type": "string"
+          },
+          "timeoutMs": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "mapId"
+        ],
+        "additionalProperties": false
+      },
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "details",
+          "loadedDatasetRef",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "loadData": {
+      "categories": [
+        "map-io"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": true
+      }
+    },
+    "loadQMapCloudMap": {
+      "categories": [
+        "map-io"
+      ],
+      "inputKeys": [
+        "provider",
+        "mapId"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "mapId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "mapId"
+        ],
+        "additionalProperties": false
+      },
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "details",
+          "loadedDatasetRef",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "mapBoundary": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "mergeQMapDatasets": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetNames",
+        "newDatasetName",
+        "showOnMap",
+        "showOnlyMergedLayer",
+        "includeSourceDatasetField",
+        "includeSourceDatasetIdField",
+        "geometryMode",
+        "latitudeField",
+        "longitudeField",
+        "sourceCrs",
+        "outputGeometryField",
+        "strictValidation"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "nearestFeatureJoin": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
+        "k",
+        "maxDistanceKm",
+        "includeTargetField",
+        "useActiveFilters",
+        "maxSourceFeatures",
+        "maxTargetFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "openQMapPanel": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "panelId"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "overlayDifference": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetAName",
+        "datasetBName",
+        "geometryFieldA",
+        "geometryFieldB",
+        "includeIntersection",
+        "includeADifference",
+        "includeBDifference",
+        "useActiveFilters",
+        "maxFeaturesA",
+        "maxFeaturesB",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "overlayIntersection": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetAName",
+        "datasetBName",
+        "geometryFieldA",
+        "geometryFieldB",
+        "useActiveFilters",
+        "maxFeaturesA",
+        "maxFeaturesB",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "overlaySymmetricDifference": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetAName",
+        "datasetBName",
+        "geometryFieldA",
+        "geometryFieldB",
+        "useActiveFilters",
+        "maxFeaturesA",
+        "maxFeaturesB",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "overlayUnion": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetAName",
+        "datasetBName",
+        "geometryFieldA",
+        "geometryFieldB",
+        "useActiveFilters",
+        "maxFeaturesA",
+        "maxFeaturesB",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "paintQMapH3Cell": {
+      "categories": [
+        "h3-editing"
+      ],
+      "inputKeys": [
+        "lat",
+        "lng",
+        "resolution"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "paintQMapH3Cells": {
+      "categories": [
+        "h3-editing"
+      ],
+      "inputKeys": [
+        "resolution",
+        "points"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "paintQMapH3Ring": {
+      "categories": [
+        "h3-editing"
+      ],
+      "inputKeys": [
+        "centerH3",
+        "k",
+        "resolution",
+        "includeCenter"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "pcpTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "populateTassellationFromAdminUnits": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "tessellationDatasetName",
+        "sourceDatasetName",
+        "sourceValueField",
+        "allocationMode",
+        "allocationSubMode",
+        "valueSemantics",
+        "aggregation",
+        "resolution",
+        "weightMode",
+        "joinType",
+        "showOnMap",
+        "minCoveragePct",
+        "targetValueFieldName",
+        "newDatasetName",
+        "useActiveFilters"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "aggregationOutputs",
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "outputFieldName",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "previewQMapDatasetRows": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "limit",
+        "fields",
+        "orderBy",
+        "sortDirection"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "queryQCumberDataset": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "providerId",
+        "datasetId",
+        "filters",
+        "orderBy",
+        "orderDirection",
+        "limit",
+        "offset",
+        "loadToMap",
+        "showOnMap",
+        "spatialBbox",
+        "expectedAdminType",
+        "inferPointsFromLatLon"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array"
+          },
+          "orderBy": {
+            "type": "string"
+          },
+          "orderDirection": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "loadToMap": {
+            "type": "boolean"
+          },
+          "showOnMap": {
+            "type": "boolean"
+          },
+          "spatialBbox": {
+            "type": "array"
+          },
+          "expectedAdminType": {
+            "type": "string"
+          },
+          "inferPointsFromLatLon": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "queryQCumberDatasetSpatial": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "providerId",
+        "datasetId",
+        "filters",
+        "orderBy",
+        "orderDirection",
+        "limit",
+        "offset",
+        "loadToMap",
+        "showOnMap",
+        "spatialBbox"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array"
+          },
+          "orderBy": {
+            "type": "string"
+          },
+          "orderDirection": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "loadToMap": {
+            "type": "boolean"
+          },
+          "showOnMap": {
+            "type": "boolean"
+          },
+          "spatialBbox": {
+            "type": "array"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "queryQCumberTerritorialUnits": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "providerId",
+        "datasetId",
+        "filters",
+        "orderBy",
+        "orderDirection",
+        "limit",
+        "offset",
+        "loadToMap",
+        "showOnMap",
+        "expectedAdminType"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array"
+          },
+          "orderBy": {
+            "type": "string"
+          },
+          "orderDirection": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "loadToMap": {
+            "type": "boolean"
+          },
+          "showOnMap": {
+            "type": "boolean"
+          },
+          "expectedAdminType": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "rankQMapDatasetRows": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "metricFieldName",
+        "topN",
+        "sortDirection",
+        "fields"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "reprojectQMapDatasetCrs": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "sourceCrs",
+        "targetCrs",
+        "geometryField",
+        "latitudeField",
+        "longitudeField",
+        "outputGeometryField",
+        "outputLatitudeField",
+        "outputLongitudeField",
+        "useActiveFilters",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "roads": {
+      "categories": [
+        "mobility-access"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "routing": {
+      "categories": [
+        "mobility-access"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "saveDataToMap": {
+      "categories": [
+        "map-io"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": true
+      }
+    },
+    "scatterplotTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "searchQMapFieldValues": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "contains",
+        "limit"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapFieldEqualsFilter": {
+      "categories": [
+        "workflow-control"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "value"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerColorByField": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "layerName",
+        "mode",
+        "classes",
+        "palette",
+        "reverse",
+        "lowColor",
+        "highColor",
+        "minValue",
+        "maxValue",
+        "applyToStroke"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerColorByStatsThresholds": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "strategy",
+        "layerName",
+        "classes",
+        "quantiles",
+        "palette",
+        "reverse",
+        "applyToStroke"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerColorByThresholds": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "thresholds",
+        "layerName",
+        "palette",
+        "reverse",
+        "applyToStroke"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerHeightByField": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "layerName",
+        "scale",
+        "elevationScale",
+        "maxHeight"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerOrder": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "layerNameOrId",
+        "position",
+        "referenceLayerNameOrId"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerSolidColor": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "layerName",
+        "fillColor",
+        "strokeColor",
+        "fillOpacity",
+        "strokeOpacity",
+        "hideFill"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapLayerVisibility": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "layerNameOrId",
+        "visible"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "setQMapTooltipFields": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldNames",
+        "mode",
+        "enableTooltip"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "showOnlyQMapLayer": {
+      "categories": [
+        "map-styling"
+      ],
+      "inputKeys": [
+        "layerNameOrId"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "simplifyQMapDatasetGeometry": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField",
+        "tolerance",
+        "minAreaM2",
+        "useActiveFilters",
+        "maxFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "spatialJoinByPredicate": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "leftDatasetName",
+        "rightDatasetName",
+        "leftGeometryField",
+        "rightGeometryField",
+        "predicate",
+        "rightValueField",
+        "aggregations",
+        "includeRightFields",
+        "useActiveFilters",
+        "maxLeftFeatures",
+        "maxRightFeatures",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "splitQMapPolygonByLine": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "polygonDatasetName",
+        "lineDatasetName",
+        "polygonGeometryField",
+        "lineGeometryField",
+        "polygonRowIndex",
+        "lineRowIndex",
+        "lineBufferMeters",
+        "useActiveFilters",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "summarizeQMapTimeSeries": {
+      "categories": [
+        "query-inspection"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "timeFieldName",
+        "valueFieldName",
+        "groupFieldName",
+        "groupValue",
+        "limit"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "tassellateDatasetLayer": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "resolution",
+        "targetDatasetName",
+        "maxFeatures",
+        "useActiveFilters",
+        "appendToExisting",
+        "showOnMap",
+        "materializeFilteredDataset"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "tassellateSelectedGeometry": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "resolution",
+        "targetDatasetName",
+        "appendToExisting"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "waitForQMapDataset": {
+      "categories": [
+        "workflow-control"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "timeoutMs"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "datasetName": {
+            "type": "string"
+          },
+          "timeoutMs": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "datasetName"
+        ],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "wordCloudTool": {
+      "categories": [
+        "chart-visualization"
+      ],
+      "inputKeys": [],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "zonalStatsByAdmin": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "adminDatasetName",
+        "valueDatasetName",
+        "adminGeometryField",
+        "valueGeometryField",
+        "valueField",
+        "aggregation",
+        "weightMode",
+        "useActiveFilters",
+        "maxAdminFeatures",
+        "maxValueFeatures",
+        "outputFieldName",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "responseContract": {
+        "schema": "qmap.tool_result.v1",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "datasetId": {
+            "type": "string"
+          },
+          "datasetRef": {
+            "type": "string"
+          },
+          "loadedDatasetName": {
+            "type": "string"
+          },
+          "loadedDatasetRef": {
+            "type": "string"
+          },
+          "outputFieldName": {
+            "type": "string"
+          },
+          "fieldCatalog": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "numericFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleableFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "defaultStyleField": {
+            "type": "string"
+          },
+          "aggregationOutputs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "fieldAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "clarificationRequired": {
+            "type": "boolean"
+          },
+          "clarificationQuestion": {
+            "type": "string"
+          },
+          "clarificationOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "aggregationOutputs",
+          "dataset",
+          "defaultStyleField",
+          "details",
+          "fieldCatalog",
+          "numericFields",
+          "outputFieldName",
+          "styleableFields",
+          "success"
+        ],
+        "allowAdditionalProperties": true
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "regressQMapFields": {
+      "categories": [
+        "statistical-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "dependentField",
+        "independentField",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "classifyQMapFieldBreaks": {
+      "categories": [
+        "statistical-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldName",
+        "classes",
+        "newDatasetName",
+        "classFieldName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "correlateQMapFields": {
+      "categories": [
+        "statistical-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "fieldNames"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "checkRegulatoryCompliance": {
+      "categories": [
+        "regulatory"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "parameterName",
+        "valueField",
+        "stationField",
+        "includeEu2030",
+        "includeWho"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "listRegulatoryThresholds": {
+      "categories": [
+        "regulatory"
+      ],
+      "inputKeys": [
+        "parameterName"
+      ],
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": true,
+        "bridgeOperation": false
+      }
+    },
+    "assessPopulationExposure": {
+      "categories": [
+        "regulatory"
+      ],
+      "inputKeys": [
+        "stationDatasetName",
+        "boundaryDatasetName",
+        "valueField",
+        "populationField",
+        "nameField",
+        "radiusKm",
+        "parameterName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "interpolateIDW": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "sourceDatasetName",
+        "valueField",
+        "resolution",
+        "power",
+        "maxNeighbors",
+        "maxDistanceKm",
+        "newDatasetName",
+        "showOnMap"
+      ],
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    }
+  }
+}

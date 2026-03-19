@@ -206,6 +206,12 @@ export default class IconLayer extends Layer {
   }
 
   getSvgIcons() {
+    if (getApplicationConfig().disableIconLayerRemoteSvgIcons) {
+      this.iconGeometry = {};
+      this.iconGeometryVersion += 1;
+      return;
+    }
+
     const fetchConfig = {
       method: 'GET',
       mode: 'cors',

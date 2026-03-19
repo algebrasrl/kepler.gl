@@ -1,0 +1,17 @@
+.git
+logs
+kong
+q-vector-tiles
+docker-compose*.yaml
+docker-compose*.yml
+docker-stack*.yml
+Makefile
+README.md
+switch-q-assistant.sh
+.env
+.env.example
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd

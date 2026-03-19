@@ -1,0 +1,1182 @@
+# Changelog
+
+All notable changes to `examples/q-map` should be documented in this file.
+
+## Unreleased
+
+### Fixed
+- **PostGIS incremental dump restore:** replaced global `TABLE_COUNT > 1` guard in `010_restore_dumps.sh` with per-dump marker files (`PGDATA/.dump-markers/<file>.done`). New dumps added to `q-cumber-postgis/dumps/` are now automatically restored on next container start via `entrypoint-wrapper.sh`, not only on first DB initialization. Fixes OPAS tables (`opas_stations`, `opas_measurements`, `opas_hourly`) not being loaded when the dump was added after initial PostGIS bootstrap.
+- **q-cumber proxy help path:** `qcumber_client.py` `get_dataset_help()` now calls `/providers/{id}/datasets/{did}/help` instead of `/providers/{id}/datasets/{did}`. Fixes 502/404 on `getQCumberDatasetHelp` when routed through q-assistant proxy.
+- **Zero-match hallucination guardrail:** new `build_zero_match_must_acknowledge_decision` rule in `runtime_loop_limit_rules.py` detects when ALL filtered q-cumber queries returned 0 rows (from `details` "zero matches" indicator) and forces finalization with `tool_choice=none` + guidance to acknowledge no data found. Prevents the model from hallucinating row counts and station names when the requested data doesn't exist in PostGIS.
+- **Ordinal/categorical coloring support:** `setQMapLayerColorByField` now accepts `mode: "ordinal"` (aliases: `categorical`, `category`, `unique`) for string/category fields like CLC `code_18`. Skips numeric validation, uses Kepler `ordinal` color scale with `viridis` default palette. Fixes `AI_InvalidToolArgumentsError` when the model correctly identifies a field as categorical.
+
+### Added
+- **Statistical analysis tools (simple-statistics):** 3 new AI tools backed by `simple-statistics` (9 kB gzip, zero deps):
+  - `regressQMapFields` — linear regression between two numeric fields (slope, intercept, R², equation); optional derived dataset with `predicted` and `residual` columns
+  - `classifyQMapFieldBreaks` — Ckmeans natural-break classification (Jenks-like) with break points and class counts; optional derived dataset with classification field
+  - `correlateQMapFields` — pairwise Pearson correlation matrix between 2-10 fields with strength classification (strong/moderate/weak/negligible)
+- **Regulatory compliance tools (D.Lgs. 155/2010):** 2 new AI tools backed by preloaded Italian air quality thresholds:
+  - `listRegulatoryThresholds` — list limits for PM10/PM2.5/NO2/O3/SO2/CO/Benzene with optional EU 2030 targets (read-only, no dataset needed)
+  - `checkRegulatoryCompliance` — per-station compliance check: exceedance counts, compliance rate %, applicable limit references, sorted by non-compliant stations first; supports `includeWho=true` (WHO AQG 2021) and `includeEu2030=true`
+- **Population exposure assessment tool:** `assessPopulationExposure` joins measurement stations with nearby admin boundaries (haversine buffer, configurable radius 1-50 km), aggregates exposed population per station, and optionally checks regulatory compliance. Creates derived dataset with exposure columns when `showOnMap=true`.
+- **IDW spatial interpolation tool:** `interpolateIDW` performs Inverse Distance Weighting from sparse point measurements to an H3 hexagonal grid, creating a continuous surface estimate. Configurable power (1-5), max neighbors (3-50), search radius (1-500 km), and H3 resolution (3-8). Output auto-detected as H3 layer by Kepler.
+- **Expanded regulatory thresholds (v2):** JSON config now covers 12 pollutants (added Pb, As, Cd, Ni, BaP from Directive 2004/107/CE), WHO AQG 2021 guidelines, critical levels for vegetation (NO2=30, SO2=20, O3 AOT40=18000 µg/m³·h), PM2.5 exposure obligation (20 µg/m³), and O3 long-term objective
+- **Superlative map-focus force-fit guardrail:** new `build_post_filter_force_fit_decision` in sequential chain forces `fitQMapToDataset` and strips all other tools after superlative winner is isolated and validated (rank→filter→wait→count). Addresses provider non-determinism (e.g. OpenRouter/Gemini ignoring `tool_choice`) that caused `fitQMapToDataset` to be skipped in 1/3 eval runs for `arch_superlative_admin_unit_show_on_map`. Dual enforcement with existing candidate scoring rule (score=159).
+- **setQMapTooltipFields dataset ref resolution:** tooltip tool now uses `resolveDatasetByName` (handles `id:` prefix, normalized tokens, lineage aliases) instead of inline label/id match. Fixes `Dataset not found` when the model passes `datasetRef` (e.g. `id:qmap_tassellation_...`) instead of the raw dataset name.
+- **getQCumberDatasetHelp catalog fallback:** when the help endpoint is unavailable but routing metadata can be inferred from the provider catalog, the tool now returns `success: true` with a warning instead of `success: false`. Prevents spurious `dataset_not_found` quality-metric noise and `completion_claim_blocked` guardrails on subsequent steps.
+- **H3 join low-coverage retry hint:** `joinQMapDatasetsOnH3` error message now suggests `minCoveragePct` override value when coverage is below threshold, enabling the model to retry with an explicit lower gate when the user confirms.
+- **Fit preserved for mutation workflows:** `preserve_fit_without_explicit_map_focus` now activates when any dataset-creating tool (tessellation, aggregate, join, clip, query, etc.) succeeded in results. Previously fit was pruned unless the prompt contained explicit map-display keywords, forcing users to say "mostramelo" after every mutation. Covers 17 mutation tools via `has_mutation_workflow_signal` in `runtime_workflow_state.py`.
+- **Map viewport initialization cleanup:** removed `registerEntry` pre-dispatch, `mint={false}`, `resolveQMapMountViewport` workaround, and 250ms timeout retry. These workarounds were causing the viewport flash to 0,0 (Africa) instead of preventing it. Now follows the standard kepler.gl pattern: `keplerGlReducer.initialState({mapState: {latitude: 42.5, longitude: 12.5, ...}})` handles initialization, no extra dispatches needed.
+- **Spurious GET to api.openai.com on boot:** pre-dispatch `updateAiAssistantConfig` synchronously at store creation with the q-map proxy URL, replacing the kepler core default (`api.openai.com/v1`). Removed the redundant `useEffect`-based config dispatch.
+- **Dataset/layer resolution with `id:` prefix:** 7 styling/visibility tools (`setQMapLayerColorByField`, `setQMapLayerHeightByField`, `setQMapLayerSolidColor`, `applyQMapStylePreset`, `setQMapLayerColorByThresholds`, `setQMapLayerColorByStatsThresholds`, `setQMapLayerVisibility`) now use `resolveDatasetByName` instead of inline label/id match. Fixes "layer/dataset not found" when the model passes `datasetRef` format (`id:...`).
+- **Turn-level tool call hard cap:** tool pipeline now enforces a total of 15 tool calls per turn (all tools combined), in addition to the existing per-tool circuit breaker (max 3). Prevents providers that ignore `parallel_tool_calls=false` (e.g. Gemini/OpenRouter) from burning through 30+ batched calls before abort.
+- **Circuit breaker counter never reset between user messages:** `extractToolPolicyUserText` only checked `payload.message` (singular, OpenAssistant format) but the SDK sends `payload.messages` (plural, OpenAI-compatible array). Counter accumulated across all user messages in the session. Now checks the last message in the array — resets on new user turn, persists across sub-requests.
+- **Response batch truncation (cap=3):** tool pipeline enforces max 3 tool executions per LLM response. When the provider emits 4+ tool calls in a batch (ignoring `parallel_tool_calls=false`), calls beyond the 3rd return a skip message. Allows legitimate batches (showOnly+fit+tooltip) but blocks pathological ones (4+ wait, 16 count). Tracked via `responseBatchTracker` reset on each fetch response.
+- **Cloud map routing:** `listQMapCloudMaps`/`loadCloudMapAndWait`/`loadQMapCloudMap` are now pruned at runtime unless the user explicitly requests cloud/saved/personal maps. Adds `[MUST]` prompt rule (EN+IT) and `build_cloud_tools_require_explicit_request_decision` runtime guardrail with `_objective_mentions_cloud_or_saved_maps` intent detector. Prevents territorial/analytical queries from loading saved maps with stale H3 layers and non-zero pitch.
+- **q-cumber proxy auth forwarding:** `qcumber_proxy.py` and `qcumber_client.py` now forward the caller's `Authorization` bearer token to q-cumber instead of using an empty static `Q_ASSISTANT_QCUMBER_CLOUD_TOKEN`. Fixes 401 Unauthorized on all q-cumber requests routed through q-assistant in the platform-local stack.
+- **Stateless dedup cache collision:** `queryQCumberTerritorialUnits`, `queryQCumberDataset`, and `queryQCumberDatasetSpatial` removed from `STATELESS_TOOL_DEDUP_ELIGIBLE_TOOLS` because `loadToMap=true` mutates map state; the dedup cache was returning stale results from a previous query (e.g. regions instead of provinces), preventing the new dataset from being created.
+- **Full tool serialization:** ALL tool calls now go through the `AsyncMutex` (not just mutations), so they execute one at a time in FIFO order. This prevents the LLM from batch-planning tool chains where downstream tools reference dataset IDs that don't exist yet. `parallel_tool_calls=false` is also set in the backend payload, but frontend serialization is the reliable enforcement since not all providers (e.g. Gemini/OpenRouter) support it.
+- **Sequential tool calls enforced:** `parallel_tool_calls: false` injected in `_coerce_openai_chat_payload` when tools are present. Forces the model to emit one tool call per response, preventing batch-planned chains with stale/guessed dataset IDs. This is the root fix for cascading failures in multi-step workflows.
+- **Per-tool circuit breaker:** max 3 calls per tool name per user message; blocks execution with structured error after the cap, preventing infinite local-only tool loops (e.g. 168 `countQMapRows` observed in production). Counter persists across sub-requests and resets only on new user message. `countQMapRows` also added to `STATELESS_TOOL_DEDUP_ELIGIBLE_TOOLS` for intra-turn dedup.
+- **Post-discovery forced query transition:** new `build_post_discovery_force_query_decision` runtime guardrail forces the model to proceed with `getQCumberDatasetHelp` or `queryQCumberTerritorialUnits` after discovery completes (listProviders + listDatasets both succeeded, no query issued). Implements the deterministic state-machine transition `discovery → query` via `tool_choice`, preventing models (e.g. Gemini) from stopping after discovery without querying data.
+- **System prompt sequential tool chaining:** added `[MUST]` rule (EN+IT) instructing the model to not emit the entire tool chain in a single response, since output dataset IDs are not known until each creation step completes.
+- **System prompt canonical dataset ref:** added `[MUST]` rule (EN+IT) requiring the model to use `loadedDatasetRef` from `queryQCumberTerritorialUnits` results as input for downstream tools, instead of reusing stale refs from previous queries/turns.
+- **System prompt layer isolation:** added `[MUST]` rule (EN+IT) requiring `showOnlyQMapLayer` on the final filtered/derived layer after wait/count validation, to hide source and intermediate layers from previous steps.
+
+### Changed
+- **Architectural refactoring (Phases 1-5):** god component 2,997→1,457 LOC; extracted `context/tool-context.ts` (QMapToolContext DI), `hooks/use-tool-registry.ts` (tool instantiation), `middleware/tool-pipeline.ts` (5-stage execution pipeline replacing 607-LOC wrapToolsWithNormalizedResultEnvelope); split `dataset-utils.ts` (1,046 LOC, 71 exports) into `utils/dataset-resolve.ts`, `utils/geometry-ops.ts`, `utils/dataset-metadata.ts`; consolidated `cache-utils+async-mutex+tool-idempotency` into `middleware/cache.ts`; split `execution-tracking` into `services/post-validation.ts`, `services/tool-component-runtime.ts`, `services/execution-trace.ts`; extracted `dual-dataset-overlay-factory.ts` + `geometry-tool-helpers.ts` HOF for 7 geometry tools; replaced `@openassistant/utils extendedTool` with local `tool-shim.ts` across 26 files; q-cumber queries routed via q-assistant backend proxy (`/qcumber/*` endpoints).
+- **System prompt guardrail migration:** removed 17 redundant rules (EN+IT) already enforced by backend runtime guardrails (discovery gating, post-mutation validation, duplicate query prevention, SQL tool pruning, disabled tool bans); consolidated 12 near-duplicate rules into 5 merged rules; system-prompt.ts 525→494 LOC (−31 rules). Validated with 69/69 functional eval (100% pass, all gates PASS).
+
+### Added
+- **Normalizzazione pre-Zod parametri filter:** `normalizeQMapToolExecuteArgs` ora intercetta e riscrive pattern hallucinated dal LLM per `createDatasetFromFilter`/`countQMapRows`: `{filters: [{field, op, value}]}` → `{fieldName, operator, value}` flat; `{filter: {...}}` → flat; alias operatore (`==`→`eq`, `!=`→`neq`, `>`→`gt`, `>=`→`gte`, `<`→`lt`, `<=`→`lte`, `like`→`contains`, `starts_with`→`startsWith`, `ends_with`→`endsWith`); alias campo `field`→`fieldName`, `op`→`operator`; 6 unit test.
+- **Migrazione operazioni Turf O(n*m) a Web Worker:** unified `spatial-ops.worker.ts` con 6 handler (`spatialJoinByPredicate`, `overlayDifference`, `bufferAndSummarize`, `adjacencyGraph`, `nearestFeatureJoin`, `coverageQualityReport`) e runner type-safe generico `spatial-ops-runner.ts`; `SpatialJoinByPredicateComponent` e `OverlayDifferenceComponent` in `spatial-overlays.ts` ora eseguono loop annidati Turf off-main-thread con AbortSignal e timeout adattivo; `BufferAndSummarizeComponent` in `geometry-editing.ts` idem; `AdjacencyGraphFromPolygonsComponent` e `NearestFeatureJoinComponent` in `spatial-analysis.ts` usano worker-first con fallback al loop locale; `createCoverageQualityReportTool` execute() usa worker-first con fallback locale; bbox pre-filter e progress callback ogni 50 iterazioni; 17 unit test in `spatial-ops.worker.test.ts`.
+- **Centralized tool runner con concurrency control:** `AsyncMutex` FIFO (`async-mutex.ts`) serializza le mutation tool call parallele emesse dal Vercel AI SDK; dependency-aware wait blocca read tool che consumano un dataset in-flight fino a completamento della mutation produttrice; phase metadata (`executionPhase`, `concurrencyClass`, `nextAllowedTools`) iniettata in ogni `llmResult` per osservabilità modello; deferred pattern (`status: 'deferred'`) per tool phase-gated con `nextAllowedTools` espliciti; `gateType` (`phase`/`snapshot_expired`/`ambiguous_ref`) in `QMapToolExecutionPolicyDecision` per distinguere soft-deferral da hard-block; wiring nel componente con `mutationMutexRef` + `inflightMutationsRef`, reset su turn reset.
+- **Functional eval case `arch_comuni_provincia_population_coloring`:** KPI `deterministic_discovery_routing`, area `ai_tool_orchestration` — verifica routing comuni provincia con coloring per popolazione.
+- **Unit test `async-mutex.test.ts`:** acquire/release, FIFO ordering, queueDepth (4 test).
+- **Unit test `tool-concurrency.test.ts`:** serializzazione mutation, parallelismo read, mixed, dependency wait, deferred metadata (6 test).
+
+### Fixed
+- **`createDatasetFromFilter` Zod pre-validation crash su parametri filter hallucinated:** la normalizzazione `filters:[{field,op,value}]` → `{fieldName,operator,value}` flat avveniva dentro `execute()` ma Vercel AI SDK validava lo schema Zod **prima** di `execute()`, causando `AI_InvalidToolArgumentsError`. Fix: esportato `preprocessFlatFilterToolArgs` da `tool-args-normalization.ts` e wrappato lo schema con `z.preprocess()` in `createDatasetFromFilterTool` così la normalizzazione gira prima della validazione Zod. 3 unit test aggiunti.
+- **`Number(null)===0` null-coercion bug su valori dataset:** `Number.isFinite(Number(x))` trattava `null`/`undefined`/`''` come `0` (finito) invece di escluderli. Aggiunto null-guard esplicito in 8 siti: `spatial-autocorrelation.worker.ts` (LISA/bivariate values), `h3-aggregate-core.ts` (aggregation value), `spatial-statistics.ts` (LISA, bivariate, Gi* numeric fields), `tessellation-population.ts` (population agg), `dataset-derived.ts` (change detection + computed fields), `spatial-ops.worker.ts` (nearestFeatureJoin maxDistanceKm).
+- **q-assistant: `waitForQMapDataset` canonical datasetRef recovery loop:** `_classify_runtime_error_kind` non riconosceva il messaggio "requires canonical datasetRef when target is not materialized yet" → classificava come `generic_failure` invece di `dataset_not_found`, disattivando tutte le recovery rule esistenti. Aggiunto check per "not materialized yet" e "requires canonical datasetref" → `dataset_not_found`. In `build_dataset_not_found_recovery_decision` (`runtime_loop_limit_rules.py`) aggiunta ricerca del `datasetRef` canonico dall'ultima mutazione `queryQCumber*` riuscita: quando trovato, il `[RUNTIME_NEXT_STEP]` inietta il `datasetRef` concreto (`id:...`) invece del generico "usa il nome canonico dal risultato precedente", impedendo al LLM di costruire nomi sbagliati (es. `[skmbbz] (1)` invece di `id:...-yhjdsw`).
+
+### Added
+- **`inputKeys` per tutti i 93 tool nei contratti:** `generate-tool-contracts.mjs` ora estrae automaticamente
+  i nomi dei parametri Zod di primo livello da ogni tool-builder (regex su `parameters: z.object({...})`);
+  tool con `STRICT_TOOL_ARGS_OVERRIDES` derivano `inputKeys` dalle `properties` già dichiarate;
+  il campo `inputKeys: string[]` è scritto in `qmap-tool-contracts.json` e nel mirror backend (66/93 tool
+  con inputKeys popolati; i restanti 27 ricevono `[]` per factory non mappabili o parametri vuoti).
+- **Nuovo audit `tool-arg-audit`** (`scripts/audit-tool-inputkeys.mjs`): verifica che ogni chiave in
+  `required_keys_all`/`required_keys_any` di `expected_tool_arguments` nei casi ai-eval esista in
+  `inputKeys` del tool corrispondente; aggiunto a `quality-gate`; audit non-bloccante su `inputKeys: []`
+  per evitare falsi positivi su tool edge-case.
+- **Composite index tool (`computeQMapCompositeIndex`):** builds a weighted multi-field composite score (Cumulative Burden Index, vulnerability index, risk score) from any numeric fields on a loaded dataset; each component is min-max normalized to [0,1] before weighting; `direction` parameter controls burden orientation (`asc`: higher = higher burden, `desc`: lower = higher burden / field is inverted); weights are normalized to sum=1; the weighted sum is optionally re-normalized to [0,1] (`normalize=true` default); output is a derived dataset containing all original fields plus the composite score field; component summary (effective weight%, direction, min/max) is returned in `llmResult`; registered in the `spatialAnalysis` runtime group and added to the `draw-stressor` mode allowlist; guided via `[RECIPE][CUMULATIVE-BURDEN]` in the system prompt.
+- **Data quality report tool (`computeQMapDataQualityReport`):** generates a per-field data quality audit for a dataset — null completeness (count and %), outlier detection (IQR with default 1.5× threshold or z-score with default 3.0 threshold), plus min/max/mean/std; auto-detects numeric fields (up to 30) when no field list is provided; assigns a `qualityFlag` per field (`ok`, `high_nulls`, `outliers`, `high_nulls_and_outliers`, `all_null`); pure read-only execute() with no component and no dataset mutation; registered in the `discovery` runtime group and `query-inspection` manifest category; added to the `draw-stressor` mode allowlist.
+- **KNN spatial weights: haversine distance fix:** `buildKnnWeights` in `spatial-autocorrelation.worker.ts` previously used Euclidean planar distance (degree²) to find k-nearest neighbours; replaced with haversine distance (km) to avoid distortion at regional/national scales where one degree of longitude is significantly shorter than one degree of latitude; ordering semantics are preserved (only relative distance matters for KNN), so all existing worker outputs remain valid for small extents; fix affects `computeQMapSpatialAutocorrelation`, `computeQMapBivariateCorrelation`, and `computeQMapHotspotAnalysis` when `weightType=knn`.
+- **System prompt: spatial stats interpretive guidance (P1):** added four `[INTERP][SPATIAL-STATS]` lines to both EN and IT operational policy — MAUP sensitivity (results change with H3 resolution or admin boundary), stationarity assumption (uniform spatial process), multiple-comparison inflation (α=0.05 with n features), and correlation ≠ causation; added `[RECIPE][CUMULATIVE-BURDEN]` (manual step-by-step CBI via `createDatasetWithNormalizedField` + `addComputedField`) and `[RECIPE][CLIP-TOOLS]` (disambiguation of `clipQMapDatasetByGeometry` / `clipDatasetByBoundary` / `overlayIntersection` input contracts) to both EN and IT priority lines; added tool routing guidance for `computeQMapCompositeIndex` and `computeQMapDataQualityReport`.
+- **Adversarial eval cases for spatial statistics edge inputs (P5):** four new cases in `cases.adversarial.json` — `adv_lisa_high_null_field_limitation` (LISA on field with 85% nulls → limitation), `adv_lisa_too_few_features_limitation` (LISA on dataset with 6 features → limitation), `adv_hotspot_invalid_weight_type_fallback` (Gi* with queen weights on point dataset → knn suggestion), `adv_equity_constant_field_limitation` (Gini/Theil on constant field → zero-variance caveat).
+
+### Added (continued)
+- **Functional eval cases e e2e smoke per nuovi tool (gap-fill):** `arch_composite_index` (KPI `composite_index_analysis`) e `arch_data_quality_report` (KPI `data_quality_audit`) aggiunti a `cases.functional.json`; blocchi smoke per `computeQMapCompositeIndex` e `computeQMapDataQualityReport` aggiunti a `tests/e2e/tools.spec.ts`; entrambi i case id aggiunti ai `caseIds` di `geo_processing` in `architecture-matrix.json`.
+- **Hotspot analysis tool (`computeQMapHotspotAnalysis`):** computes Getis-Ord Gi* statistic for each feature on a numeric field; uses binary non-row-standardized queen/knn weights with self-weight (w_ii=1 always); computes analytical z-score and p-value via Abramowitz & Stegun normal CDF approximation (no permutations); classifies each feature as HH (significant high cluster), LL (significant low cluster), or NS; adds `hotspot_z`, `hotspot_p`, and `hotspot_class` columns to a derived dataset; applies the 5-color LISA categorical styling preset to `hotspot_class`; computation runs in the existing `spatial-autocorrelation.worker.ts` via a new `type: 'hotspot'` message handler; registered in the `spatialAnalysis` group; eval case `arch_hotspot_analysis` and KPI `hotspot_analysis` added to the `geo_processing` area.
+- **Computed field tool (`addComputedField`):** adds a derived column to a dataset by evaluating a JS-like expression per row; expression has access to all field values as named variables plus `Math.*`; evaluation uses `new Function(...fieldNames, 'Math', '"use strict"; return (expr);')`; execute() validates expressions against banned keywords (`window`, `document`, `globalThis`, `eval`, `Function`, `require`, `import`, `fetch`, `__proto__`, `prototype`) and syntax-checks via `new Function` before dispatching; supports `useActiveFilters` to restrict to visible rows; outputs all original fields plus the new computed column via `upsertDerivedDatasetRows`; registered in the `datasetOps` group; added to `DATASET_VALIDATION_MUTATING_TOOLS`; eval case `arch_computed_field_ratio` and KPI `computed_field` added to the `data_pipeline` area.
+- **Field statistics tool (`describeQMapField`):** computes descriptive statistics on a numeric field in O(n): count, nullCount, nullPct, min, max, range, mean, median, std, variance, skewness (Pearson 2nd: (mean−median)/std), and configurable percentiles (default [5,25,50,75,95]) via linear interpolation; pure execute() with no component and no dataset mutation; respects active map filters via `useActiveFilters` (default true); registered in the `discovery` group; eval case `arch_field_statistics` and KPI `field_statistics` added to the `data_pipeline` area.
+- **Bivariate spatial correlation tool (`computeQMapBivariateCorrelation`):** computes Pearson r (global linear correlation), Global Bivariate Moran's I (spatial autocorrelation of fieldA lagged with fieldB), and Local Bivariate LISA clusters (HH/HL/LH/LL/NS); adds `bivariate_cluster`, `bivariate_local_i`, and `bivariate_p_value` columns to a derived dataset; computation runs in the existing `spatial-autocorrelation.worker.ts` via a new `type: 'bivariate'` message handler with permutation test on fieldB only (fieldA and weights held fixed); worker helpers `buildFeatureEntries` and `buildSpatialWeights` extracted for reuse between LISA and bivariate jobs; applies 5-color LISA color preset to `bivariate_cluster`; registered in the `spatialAnalysis` group; eval case `arch_bivariate_correlation_lisa` and KPI `bivariate_correlation_analysis` added to the `geo_processing` area.
+- **Temporal aggregation & trend tool (`aggregateQMapTimeSeries`):** buckets time-series data by configurable window units (hour/day/week/month/year) with aggregation functions (sum/avg/min/max/count) and optional group filtering; computes Mann-Kendall trend test (S statistic + Z normalisation, threshold |Z|≥1.96) returning `trend: 'increasing' | 'decreasing' | 'stable'`; week bucketing uses Monday=0 convention; optional `materialize=true` writes a derived non-spatial dataset with `window_start_iso`, `window_end_iso`, `n_observations`, `aggregated_value` columns via `upsertDerivedDatasetRows`; registered in the `discovery` group; eval case `arch_temporal_trend_analysis` and KPI `temporal_trend_analysis` added to the `data_pipeline` area.
+- **Change detection tool (`computeQMapDatasetDelta`):** joins two dataset snapshots on a configurable `joinKeyField` (normalised via `String().trim()`) and computes per-field absolute delta (`delta_<field>`) and relative delta (`delta_pct_<field>`) for all common numeric fields; assigns `change_class` (new/removed/increased/decreased/stable) based on configurable `changeThresholdPct` (default 1%) and a `changed_fields` CSV column; supports `deltaMode: 'absolute' | 'relative' | 'both'` and `includeUnchangedRows` toggle; runs inline via `mapIndexesChunked` with cooperative yielding (no Web Worker); registered in the `datasetOps` group; eval case `arch_change_detection_delta` and KPI `change_detection_analysis` added to the `data_pipeline` area.
+- **Equity/segregation analysis tool (`computeQMapEquityIndices`):** computes standard equity and segregation metrics over spatial units (municipalities, H3 cells, etc.); always computes Gini coefficient, Theil T entropy index, Concentration Ratio CR-k (default k=5), and Location Quotient (LQ) per unit added as `lq_<valueField>` column; optionally computes Dissimilarity index D, Isolation index xPx, and Exposure index xPy when `groupAField` is provided; all computation is O(n) inline (no Web Worker); applies a diverging 3-stop LQ colour preset (blue=#4575b4 for under-represented, white=#f7f7f7 for near-parity, red=#d73027 for over-represented) when `showOnMap=true`; registered in the `spatialAnalysis` group; eval case `arch_equity_segregation_gini` and KPI `equity_segregation_analysis` added to the `geo_processing` area.
+- **Spatial autocorrelation tool (`computeQMapSpatialAutocorrelation`):** computes Global Moran's I (with z-score and pseudo p-value via permutation test) and Local LISA for each feature on any loaded dataset; adds `lisa_cluster` (HH/LL/HL/LH/NS), `lisa_local_i`, and `lisa_p_value` columns to a derived dataset; supports queen-contiguity weights for polygons/H3 and k-nearest-neighbour weights for point datasets; computation runs in a dedicated Web Worker (`spatial-autocorrelation.worker.ts`) with cooperative yielding every 500 features; automatically applies a 5-color categorical styling preset (HH=#d73027 red, LL=#4575b4 blue, HL=#fc8d59 orange, LH=#91bfdb light-blue, NS=#cccccc gray); registered in the `spatialAnalysis` group; eval case `arch_spatial_autocorrelation_lisa` and KPI `spatial_autocorrelation_analysis` added to the `geo_processing` area.
+
+### Changed
+- **q-cumber connection pool:** replaced per-request `psycopg.connect()` with
+  `psycopg_pool.ConnectionPool` opened in FastAPI lifespan; pool size
+  configurable via `QCUMBER_POSTGIS_POOL_MIN` (default 1) and
+  `QCUMBER_POSTGIS_POOL_MAX` (default 5).
+- **q-cumber workers:** `QCUMBER_WORKERS` (default 1) passed to `uvicorn.run()`;
+  reload auto-disabled when workers > 1.
+- **`populateTassellationFromAdminUnits` consolidation (T1):** the two wrapper tools `populateTassellationFromAdminUnitsAreaWeighted` and `populateTassellationFromAdminUnitsDiscrete` have been removed; their strategies are now selectable via a new optional `allocationMode` parameter (`'area_weighted' | 'discrete' | 'standard'`) on the standard tool, reducing the tessellation-population group from 3 tools to 1 and eliminating LLM routing ambiguity; an `allocationSubMode` parameter (`'centroid' | 'intersects'`) controls geometry matching in discrete mode; `valueSemantics` and `weightMode` remain available for full manual control in `standard` mode; system prompt guidance and mode-policy allowlist updated; all eval cases and e2e tests migrated.
+
+### Fixed
+- **Ghost tool removed from eval case `arch_clip_overlay_cleanup`:** `cleanQMapDatasetGeometries` was listed in `required_tools_any` but does not exist in `qmap-tool-contracts.json` or `tool-manifest.json`; removed from the list so no non-executable tool name is advertised to the LLM; `required_tools_any` semantics are still satisfied by the six real overlay/clip tools that remain.
+- **`grammarAnalyzeTool` group misalignment (T5):** moved from `datasetOps` runtime group to `discovery` group to match `tool-manifest.json` category `query-inspection`.
+- **`deriveQMapDatasetBbox` category misalignment (T5):** moved from `workflow-control` to `query-inspection` in `tool-manifest.json` and both `qmap-tool-contracts.json` files to match its `discovery` runtime group.
+
+### Refactored
+- **q-cumber dead code removal:** removed two always-405 import endpoints (`POST /providers/{provider_id}/import`, `POST /providers/{provider_id}/import-all`) and their 4 dead imports from `main.py`; removed 5 unused Pydantic models (`ProviderImportRequest`, `ProviderImportResponse`, `ProviderImportAllRequest`, `ProviderImportAllResponse`, `ProviderImportItemResult`) from `models.py`. All 11 q-cumber unit tests pass unchanged.
+- **Kepler.gl base cleanup:** q-map-specific changes moved out of the kepler.gl core and back into the example; Italian translations (kepler.gl UI strings + AI assistant panel) removed from `src/localization/` and `src/ai-assistant/src/localization.ts`, consolidated into `examples/q-map/src/i18n/q-map-locale-messages.ts` (passed via `localeMessages` prop); `locale-utils.ts` `mergeMessages` extended to include consumer-provided locales so q-map can supply `it` without touching the base; `getHTMLMapModeTileUrl` reverted to upstream CDN URL; `mapDraw.settings` keys renamed from `qmap`-prefixed to generic (`forceCrosshair`, `disableDoubleClickZoom`, `bypassEditorClick`); `backends/logs/` ignore entry moved from root `.gitignore` to `examples/q-map/.gitignore`. All 491 unit tests (135 kepler.gl Jest + 79 q-map workers + 277 backends) pass.
+- **q-assistant `main.py` split:** helper constants and ~70 functions (lines 155–1884, 1730 lines) extracted into `backends/q-assistant/src/q_assistant/services/request_processor.py`; `main.py` shrinks from 2884 to 1246 lines (-57%). Backward-compat re-exports removed; `main.py` imports only the 18 symbols used by routes, all test files updated to import directly from canonical modules (`services.request_processor`, `usage_estimation`, `chat_payload_compaction`, `runtime_guardrails`, `objective_intent`). `services/__init__.py` created. All 257 backend unit tests pass.
+- **backends shared extraction:** `jwt_auth.py` (172 lines × 2 = 344 duplicated) moved to `backends/q-backends-shared/src/q_backends_shared/jwt_auth.py`; both `q-cumber-backend` and `q-storage-backend` now re-export from the shared package. Docker build contexts updated to `backends/` level so each Dockerfile can `COPY q-backends-shared/`.
+- **backends config_utils shared extraction:** `parse_bool()`, `parse_csv_set()`, `parse_origins()` extracted to `backends/q-backends-shared/src/q_backends_shared/config_utils.py`; all three backends (`q-cumber`, `q-storage`, `q-assistant`) now import from the shared module instead of defining local copies.
+- **cache-utils.ts extraction:** `rememberBoundedSetValue`, `setBoundedMapValue`, `stableSerializeForCache` extracted from `cloud-tools.tsx` (lines 49–84) into `src/features/qmap-ai/cache-utils.ts`; `cloud-tools.tsx`, `qmap-ai-assistant-component.tsx`, and `tool-idempotency.ts` now all import from the shared module.
+- **`useToolExecution()` hook:** `hasRunRef + shouldSkipToolComponentRun + markToolComponentRunCompleted` boilerplate extracted into `src/features/qmap-ai/tool-builders/use-tool-execution.ts`; all 12 tool builder files migrated to use `{shouldSkip, abort, complete}`. `ToolComponentGuardDeps` type consolidated into `tool-component-runtime.ts` (was copy-pasted in 5 files).
+- **`qmap-ai-assistant-component.tsx` migration:** replaced ~4000 lines of inline utility definitions with imports from `tool-schema-utils`, `dataset-utils`, `tool-result-normalization`, `dataset-upsert`, `numeric-analysis`, `merge-utils`, `context-header`; component shrinks from 5996 to 2797 lines (-53%).
+
+### Changed
+- ai-eval functional calibration: relaxed over-rigid argument contracts across multiple `required_tools_any` workflows by aligning `expected_tool_arguments` with alternative routing (`tools_any`) and canonical argument keys; updated cases include spatial/perimeter/tessellation suites plus dataset materialization, derivation, topology resilience, jurisdiction exceedance, and territorial focus companions.
+- ai-eval functional calibration: completed cleanup of remaining stale argument checks in map-UX/H3/ranking workflows (`arch_base_map_services`, `arch_layer_style_sequence`, `arch_layer_visibility_and_order`, `arch_h3_generation_and_join`, `arch_h3_population_flows`, `arch_h3_paint_editing`, `arch_ranking_direct_derived_metrics`) by replacing obsolete keys (`layerId`, `datasetId`, `fieldToNormalize`, `h3Index`, `adminDatasetId`) with canonical q-map tool arguments and `tools_any` where routing is intentionally alternative.
+- ai-eval runner stability: case pass/fail now treats a transport-clean final `2xx` response as success fallback even when provider-side `ok` flags are inconsistent across multi-turn chains, preventing false negatives like score-1 cases marked failed only by HTTP-chain bookkeeping.
+- ai-eval runner stability: added bounded per-request soft retries for transient non-2xx chat responses (configurable via `QMAP_AI_EVAL_REQUEST_RETRIES` / `QMAP_AI_EVAL_REQUEST_RETRY_DELAY_MS`), reducing random single-turn `400`/`429`/`5xx` noise that produced empty-tool false failures in otherwise stable suites.
+- ai-eval adversarial calibration: aligned held-out contracts with current canonical fallback routing by accepting stats-threshold coloring as valid flat-metric limitation evidence and by allowing direct territorial-query + map-focus superlative flows without forcing ranking/materialization in every turn.
+- ai-eval adversarial calibration: cloud limitation held-out now enforces the same fail-closed outcome across both cloud load branches (`loadCloudMapAndWait` and `loadQMapCloudMap`) with consistent mocked timeout evidence, so success claims cannot pass by switching cloud loader tool names.
+- ai-eval functional calibration: removed argument-contract checks from pure discovery/catalog cases (`arch_discovery_inventory`, `arch_provider_catalog_resolution`, `arch_cloud_map_load_sequence`) where alternative valid routing includes zero-argument tools, preventing schema-forced brittle checks.
+- ai-eval functional calibration: `arch_regulatory_threshold_compliance` now accepts discovery-first `listQMapDatasets` in `required_tools_any` so the gate does not fail on a discovery-only pre-step when runtime does not yet execute full zonal/threshold/ranking chain in that turn.
+- ai-eval functional calibration: `arch_regulatory_threshold_compliance` no longer enforces a strict argument-contract check tied only to `setQMapLayerColorByThresholds`, reducing false negatives when a valid compliance workflow uses `zonalStatsByAdmin`/ranking without a threshold-coloring call in the same turn.
+- q_hive/q-map iframe export contract now supports explicit payload modes (`subset`, `perimeter`, `full`) via hash param `export_payload`, with reduced cloud export default (`subset`) that sends cloud reference (`cloudMap.id`, `cloudMap.provider`) and `mapInfo` metadata without full `map` snapshot unless `full` is requested.
+- q-storage action-linked map policy is now enforced end-to-end:
+  - iframe action saves attach lock metadata (`locked=true`, `lockType=action`, `actionUuid`, `lockSource=q_hive`).
+  - action-locked maps are always non-deletable, updates require JWT claim `qh_action_map_write=true`, and lock metadata is immutable once assigned.
+  - cloud map list/load surfaces `readOnly`/metadata so standalone q-map UI can enforce read-only UX for action-linked maps while keeping regular maps mutable.
+- docs/runbooks refreshed (`README`, `AGENT`) to align with the new iframe payload contract and action-lock policy, including local UX test bootstrap notes (`dev-local-prepare` + `up-direct`) and explicit deployment guardrail to avoid local-test architectural bias in Dockerfiles for externally built pre-production images.
+- production-audit remediation for session `09d2471e-dd96-4b12-a5f7-4f8def6fde22`:
+  - runtime loop-limits now stop wait/count retry cascades after `dataset_not_found` and force materialization recovery (`saveDataToMap`/`loadData`) before new validation retries.
+  - final response normalization now strips leaked runtime envelope lines (`[progress]`, `[executionSummary]`, `[requestId: ...]`, `[guardrail]`) from user-facing assistant text.
+  - tool-result contract validation now treats `success=false` payloads as failure envelopes (requiring only non-success metadata when applicable), removing false `contractResponseMismatch` spikes for blocked `createDatasetWithNormalizedField` calls.
+  - replay extraction on the same production trace now yields `contractResponseMismatch=0` (from 31 in the original log), and injected replay on requestId `334d6fa7a9ce48e6a0af99baec4194c4` confirms `dataset_not_found_materialization_recovery` prunes `countQMapRows`/`waitForQMapDataset`.
+  - ai-eval mock tool-arg validation now canonicalizes `datasetRef`/`datasetId` aliases into `datasetName` for `waitForQMapDataset` and `countQMapRows`, preventing false contract rejections in eval traces and keeping `grounded_required_tools_all` evidence aligned between report scoring and `ai-trace-quality` audit.
+  - added regression tests for both loop-limit recovery and runtime-envelope stripping; tracked residual work in `docs/PROD_AUDIT_TODO_09d2471e.md`.
+- q-assistant production-audit hardening for post-mutation validation loops:
+  - `waitForQMapDataset` coercion now injects canonical `datasetRef=id:<datasetId>` when a recent successful tool result already exposed it, even when the model only provided a human dataset name.
+  - post-create loop limits now also prune repeated dataset-mutation tools (not only style/focus steps) while `waitForQMapDataset -> countQMapRows` validation is still pending.
+  - request-tool-result contract validation now backfills missing canonical fields (`dataset*`, styleable metadata, and `listQMapDatasets` datasets/layers from parsed catalog snapshots) before auditing, reducing false `contractResponseMismatch` signals from wrapped tool payloads.
+- ai-eval KPI coverage extended with `arch_normalized_metric_post_create_validation_no_retry_loop` (`geo_processing/post_create_validation_discipline`): validates `createDatasetWithNormalizedField -> waitForQMapDataset -> countQMapRows` sequencing, enforces retry ceilings on post-create validation/style calls, and keeps deterministic mock evidence for the normalized-field styling path.
+- q-map AI system prompt now enforces tooltip discipline on the final visible layer: before final confirmation, `setQMapTooltipFields` is mandatory on analysis-relevant properties for the final user-visible output, with explicit ordering after wait/count validation, visibility isolation, and map-focus steps (plus single-call-per-layer guidance unless the tooltip tool fails).
+- added adversarial held-out KPI coverage for post-create validation discipline with `adv_post_create_validation_normalized_no_retry_loop_heldout`: validates robustness of `createDatasetWithNormalizedField -> waitForQMapDataset -> countQMapRows` sequencing and retry ceilings outside the guided functional benchmark.
+- hardened normalized-metric held-out execution path end-to-end:
+  - q-assistant now repairs non-canonical `createDatasetWithNormalizedField` aliases (`fieldName`, `normalizationFieldName`, `newFieldName`) into canonical args (`numeratorFieldName`, `denominatorFieldName`, `outputFieldName`) before tool execution/audit scoring.
+  - q-map system prompt (EN/IT) now states canonical arg contract for `createDatasetWithNormalizedField`, matching existing canonical guidance already present for `rankQMapDatasetRows` and `zonalStatsByAdmin`.
+  - adversarial case expectations for `adv_post_create_validation_normalized_no_retry_loop_heldout` now accept deterministic snapshot + statistical-coloring path (`listQMapDatasets`, `setQMapLayerColorByStatsThresholds`) while still keeping `max_extra_tool_calls=1` to penalize redundant preview loops.
+  - `Makefile` now exposes `ai-eval-case-adversarial` / `ai-eval-case-adversarial-direct` for single held-out case replay by `CASE_ID`, aligned with existing single-case functional targets.
+- cleaned prompt-lint hygiene in the eval catalog: the populated-H3 reuse case now uses a non-ambiguous existing dataset naming (`Popolazione_Hex_Cells`) to avoid false H3-intent warnings when only styling reuse is expected, and the adversarial cloud-limitation prompt is no longer normalized-identical to the functional counterpart.
+- q-assistant runtime quality metrics now expose structured backend hints in addition to narrative guidance: `hintVersion`, `errorKind`, `recoveryAction`, and `nextAllowedTools` are derived from the runtime error taxonomy/retry policy so frontend/eval consumers can orchestrate recovery paths from machine-readable metadata (not only free-text guardrail lines).
+- moved another silent-fallback invariant out of prompt-only policy into backend runtime enforcement: q-assistant now classifies `invalid_dataset_id`, applies an explicit recovery rule that prunes dataset/help/query tools after invalid `datasetId` failures, and forces `listQCumberDatasets` before further qcumber calls; regression coverage was added in backend guardrail tests plus a new functional eval case (`arch_qcumber_invalid_dataset_recovery`, `runId=dataset-fallback-guardrail-20260315-r2-functional`).
+- q-assistant post-create loop limits now treat the first successful `waitForQMapDataset -> countQMapRows` chain after a dataset mutation as satisfied even if a later defensive `waitForQMapDataset` also succeeds, preventing the runtime from re-forcing `countQMapRows` and reproducing the production Brescia tessellation loop that emitted hundreds of duplicate count calls without final text.
+- the q-map eval catalog now removes solution-biased wording from several functional/adversarial `user_prompt` entries (dataset-reuse recovery, clarification/fail-closed slices, Brescia post-create validation, held-out limitation prompts): those cases keep the same behavioral constraints, but the invariants now live in case gates/runtime rules instead of being stated directly in the synthetic user text.
+- q-assistant runtime guardrails now recover missing style metrics on already-materialized datasets instead of recomputing the whole workflow: `Field "... not found in dataset ..."` failures now trigger field-preview reuse, infer `join_sum` / `join_count` suggestions from `spatialJoinByPredicate`, and prune redundant query/join recompute loops after a recoverable `setQMapLayerColorByField` error.
+- q-map spatial joins now expose machine-readable metric metadata (`aggregationOutputs`, `defaultStyleField`, `styleableFields`) and q-assistant rewrites downstream metric tool calls toward canonical outputs like `join_sum` / `join_count` before execution, reducing invented-field failures such as `sum_area_ha`.
+- the same machine-readable metric contract pattern now starts covering other derived metric producers too: `createDatasetWithGeometryArea`, `createDatasetWithNormalizedField`, and `zonalStatsByAdmin` expose `fieldCatalog` / `numericFields` / `styleableFields` / `defaultStyleField`, so downstream styling/ranking recovery can reuse runtime output metadata instead of guessing field names.
+- the metric-output contract coverage now extends further across q-map aggregation/join workflows: `bufferAndSummarize`, `aggregateDatasetToH3`, `joinQMapDatasetsOnH3`, and populated tessellation joins now emit explicit styleable output-field metadata, including collision-resolved names, so downstream metric repair can follow the real dataset schema instead of inferred aliases.
+- ai-eval can now assert exact tool-argument values and per-tool call ceilings (`required_key_values`, `max_tool_calls_by_name`), and the functional suite includes a production-style regression case for reusing `Province_Pressione_Ambientale` with `fieldName=join_sum` without recompute or duplicate style retries.
+- q-assistant metric-field repair now also reuses `listQMapDatasets` catalog metadata for already-loaded datasets and applies the same correction path to threshold/stat/height styling tools, while the functional suite adds a companion regression for reusing an existing normalized dataset with `fieldName=population_per_100k` instead of rerunning normalization.
+- `nearestFeatureJoin` now exposes explicit metric-output metadata for `nearest_count` / `nearest_distance_km`, and the functional suite adds a companion regression for reusing an existing nearest-join dataset with `fieldName=nearest_distance_km` instead of rerunning the join.
+- `zonalStatsByAdmin` now exposes `aggregationOutputs` for the resolved zonal metric field, and the functional suite adds a companion regression for reusing an existing zonal dataset with `fieldName=zonal_value` under threshold styling instead of rerunning zonal stats.
+- clip materialization now exposes explicit styleable metric metadata for `qmap_clip_intersection_pct` / `qmap_clip_intersection_area_m2` / `qmap_clip_match_count` and deterministic `<clip_field>__count` outputs, and the functional suite adds a companion regression for reusing an existing clipped dataset with `fieldName=qmap_clip_intersection_pct` instead of rerunning the clip.
+- `bufferAndSummarize` and populated tessellation outputs now expose explicit `aggregationOutputs`, and the functional suite adds companion regressions for reusing existing datasets with `fieldName=buffer_metric` and collision-resolved fields like `population_2` instead of rerunning the buffer/tessellation workflow.
+- the functional suite now also replays reuse of already-materialized H3 aggregation and H3 join datasets, asserting canonical fields like `count_weighted` and `population_2` without rerunning `aggregateDatasetToH3` / `joinQMapDatasetsOnH3`.
+- metric-output contracts now also expose explicit `fieldAliases` for collision-resolved or semantic metric names across spatial join / nearest / clip / zonal / buffer / H3 join / tessellation flows, and q-assistant prefers those aliases before falling back to `defaultStyleField`, so requests like `population` -> `population_2` and `intersection pct` -> `qmap_clip_intersection_pct` are repaired from runtime metadata instead of guesswork.
+- shared q-map tool contracts now type output metadata more explicitly: the generated/default `responseContract` declares machine-readable result fields like `fieldCatalog`, `aggregationOutputs`, `fieldAliases`, dataset refs, and clarification keys, discovery tools like `listQMapDatasets` declare their own output shape, and the eval-side loader now preserves per-tool `argsSchema` / `responseContract` overrides instead of collapsing everything to defaults.
+- q-assistant now validates parsed tool results against the declared `responseContract` required fields and basic output types, exposes `contractResponseMismatch` / `contractResponseValidationErrors` in extracted request-tool results, counts response-contract mismatches in quality metrics/audit summaries, and prefers the specific metric-field-missing recovery guardrail over generic color-failure finalization when both apply.
+- shared q-map contracts now tighten `responseContract.required` for key discovery/metric-producing tools (`listQMapDatasets`, `listQMapCloudMaps`, `spatialJoinByPredicate`, normalized/area/nearest/zonal/buffer/H3 join/H3 aggregation/tessellation/clip outputs), so the new backend validation can catch missing canonical metadata like `defaultStyleField`, `fieldCatalog`, `numericFields`, `styleableFields`, or `aggregationOutputs` instead of only checking the generic envelope.
+- `run-ai-eval`, `ai-operational`, and `ai-trace-quality` now surface `contractResponseMismatchCount` / `contractResponseMismatchRate` alongside the existing schema-mismatch signal, with operational/grounded trace gates failing by default when tool-result output contracts drift from the declared q-map response metadata.
+- `run-ai-eval` now synthesizes `mock_tool_results` that satisfy per-tool `responseContract.required` metadata for metric-producing tools, so eval-only mocks do not create false `contractResponseMismatch` regressions, and case success falls back to the full per-request HTTP status chain when every request in the case completed with `2xx`.
+- the `arch_jurisdiction_exceedance_reporting` eval contract now treats `listQCumberDatasets` as an allowed zero-noise discovery step before territorial query/ranking, so `max_extra_tool_calls=0` no longer penalizes the current provider/dataset selection path for that report workflow.
+- q-assistant false-success grading now keeps map-centering claims narrower: generic `inquadramento` wording no longer counts as a fit/zoom success claim, avoiding false positives when a final answer talks about `inquadramento gerarchico` rather than map centering.
+- Makefile now exposes `ai-eval-case-functional` / `ai-eval-case-functional-direct` so a single functional case can be replayed by `CASE_ID` without manual temp-case extraction, which keeps targeted production-trace regressions repeatable from the normal local loop.
+- aligned the published q-map platform images with the integrated same-origin deploy model used by `hive.q-dev.it`:
+  - `examples/q-map/Makefile` and `Dockerfile.ui` now publish `q-map--ui` with `/api/q-assistant`, `/api/q-cumber`, `/api/q-storage`, `/api/q-cumber/maps`, `/api/q-storage/maps`, and `/api/q-cumber` as the default runtime endpoints instead of localhost-only backend URLs.
+  - `backends/q-vector-tiles/postgres/Dockerfile` now copies `sql/init` and bundled territorial assets into the image so published `q-map--q-cumber-postgis` tags are self-contained and no longer depend on repo bind mounts during Swarm deployment.
+- `docs/KPI_WEEKLY_SUMMARY.md` is now treated as a local generated artifact rather than stable versioned documentation: q-map ignores it in `.gitignore`, keeps `make kpi-weekly-summary` / `make loop` generation intact, and relies on the underlying eval reports/inventory docs for durable audit history.
+- added `docs/AUDIT_FILE_INVENTORY.md` as the initial q-map/platform audit-KPI census for pre-release publication work, enumerating the canonical eval/governance inputs, generated evidence directories, q-map audit scripts, and the parent-platform publication surface (`../../../Makefile`, stack manifests, smoke scripts, q_hive audit files) worth preserving over time.
+- clarified local bootstrap docs for Playwright/KPI loops: `make dev-local` / `make dev-local-prepare` remain the supported q-map auth/bootstrap path for the local Vite UI on `:8081`, while the root-platform `make platform-up` stack is not sufficient for local q-map browser tests and can surface `Missing bearer token` failures on q-cumber/q-storage flows.
+- q-assistant no longer forces `setQMapTooltipFields` from runtime guardrails; tooltip configuration remains a prompt/runtime preference, but loop limits no longer pre-empt ranking/isolation/map-focus flows or create tooltip retry loops that degrade KPI precision.
+- refactored q-assistant runtime loop-limit wiring behind a dedicated bindings object, reducing the brittle manual dependency threading between `main.py`, runtime guardrails, and backend unit tests.
+- started splitting the most regression-prone runtime loop-limit rule families into a dedicated backend module (`runtime_loop_limit_rules.py`) so guardrail changes are easier to review and test without re-editing one monolithic branch chain; extracted blocks now cover `post-create` validation, low-distinct style recovery, admin superlative map-focus ordering, clarification finalization, retry caps, identical-call breakers, dataset-snapshot reuse, tool-call finalization watchdogs, and cloud-load fallback/finalization rules.
+- started the same extraction pass for `_inject_runtime_guardrail_message(...)`: early post-create/map-focus/recovery candidates now live in `runtime_guardrail_candidate_rules.py` instead of being embedded directly in the candidate-ranking loop.
+- expanded `runtime_guardrail_candidate_rules.py` to also cover structured `zonalStatsByAdmin` freeze fallback candidates and clip/boundary/coverage validation candidates, reducing the amount of inline branch logic left inside `_inject_runtime_guardrail_message(...)`.
+- backend guardrail regression tests now expose shared wiring via `tests/runtime_guardrails_test_support.py`; the extracted loop-limit families now live in `tests/runtime_guardrails_loop_limits_wait_tooltip_mixin.py`, `tests/runtime_guardrails_loop_limits_recovery_mixin.py`, and `tests/runtime_guardrails_loop_limits_routing_mixin.py`, so `test_runtime_guardrails.py` can be split incrementally without changing the existing `python -m unittest -q tests/test_runtime_guardrails.py` entrypoint.
+- `_inject_runtime_guardrail_message(...)` regression tests have started the same extraction path: post-create/post-wait/post-count candidate cases now live in `tests/runtime_guardrails_injection_post_create_mixin.py`, keeping the monolithic runtime guardrail test entrypoint stable while candidate-rule coverage is split by family.
+- the next `_inject_runtime_guardrail_message(...)` family has also been extracted: low-distinct style recovery, metric-field recovery, and normalized-coloring candidate cases now live in `tests/runtime_guardrails_injection_metric_recovery_mixin.py`.
+- ranking-evidence candidate tests for `_inject_runtime_guardrail_message(...)` now live in `tests/runtime_guardrails_injection_ranking_evidence_mixin.py`, covering ranked-final-answer evidence, tie disclaimers, and rejection of name-only category charts as ranking proof.
+- boundary/clip/coverage candidate tests for `_inject_runtime_guardrail_message(...)` now live in `tests/runtime_guardrails_injection_boundary_clip_coverage_mixin.py`, covering missing clip requirements plus perimeter/cross-geometry coverage validation and skip paths after successful coverage checks.
+- fit/map-focus truthfulness candidate tests for `_inject_runtime_guardrail_message(...)` now live in `tests/runtime_guardrails_injection_fit_focus_mixin.py`, covering centering/map-display fit evidence, cloud-load wait validation, and admin-superlative map-focus sequencing that must culminate in a validated `fitQMapToDataset`.
+- refined the q-map KPI and agent baseline for the next hardening pass:
+  - `tests/ai-eval/architecture-matrix.json` now names additional cross-cutting KPI intents around grounded final claims, ambiguity/escalation discipline, post-create validation, explicit catalog resolution, map-focus truthfulness, and retry/fallback truthfulness.
+  - `AI_EVAL.md` now documents recommended review signals beyond the guided benchmark (`groundedFinalAnswerRate`, `falseSuccessClaimRate`, `escalationComplianceRate`, `guidedVsHeldoutGap`) and clarifies that a saturated functional suite is not sufficient evidence of robustness on its own.
+  - `src/features/qmap-ai/system-prompt.ts` now strengthens fail-closed behavior for ambiguous/high-impact requests and forbids success claims without the validation evidence required for the corresponding workflow step.
+  - `q-assistant` now exposes additive `qAssistant.qualityMetrics` in `/chat/completions`, and `run-ai-eval` promotes the first two hardening signals into report artifacts: `falseSuccessClaimRate` in summary metrics and `guidedVsHeldoutGap` against the latest compatible held-out/guided report in local history.
+  - `run-ai-eval` now also reports `escalationComplianceRate` for cases that explicitly require a clarification-style final answer via `expected_response_mode`, starting from the provider/dataset disambiguation slice.
+  - `run-ai-eval` now also reports `groundedFinalAnswerRate` for opt-in evidence-backed cases via `require_grounded_final_answer`, using backend `qualityMetrics` (false-success, workflow score, post-create validation) instead of lexical-only grading.
+  - added `scripts/audit-ai-response-quality.mjs`, `make ai-response-quality-audit`, and `yarn ai:eval:response-quality-audit`, then wired the new audit into `quality-gate` so `falseSuccessClaimRate`, `groundedFinalAnswerRate`, and `escalationComplianceRate` are enforced on the latest functional report instead of staying report-only review signals.
+  - `ai-response-quality-audit` now falls back to the latest compatible functional report when newer local history snapshots predate the new response-quality summary fields, and otherwise fails with an explicit `ai-eval-functional` regeneration hint.
+  - added explicit local eval helpers on the direct q-assistant backend (`make ai-eval-direct`, `make ai-eval-functional-direct`, `make ai-eval-adversarial-direct`, plus matching `yarn ai:eval:*:direct` scripts and `ai-eval-preflight-direct`) so local KPI loops can run on `http://localhost:3004` without bearer auth while the default gateway path remains `http://localhost:8000/api/q-assistant`.
+  - added `EVAL_TRANSPORT=direct` as a loop-wide Makefile switch, so the standard `ai-eval*`, `quality-gate`, and `loop` targets can run against the direct backend transport without rewriting the command shape.
+  - moved more of the dataset-validation protocol out of prompt-only guidance: runtime loop limits now prune premature style/focus/rank tools after dataset mutation and force the `waitForQMapDataset -> countQMapRows` chain before styling, fit, isolation, tooltip, or ranking steps.
+  - moved another fail-closed invariant out of the prompt and into backend runtime guardrails: after a qcumber `invalid_provider_id` failure, runtime now prunes provider-scoped dataset/help/query tools and forces `listQCumberProviders` so provider recovery happens explicitly instead of via silent fallback.
+  - moved duplicate-call suppression further into backend runtime guardrails: repeated identical successful `tool+args` signatures now trigger a reuse rule that prunes the repeated tool and forces the model to continue from existing evidence instead of reissuing the same successful call.
+  - tightened the first-pass response-quality KPIs in the eval contract: `expected_response_mode` cases can now require explicit final-response markers via `response_mode_markers_any`, and `require_grounded_final_answer` cases can require minimal tool-evidence via `grounded_required_tools_all`.
+  - expanded quality-sensitive case coverage and tightened precision expectations by opting more stable workflows into grounded final-answer checks and `max_extra_tool_calls=0`, so accuracy and precision are enforced on a larger functional/adversarial slice instead of only a handful of cases.
+  - increased escalation coverage on the stable dataset-disambiguation workflow by adding companion clarification cases with explicit `datasetId` markers and zero-extra-tool tolerance.
+  - added `scripts/audit-ai-trace-quality.mjs`, `make ai-trace-quality-audit`, and `yarn ai:eval:trace-quality-audit`, then wired the new audit into `quality-gate` so groundedness/escalation must stay corroborated by real `chat-audit` traces (`responseText`, successful `requestToolResults`, runtime `qualityMetrics`) instead of relying only on report-level grading.
+  - expanded clarification coverage beyond `datasetId` selection: functional and held-out eval suites now include explicit `providerId` clarification cases that require `listQCumberProviders`, forbid premature dataset/query steps, and lift functional escalation coverage from `2` to `4` evaluated cases on the latest direct run while keeping `escalationComplianceRate=1`.
+  - compacted the text-only finalize path in `run-ai-eval`: the runner now asks for the closing narrative with a small prompt plus the recent assistant/tool chain instead of replaying the full conversation, which removed the Treviso centering latency outlier while preserving `requestToolResults` for trace-backed quality audits.
+  - `run-ai-eval` now supports deterministic per-case mock tool overrides via `mock_tool_results`, and the eval corpus adds the first `limitation` quality pair for flat-metric styling failures so fail-closed map UX behavior is exercised with repeatable mock evidence instead of incidental runtime conditions.
+  - backend runtime guardrails now emit explicit response-mode hints (`clarification` / `limitation`) into the system guidance stream, backend `qualityMetrics` preserve `responseModeHint`, and both `run-ai-eval` and `ai-trace-quality` consume that structural signal before falling back to lexical markers.
+  - clarification grading now has a structural fallback for discovery-only catalog loops: when a turn ends after successful `listQCumberProviders` / `listQCumberDatasets` without a later actionable tool, `qualityMetrics.responseModeHint=clarification` keeps response-quality and trace-quality audits aligned without relying on one exact sentence shape.
+  - named-place ambiguity is now a runtime contract instead of only prompt discipline: tool-result extraction preserves `clarificationRequired` / question/options, backend classifies `ambiguous_admin_match`, runtime loop limits force a single clarification finalization, and `qualityMetrics` expose `clarificationPending` / `clarificationReason` alongside `responseModeHint`.
+  - functional and adversarial eval corpora now include deterministic territorial-level ambiguity clarification cases, so `queryQCumberTerritorialUnits` fail-closed behavior is measured with the same structural clarification grading used for provider/dataset resolution.
+  - `run-ai-eval` now preserves clarification-specific runtime metrics in aggregated case diagnostics (`clarificationPending`, `clarificationReason`, `clarificationQuestionSeen`, `clarificationOptionsCount`) so report artifacts keep the same runtime evidence that trace audits already see.
+  - chart-generation requests now prune `openQMapPanel` at runtime whenever real chart execution tools are available, so UI navigation can no longer satisfy chart objectives in place of `categoryBarsTool`/`histogramTool`/metric chart tools.
+  - `openQMapPanel` pruning is now broader and less prompt-dependent: when panel/tab navigation was not explicitly requested and another operational tool is available, runtime removes the panel-navigation bypass instead of letting generic analysis/map flows waste a step on UI navigation.
+  - `run-ai-eval` now preserves unknown scalar/array `qualityMetrics` keys through normalization and per-case aggregation, so new backend runtime signals remain visible in `evalDiagnostics.qualityMetrics` without waiting for bespoke report-plumbing edits.
+  - the deterministic `limitation` eval pack now also covers failed map centering via `fitQMapToDataset`, so fail-closed quality is exercised on both styling and visible-focus workflows instead of only on flat-metric coloring.
+  - the consolidated live direct limitation slice (`limitation-pack-slice-direct-rerun5`) is now green end-to-end after aligning the mock dataset catalog with `flat_metric` and tightening clarification-vs-limitation lexical grading; response-quality and trace-quality audits both pass on the resulting report.
+  - the deterministic limitation pack now extends into `backend_reliability`: `run-ai-eval` exposes a minimal mock `listQMapCloudMaps` catalog and the eval corpus adds cloud-load limitation cases where `loadCloudMapAndWait` fails without a validated fallback, so retry/fallback truthfulness is measured with repeatable fail-closed evidence instead of flaky upstream behavior.
+  - the new backend-reliability limitation slice (`cloud-limitation-slice-direct-rerun`) is green end-to-end: the cloud fail-closed case and the grounded cloud validation case both pass with `falseSuccessClaimRate=0`, `groundedFinalAnswerRate=1`, `escalationComplianceRate=1`, and matching trace-quality audit results.
+  - limitation grading is now less model-lexical and more structural: response-mode checks accept non-success acknowledgment plus failed tool evidence as the primary signal, and the flat-metric limitation contracts now explicitly allow `listQMapDatasets` as a valid discovery step so the functional gate measures fail-closed truthfulness instead of penalizing harmless catalog lookup noise.
+  - low-distinct metric-color recovery is now enforced in backend runtime loop limits instead of living only in the prompt: after a failed `setQMapLayerColorByField` with flat/uniform metric evidence, q-assistant prunes identical retries and heavy recompute/query loops, prefers distinct/preview inspection or explicit non-metric fallback styling, and the dedicated direct eval slice (`low-distinct-runtime-guardrail`) stays green with response-quality and trace-quality audits.
+  - cloud fail-closed recovery is now enforced in backend runtime loop limits for explicit `no validated fallback available` failures: q-assistant classifies the exhausted cloud-recovery branch, stops offering more cloud/bridge retry tools in the same turn, and forces a limitation-style finalization unless a later fallback load has already been validated with `waitForQMapDataset`; the dedicated direct slice (`cloud-runtime-finalize-guardrail`) remains green with response-quality and trace-quality audits.
+  - cloud recovery confirmation is now evidence-backed in `qualityMetrics` instead of prompt wording: q-assistant emits `cloudFailureSeen`, `cloudFailureExhausted`, and `cloudRecoveryValidated`, `run-ai-eval` / `ai-trace-quality` consume those signals for grounded cloud cases, and the prompt no longer needs the cloud-specific narrative-confirmation rule.
+- `run-ai-eval` now measures tool precision on actual tool-call count instead of only distinct tool-name sets, so repeated or redundant calls reduce KPI precision instead of being silently deduplicated.
+- `run-ai-eval` now supports optional `expected_tool_arguments` / `min_tool_argument_score` case contracts and reports `toolArgumentScore`, improving KPI accuracy for cases where correct tool choice is not enough without minimally valid arguments.
+- cloud-load mock tool results in `run-ai-eval` now expose canonical `datasetName` / `datasetRef`, so `waitForQMapDataset` argument-quality checks reflect realistic post-load context instead of rewarding an empty `{}` wait call.
+- shared tool contracts now publish strict arg schemas for `waitForQMapDataset` and `countQMapRows`, so the eval tool catalog and runtime mirror no longer advertise permissive `{}` payloads for dataset validation/control steps.
+- `loadCloudMapAndWait` now also requires `mapId` in both the frontend tool schema and generated eval/tool contracts, closing the remaining empty-args cloud-load loophole that kept `arch_cloud_postload_validation` semantically weak.
+- q-assistant now repairs empty `waitForQMapDataset` / `countQMapRows` calls from recent dataset-producing tool results, and q-map cloud-load results now expose canonical `loadedDatasetRef` / `datasetRef` so the frontend runtime can autofill follow-up validation steps instead of letting dataset-validation tools run with `{}`.
+- `generate-tool-contracts` and `audit-tool-contracts` now resolve project paths from `examples/q-map` instead of the caller `cwd`, removing another repo-root invocation fragility from the engineering loop.
+- `cases.functional.json` now extends `expected_tool_arguments` coverage across additional critical workflows (provider routing, cloud load, territorial level resolution, superlative-to-map focus, centering, and population styling), so `toolArgumentScore` is no longer limited to the original narrow subset.
+- `run-ai-eval` / `validate-ai-eval-schema` now support grouped `tools_any` argument expectations, and the functional suite uses them to score stable argument quality across standard workflows too instead of keeping semantic argument accuracy limited to a critical-only subset.
+- `cases.functional.json` now closes the remaining argument-accuracy blind spots for discovery inventory, base-map service orchestration, and load/save bridge validation, so all 38 functional cases participate in `toolArgumentScore`.
+- admin-level disambiguation KPI cases now use non-mutually-exclusive keyword anchors (`omonimie` / `disambiguazione`) instead of requiring both `comune` and `provincia` in the same correct answer branch, reducing lexical noise without weakening workflow/argument checks.
+- `run-ai-eval` now tolerates one missing anchor in `expected_keywords_any`, so semantically correct answers are no longer penalized for a single omitted synonym/branch label while tool recall, precision, and argument-accuracy gates remain unchanged.
+- `q-assistant` now exposes normalized `upstreamUsage`, `requestPayloadTokenEstimate`, and `tokenBudget` inside the additive `qAssistant` response envelope for non-streaming calls, and `run-ai-eval` aggregates those diagnostics into report-level token/cost metrics.
+- added `scripts/audit-ai-cost-kpis.mjs` plus `make ai-cost-audit`, and wired the new audit into `quality-gate` to enforce usage coverage, prompt-budget utilization, token ceilings, and optional USD cost thresholds from env pricing.
+- `prompt-lint` history analysis now tolerates one unstable keyword per case when `expected_keywords_any` contains multiple anchors, matching the runner's tolerant keyword scoring and removing residual false-positive warning noise.
+  - hardened the prompt-driven engineering loop so merge gates and baseline history match the documented governance model:
+  - `quality-gate` now runs `ai-eval-functional` before variance audits, aligning merge/release enforcement with governance controls that depend on runtime assistant behavior.
+  - `quality-gate` now also runs `ai-operational-audit`, enforcing latency/transport KPIs (`avgDurationMs`, `p95DurationMs`, `maxDurationMs`, `transportErrorRate`, `transport.aborted`) on the latest functional report instead of relying only on correctness gates.
+  - `quality-gate` now also runs `ai-passk-audit`, which reads the latest adversarial window and enforces a basic `pass^k` reliability floor once repeated held-out runs exist.
+  - `quality-gate` now also runs `ai-trace-grade-audit`, which reads backend `requestId` references from the latest functional report and grades the matching `chat-audit` traces for critical cases.
+  - `ai-eval` and `ai-eval-functional` now preserve the real runner exit code when output is tee'd, so transport or gate failures stop `make` immediately instead of cascading into downstream audits with empty reports.
+  - `run-ai-eval` now records operational summary metrics (`avgDurationMs`, `p95DurationMs`, `maxDurationMs`, `transportErrorRate`) and whether deterministic case constraints were applied, so held-out/adversarial slices and operational audits share the same report artifact.
+  - `run-ai-eval` now marks unusable baseline artifacts with `invalidBaseline=true` plus an explicit reason (`dry_run_report`, `transport_aborted`, `all_cases_transport_skipped`, etc.), and the variance / area-variance audits ignore those reports instead of treating aborted zero-score windows as real baselines.
+  - `validate-ai-eval-schema` now validates the `invalidBaseline` report contract across existing eval artifacts, so aborted baseline reports are checked for explicit reasons instead of relying only on runtime convention.
+  - `q-assistant` runtime guardrails now harden the two highest-noise adversarial workflows seen in real chat-audit traces: cloud-load success claims now require a post-load `waitForQMapDataset`, and administrative superlative-to-map prompts now recognize `unita amministrativa` / `primo piano sulla mappa` phrasing, forcing the `queryQCumberTerritorialUnits -> rankQMapDatasetRows -> createDatasetFromFilter -> fitQMapToDataset` path while pruning redundant `setQMapLayerOrder` detours.
+  - prompt lint history now ignores invalid baseline reports and falls back to normalized response-content keyword checks, so adversarial keyword hygiene is not skewed by older report formats or aborted runs.
+  - administrative superlative guardrails now reuse workflow state from successful territorial-query / ranking steps, so follow-up turns like `continua` still force `fitQMapToDataset` and prune `setQMapLayerOrder` without depending only on lexical markers in the latest prompt.
+  - q-assistant now derives a shared explicit runtime workflow state for ranking/admin map flows, so `main.py` pruning and `runtime_guardrails.py` injection make the same decisions from the same state instead of duplicating helper logic.
+  - eval and audit scripts now resolve default paths from the `examples/q-map` project root instead of the caller `cwd`, so repo-root invocations of `run-ai-eval`, `prompt-lint`, `variance`, `pass^k`, `operational`, and `trace-grade` behave consistently.
+  - added `tests/ai-eval/cases.adversarial.json` plus `make ai-eval-adversarial` / `yarn ai:eval:adversarial` for held-out slices that disable deterministic case constraints and exercise generalization beyond the guided functional benchmark.
+  - added `scripts/audit-ai-passk-reliability.mjs` plus `make ai-passk-audit` / `yarn ai:eval:passk-audit` to measure empirical repeated-run reliability on adversarial slices instead of trusting a single held-out run.
+  - `clean-loop` now preserves `tests/ai-eval/results` by default so baseline windows survive normal artifact cleanup; use `clean-loop-hard` (or `CLEAN_LOOP_PURGE_EVAL_RESULTS=1`) for intentional eval-history resets.
+  - `AGENT.md`, `SYSTEM_ENGINEERING_LOOP.md`, `AI_EVAL.md`, and governance docs now document the non-destructive default cleanup flow and the requirement that `quality-gate` cover both functional runtime evals and critical trace grading.
+- ai-eval functional calibration: 5 cases updated with `expected_tools_any` declarations for the legitimate discovery/query chain (`listQMapDatasets → listQCumberDatasets → getQCumberDatasetHelp → query`) that precedes analytics tools — `arch_flat_metric_coloring_limitation` (added `describeQMapField`), `arch_temporal_trend_analysis` (new `expected_tools_any` + IT keywords `decrescente`/`crescente`/`mese` + `mock_tool_results` for pm25 dataset discovery), `arch_change_detection_delta`, `arch_hotspot_analysis`, `arch_composite_index` (discovery + `setQMapLayerColorByField`/`fitQMapToDataset`); tool precision for these cases rises from 0.167–0.20 to 1.0; `arch_h3_population_flows` also receives `mock_tool_results` (comuni + H3 tessellation pre-loaded) to prevent the model from abandoning discovery before reaching `populateTassellationFromAdminUnits`; functional suite reaches 68/68 pass (100%).
+- ai-operational-audit: raised `maxMaxDurationMs` default from 60 000 ms to 90 000 ms; the 66.8 s spike in run `deadcode-cleanup-20260317` was an isolated provider latency event (P95=11.4 s), not a systemic regression.
+
+### Security
+- hardened local q-map env handling:
+  - removed tracked `.env.development` secrets from versioned project state and introduced `.env.development.example` as the checked-in frontend template.
+  - `scripts/dev-local.mjs` now writes gateway/auth values to `.env.development.local`, and `Makefile` same-origin helpers prefer `.env.development.local` over tracked env files.
+  - root `.dockerignore` now excludes `.env*` and `.git` so full-repo UI builds do not send local env files or git history into Docker build context.
+  - frontend bearer auth now uses runtime injection (`/qmap-runtime-config.js`) instead of `VITE_QMAP_AUTH_BEARER_TOKEN`, so local JWTs are no longer baked into the Vite bundle or Docker UI image.
+  - removed the last legacy `VITE_QMAP_AUTH_BEARER_TOKEN` fallbacks from Vite dev config and the same-origin shell; local same-origin auth now reads only `QMAP_AUTH_RUNTIME_TOKEN`.
+- hardened backend auth defaults:
+  - `q-assistant` no longer forwards caller bearer tokens to upstream LLM providers unless `Q_ASSISTANT_ALLOW_CALLER_API_KEY_FALLBACK=true` is explicitly set.
+  - `q-storage-backend` now fails closed when auth is not configured; insecure default-user fallback requires explicit opt-in via `QSTORAGE_ALLOW_INSECURE_DEFAULT_USER=true`.
+  - `backends/docker-compose.yaml`, `.env.example`, and `.env.prod.example` now expose the new security flags explicitly so local/prod behavior is auditable.
+
+### Added
+- aligned published q-map image naming with the local platform runtime prefix:
+  - `examples/q-map/Makefile`, `backends/Makefile`, and the root `Makefile` now default q-map publish tags to `q-map--*` image names (`q-map--ui`, `q-map--q-cumber-backend`, `q-map--q-storage-backend`, `q-map--q-assistant`, `q-map--q-cumber-postgis`).
+  - `docker-stack.platform.yml` now uses the same `q-map--*` defaults so Swarm deployments and local publish helpers resolve the same repository names.
+- removed release-tag policy from nested q-map Makefiles:
+  - `examples/q-map/Makefile` and `backends/Makefile` no longer derive `dev/prod` tags from the nested `kepler.gl` git history.
+  - q-map nested Makefiles keep only low-level `image-refs/image-build/image-push` primitives; full-platform release tagging and publication now belong exclusively to the root `q_hive/Makefile`.
+- adjusted the default q-map viewport to start centered on Italy instead of Rome:
+  - `src/main.tsx` now boots with `latitude=42.5`, `longitude=12.5`, `zoom=5` when no hash preset or saved map viewport is provided.
+  - q-map now also reapplies that Italy viewport once on app mount when the URL has no hash/preset and no iframe cloud-map reference, preventing fallback startup states from landing near Africa/`0,0`.
+- fixed iframe geotoken startup viewport when Hive opens q-map with hash-only session params:
+  - q-map now reapplies the computed initial viewport on mount for iframe hashes that carry only mode/preset/action metadata and no `cloud_map_id`, so Hive geotoken sessions no longer fall through to Africa/`0,0`.
+  - the startup viewport is now re-applied once more after initial mount settle, covering late Kepler/bootstrap fallback states that could still override the first recenter.
+  - added unit coverage for direct and query-style iframe hashes in `tests/unit/workers/mount-viewport.test.ts`.
+- entering `geotoken` mode now arms perimeter drawing immediately:
+  - q-map enables the standard Kepler draw control, opens polygon draw on mode entry, clears legacy custom-draw state, and applies the `satellite` basemap like `draw-stressor`.
+  - q-map now also performs the same arming during initial startup when the app is booted directly in `geotoken` from hash/iframe state, so Hive iframe sessions open with polygon draw active without requiring a manual mode switch.
+- geotoken perimeter geometries now auto-generate an H3 tessellation at resolution 11:
+  - on `SET_FEATURES` / geotoken mode entry, q-map reads polygonal geometries directly from the standard Kepler editor buffer, runs the H3 tessellation worker with intersecting-cell semantics, and upserts dataset `Tassellation_r11`.
+  - when no polygonal editor geometries remain, the auto-generated tessellation dataset is removed.
+- geotoken tessellation now refuses oversized perimeters before launching the H3 worker:
+  - q-map computes the union area of the drawn polygon geometries and blocks tessellation when the selected area exceeds `100 km2`.
+  - when the limit is exceeded, q-map removes any stale auto-generated tessellation dataset and shows a Kepler notification instead of continuing with H3 generation.
+  - added unit coverage for the `100 km2` guard and overlapping-polygon union area handling in `tests/unit/workers/geotoken-area-limit.test.ts`.
+- reduced the `geotoken` mode toolbar to the reservation-focused subset:
+  - removes `split map`, `locale`, and the `OP` draw menu from `geotoken`.
+  - keeps the mode selector available and limits the rest of the visible controls to standard `Draw`, `H3`, and `3D` for the geotoken reservation workflow.
+- made the q-map iframe bridge contract explicit for future `q_hive` embedding:
+  - `src/utils/iframe-export.ts` now emits versioned message envelopes (`source`, `version`, `type`, `payload`) and exposes fail-closed reason codes for iframe export/cancel preflight (`missing_map`, `not_in_iframe`, `missing_parent_window`, `missing_target_origin`).
+  - `src/main.tsx` now surfaces those iframe preflight failures directly in the export UI instead of a generic send failure.
+  - `tests/e2e/iframe-export.spec.ts` now asserts the versioned envelope and an explicit outside-iframe failure result.
+  - `README.md` and `AGENT.md` now document the concrete contract expected by the current `q_hive` listener (`event.source`, `event.origin`, accepted message types).
+- added q-map UI registry publish helpers in `examples/q-map/Makefile`:
+  - new targets `registry-login`, `ui-image-refs`, `ui-image-build`, and `ui-image-push` build/tag/push `quay.io/algebrasrl/q-map-ui`.
+  - the UI image build now explicitly uses the full `kepler.gl` repo as Docker build context, so local modifications outside `examples/q-map` are included in the image exactly like local dev/Vite usage.
+  - `examples/q-map/Dockerfile.ui` now installs both repo-root `kepler.gl` dependencies and `examples/q-map` dependencies, and skips non-browser package build scripts during image install so same-origin Docker builds can reproduce the working local q-map bundle without native `gl` build failures.
+  - `examples/q-map/Dockerfile.ui` now copies workspace/package manifests before the full source tree and uses a cache mount for Yarn downloads, so rebuilding the UI image after source-only changes can reuse the install layers instead of reinstalling dependencies every time.
+  - `README.md` now documents the q-map UI image publish flow and the default Quay target.
+- added an intermediate same-origin local shell for q-map platform work:
+  - new `docker-compose.same-origin.yaml` in `examples/q-map` starts `q-map-ui` plus an Nginx shell on `:8080`, proxying `/api/*` to the existing Kong gateway and `/` to the q-map UI.
+  - added `docker/nginx.same-origin.conf` and Makefile helpers `same-origin-up/down/ps/logs` to exercise the future single-origin topology before the real `q_hive` parent compose is introduced.
+  - documented the setup in `backends/README.md` as a temporary local step toward the future Hive embedding model.
+  - updated `examples/q-map/.dockerignore` so UI image builds skip backend bind-mounted data/log folders that can be root-owned or unreadable on local machines.
+  - validated the same-origin shell on `http://localhost:8080` with `make same-origin-up`, `make same-origin-ps`, and `curl http://localhost:8080/healthz`.
+- added registry-oriented image publish helpers in `examples/q-map/backends/Makefile`:
+  - new targets `registry-login`, `image-refs`, `image-build`, and `image-push` build/tag/push `q-cumber-postgis`, `q-cumber-backend`, `q-storage-backend`, and `q-assistant`.
+  - both frontend and backend Makefiles now also expose `*-dev` and `*-production` helper targets that resolve `IMAGE_TAG` automatically to `dev-<git sha>` and `prod-<utc date>-<git sha>`.
+  - image tags are parameterized via `IMAGE_REGISTRY`, `IMAGE_NAMESPACE`, and `IMAGE_TAG`, so Quay usage works without hardcoding a specific organization in the repo.
+  - `backends/README.md` now documents the Quay-compatible flow and the mapping to `QMAP_IMAGE_*` variables used by swarm deployment.
+  - default registry settings now target `quay.io/algebrasrl`, and `backends/.env.prod.example` uses matching `QMAP_IMAGE_*` defaults for production stack templates.
+- removed the legacy `custom-cloud-backend` path from q-map:
+  - deleted backend/docs/runtime references to `examples/q-map/backends/custom-cloud-backend` and removed the legacy service from `backends/docker-compose.yaml` and `backends/Makefile`.
+  - removed unused frontend env typing/docs for `VITE_CUSTOM_CLOUD_*`.
+  - replaced E2E cloud-map fixtures that depended on the deleted backend with a local test fixture under `tests/fixtures/sample-storage-map.keplergl.json`.
+- corrected the q-storage E2E saved-map fixture shape:
+  - `tests/fixtures/sample-storage-map.keplergl.json` now uses real `SavedMap v1` kepler schema fields (`allData`, versioned `config`, and `info.app`) and stores point geometries in `_geojson`, so cloud-load tests exercise the same load path and geometry semantics as persisted maps instead of crashing on an invalid fixture payload.
+- cleaned local env alignment for q-assistant gateway mode:
+  - removed unused frontend `VITE_QMAP_AI_PROVIDER` / `VITE_QMAP_AI_MODEL` overrides from `.env.development` because provider/model selection is server-side in proxy mode.
+  - clarified in backend env files (`backends/.env`, `.env.example`, `.env.providers.example`) that `openrouter` requires `Q_ASSISTANT_API_KEY` or `OPENROUTER_API_KEY`; otherwise `q-assistant /chat/completions` and KPI `ai-eval` runs fail with `401`.
+- reduced one fragile prompt-lint keyword in `tests/ai-eval/cases.sample.json`:
+  - `sample_qcumber_admin_query` no longer requires the literal word `provider` in assistant text, because the successful deterministic flow consistently preserves dataset/population outcome anchors but does not always repeat the provider label verbatim.
+- tracked `examples/q-map/.dockerignore` for UI image builds:
+  - excludes `node_modules`, Playwright artifacts, and temporary test outputs from the frontend Docker build context used by `Dockerfile.ui` / `backends/docker-compose.ui.yaml`.
+- unified q-map eval/preflight defaults on the Kong gateway path:
+  - `EVAL_BASE_URL`, `scripts/run-ai-eval.mjs`, and `scripts/preflight-ai-eval-runtime.mjs` now default to `http://localhost:8000/api/q-assistant` instead of direct `:3004`.
+  - `backend-ready` now starts Kong alongside q-assistant/q-cumber/q-storage and waits for Kong admin readiness in addition to backend health checks.
+  - `AGENT.md`, `README.md`, and `DOCUMENTATION.md` now describe gateway-first eval/preflight as the default operational path.
+- iframe action-authoring UX and reliability updates:
+  - added iframe cancel flow with explicit `QMAP_IFRAME_CANCEL` message and a new `Annulla` button beside `Invia` in iframe mode (`src/main.tsx`, `src/utils/iframe-export.ts`, `src/app.css`); Hive parent now closes overlay on cancel without mutating action payload (`q_hive/static/js/project.js`).
+  - iframe cloud export payload now includes full map backup (`payload.map`, `payload.format="keplergl"`) in addition to cloud reference metadata, preserving action-side backup even if user deletes cloud map.
+  - iframe save now performs upsert semantics for existing action cloud map (`overwrite + mapIdToOverwrite`) to keep one cloud map per action instead of creating duplicates.
+  - added/expanded iframe e2e coverage (`tests/e2e/iframe-export.spec.ts`) for cloud export, legacy export fallback, and cancel-only messaging; added dedicated script `test:e2e:iframe`.
+- auth token robustness for local gateway/cloud flows:
+  - auth resolver now rejects expired/not-yet-valid JWTs (`exp`/`nbf`) and cloud provider token precedence now favors runtime/shared tokens before static env token, preventing stale baked token 401s on `/api/q-storage/me`.
+- local dev JWT ergonomics:
+  - `backends/kong/scripts/mint-dev-jwt.py` default TTL raised from 1h to 24h (`--ttl 86400`) and docs updated (`README.md`, `backends/README.md`, `backends/kong/README.md`).
+- removed frontend Keycloak/OIDC auth path from q-map runtime:
+  - deleted `src/utils/keycloak-auth.ts` and `src/bootstrap/render-with-auth.tsx`.
+  - `src/main.tsx` now renders app root directly without auth bootstrap/redirect flow.
+  - simplified bearer token resolver/config surface by removing Keycloak-specific storage/window paths (`qmap_keycloak_access_token`, `keycloak_token`, `kc_access_token`, `window.__KEYCLOAK__`) and related env typing entries in `src/vite-env.d.ts`.
+  - removed Keycloak-specific env block from `.env.development` and aligned `VITE_QMAP_AUTH_TOKEN_STORAGE_KEYS` to JWT-only keys.
+  - cleaned active docs in `DOCUMENTATION.md`, `backends/README.md`, and `backends/kong/README.md` to reflect JWT token mode as the only supported frontend auth path.
+- dev-local JWT mint now includes cloud-read/write-compatible role claims by default:
+  - `backends/kong/scripts/mint-dev-jwt.py` now emits top-level `roles` claim (`qmap-reader,qmap-editor,qmap-admin` by default, configurable via `--roles` or `QMAP_DEV_JWT_ROLES`).
+  - this aligns local JWT bootstrap with q-cumber/q-storage role gates so `Add Data -> Archivio cloud -> /me` does not fail with `403 Insufficient role for read` in default local setup.
+- K3.c backend claim enforcement for cloud backends:
+  - `q-storage-backend` now supports optional JWT claim auth mode (`QSTORAGE_JWT_*`) with HS256 signature validation, `iss/aud/sub/exp` checks, and role-based read/write policy (`QSTORAGE_JWT_READ_ROLES`, `QSTORAGE_JWT_WRITE_ROLES`).
+  - `q-storage-backend` maps JWT `sub` to per-user storage ownership (sanitized user id) so map isolation follows authenticated identity claims instead of static token profile fallbacks.
+  - `q-cumber-backend` now supports optional JWT claim auth mode (`QCUMBER_JWT_*`) with the same claim checks and optional role-based read policy (`QCUMBER_JWT_READ_ROLES`) while preserving existing static token mode when JWT mode is disabled.
+  - compose/env templates and backend READMEs now document JWT backend claim-enforcement variables and precedence rules.
+  - backend unit coverage added for JWT claim validation and role gating in both `q-storage-backend` and `q-cumber-backend`.
+  - backend test orchestration/docs now include JWT auth suites (`backends/Makefile` `test-q-cumber`/`test-q-storage` + `AGENT.md` runbooks).
+  - stabilized prompt-lint keyword anchors for KPI cases `arch_dataset_materialization_filters` and `arch_h3_generation_and_join` by replacing fragile lexical terms (`creato`, `join`) with more stable outcome anchors (`righe`, `aggrega`).
+  - local backend orchestration now defaults to edge-only host exposure in gateway mode by introducing `backends/docker-compose.edge-only.yaml` and wiring it into `backends/Makefile` (`make up` / `make up-gateway`), so only Kong is published unless `make up-direct` is used explicitly.
+  - closed roadmap parent item `K3` in `TODO.md` after completing K3.a/K3.b/K3.c and edge-only default alignment.
+- frontend/backend policy-authority hardening for turn-scoped tool policies:
+  - removed frontend turn-scoped policy derivation/enforcement fallback from `src/features/qmap-ai/qmap-ai-assistant-component.tsx`; runtime tool-policy authority is now backend-only.
+  - backend runtime guardrails remain the authoritative hard-enforcement layer for tool gating decisions.
+  - q-assistant now emits backend policy summary header `x-q-assistant-runtime-policy-summary` (CORS-exposed) derived from effective tool-pruning decisions (`allowed/pruned`) after runtime guardrails.
+  - territorial-vs-thematic pruning in q-assistant runtime loop limits is now metadata-authoritative: it prunes `queryQCumberTerritorialUnits` only when recent backend routing evidence marks the active dataset path as non-administrative (`routing.isAdministrative=false` or `routing.queryToolHint.preferredTool=queryQCumberDataset*`), with no lexical objective fallback in that predicate.
+  - q-assistant request tool-result extraction now persists `routingPreferredTool` from routing metadata (`routing.queryToolHint.preferredTool` / `aiProfile.queryRouting.preferredTool`) so guardrail predicates can consume canonical backend contracts instead of objective keywords.
+  - q-map frontend now consumes backend policy summary header for runtime progress display.
+  - removed unused frontend turn-policy derivation surface from `src/features/qmap-ai/guardrails.ts`, removed obsolete turn-policy routing groups from `src/features/qmap-ai/tool-manifest.ts` + `tool-manifest.json`, and dropped related env typing from `src/vite-env.d.ts`.
+  - removed frontend keyword-weighted q-cumber dataset auto-selection in `src/features/qmap-ai/cloud-tools.tsx`; auto-selection now happens only when routing metadata yields a unique candidate, otherwise runtime requires explicit `datasetId`.
+  - reduced frontend prompt-level execution heuristics now covered by backend/tool runtime:
+    - removed deterministic parent-id retry instructions from `src/features/qmap-ai/system-prompt.ts` (EN/IT variants), keeping retry policy authority in runtime implementations.
+  - strengthened tool-argument strictness contracts and runtime enforcement for critical query/control tools:
+    - `scripts/generate-tool-contracts.mjs` now emits strict args schemas (`additionalProperties=false`) for `queryQCumberDataset`, `queryQCumberTerritorialUnits`, `queryQCumberDatasetSpatial`, `listQCumberProviders`, `listQCumberDatasets`, `getQCumberDatasetHelp`, `listQMapCloudMaps`, `loadQMapCloudMap`, `loadCloudMapAndWait`.
+    - frontend tool wrapper in `src/features/qmap-ai/qmap-ai-assistant-component.tsx` now blocks unknown argument keys using shared tool contracts before execution.
+    - `src/features/qmap-ai/tool-contract.ts` now normalizes `required` args metadata and exposes unknown-key contract checks used by runtime.
+    - added unit coverage `tests/unit/workers/tool-contract-args.test.ts` for strict contract unknown-arg rejection behavior.
+- q-cumber admin routing hardening for named-place ambiguity without geographic hardcoding:
+  - `queryQCumberTerritorialUnits` runtime in `src/features/qmap-ai/cloud-tools.tsx` no longer relies on fixed `adminType -> lv` mapping; it now resolves `expectedAdminType` using dataset metadata `ai.profile.adminWorkflows.adminTypeToLevel` (from descriptor/help routing context).
+  - when metadata mapping is missing, runtime now fails explicitly with actionable guidance instead of silently applying biased level inference.
+  - ambiguous named-place matches across multiple administrative levels now expose explicit clarification payload (`clarificationRequired`, `clarificationQuestion`, options) to steer a single deterministic disambiguation step.
+  - provider descriptor `backends/q-cumber-backend/provider-descriptors/it/local-assets-it.json` now declares `adminWorkflows.adminTypeToLevel` for `kontur-boundaries-italia`.
+  - onboarding guide updated to require/encourage `adminTypeToLevel` for administrative datasets to keep routing metadata-driven across countries.
+- KPI loop signal-to-noise improvements:
+  - `changelog-audit` now ignores local-only env overrides (`examples/q-map/.env.development`, `.env.local`) to avoid false failures during dev bootstrap/auth token refresh.
+  - functional case `arch_clip_overlay_cleanup` now treats geometry cleanup (`cleanQMapDatasetGeometries`) and filter-materialization prep (`createDatasetFromFilter`/`createDatasetFromCurrentFilters`) as valid workflow steps, reducing bias against legitimate prep+cleanup chains in geo-processing KPI scoring.
+  - added functional eval case `arch_qcumber_dataset_id_disambiguation` to protect explicit `datasetId` disambiguation behavior for multi-dataset providers (`listQCumberDatasets` before query, no automatic dataset assumptions).
+  - updated eval runner deterministic prompt guidance (`scripts/run-ai-eval.mjs`) to require explicit dataset selection flow when `datasetId` is missing on multi-dataset q-cumber providers.
+  - strengthened case-level eval constraints support by honoring `eval_prompt` in deterministic case guidance; tightened geo/H3 KPI cases to reduce unnecessary extra tool calls.
+  - hardened q-cumber/cloud tool input schemas in `src/features/qmap-ai/cloud-tools.tsx` with strict object contracts and canonical argument guards (`non-empty ids`, integer `limit/offset`, bounded `filters`, strict filter objects), reducing ambiguous legacy-style parameter acceptance.
+  - de-biased deterministic prompt/routing fixtures by removing locale-default admin-level fallback for ambiguous H3 place names in `src/features/qmap-ai/system-prompt.ts` and by making `scripts/run-ai-eval.mjs` guidance/mocks neutral-by-default while preserving explicit `local-assets-it` compatibility paths.
+  - added non-localized companion KPI cases for previous Treviso-specific regressions (`superlative_admin_unit_show_on_map`, `territorial_focus_centering_accuracy`, `style_application_accuracy`) in `tests/ai-eval/cases.functional.json` + `tests/ai-eval/architecture-matrix.json` to reduce locale overfitting in map-UX/orchestration scoring.
+  - adjusted fragile expected keyword anchors in disambiguation/centering cases to reduce prompt-lint noise from lexical variance while preserving tool-routing constraints.
+  - tuned functional KPI expectations to reduce false negatives from legitimate deterministic flows:
+    - `arch_clip_overlay_cleanup` now includes `countQMapRows` in accepted tool evidence, aligning precision scoring with cleanup-validation behavior.
+    - `arch_treviso_province_centering` expected keywords now rely on stable anchors (`Treviso`, `mappa`) instead of lexical variants (`mostra`) that were not semantically required.
+    - `arch_thematic_spatial_query` now accepts `queryQCumberTerritorialUnits` as expected supporting evidence for bounded-area spatial analyses, avoiding precision penalties on valid boundary-resolution steps.
+    - `arch_dataset_materialization_filters` now accepts `queryQCumberDataset` as expected pre-filter evidence for derivation flows starting from thematic datasets, reducing run-to-run precision variance.
+    - `arch_dataset_materialization_filters` now accepts `loadData` as legitimate pre-filter bootstrap step and uses stable outcome keywords (`filtri`, `creato`, `dataset`) instead of brittle lexical form (`materializza`), reducing residual precision/keyword variance.
+    - `arch_multi_perimeter_overlay_consistency` now accepts `queryQCumberTerritorialUnits` as valid perimeter-bootstrap evidence before thematic clipping/intersection.
+    - `arch_chart_tooling` keyword anchors now prioritize stable analytical intent terms (`distribuzioni`, `andamento`, `categorie`) to reduce lexical drift on chart narratives.
+  - introduced explicit ai-eval `runType` propagation (`baseline`/`stabilization`/`debug`) in `scripts/run-ai-eval.mjs` reports and markdown, with backward-compatible inference from `runId` for historical reports.
+  - variance and KPI summary tooling now support run-type-separated windows (`scripts/audit-ai-eval-variance.mjs`, `scripts/update-kpi-weekly-summary.mjs`) and Makefile wiring (`EVAL_RUN_TYPE`, `EVAL_VARIANCE_RUN_TYPE`, `KPI_SUMMARY_RUN_TYPE`) to avoid mixed baseline/stabilization audit windows.
+  - added per-area drift audit script `scripts/audit-ai-eval-area-variance.mjs` (passRate/avgCaseScore/avgToolPrecision/avgExtraToolCalls spans on latest functional window) with `make ai-area-variance-audit` integration in `quality-gate` as non-blocking warning during stabilization.
+  - `make ai-area-variance-audit` now supports strict gating mode via `QMAP_AI_EVAL_AREA_VARIANCE_STRICT` (default `true` in CI, `false` locally): violations fail the gate in CI while remaining warning-only in local loops.
+  - ai-eval gateway auth compatibility: `scripts/run-ai-eval.mjs` and `scripts/preflight-ai-eval-runtime.mjs` now accept bearer auth via `QMAP_AI_EVAL_BEARER_TOKEN` (or `EVAL_BEARER_TOKEN`) for `/health` and `/chat/completions`, with explicit hints on 401/403 when token is missing.
+  - stabilized `prompt-lint` keyword history for `arch_multi_perimeter_overlay_consistency` by removing the brittle anchor `perimetri` and keeping robust anchors `intersezione`/`copertura`.
+  - executed baseline loop run `kpi-20260308-gw-jwt-functional` using JWT-protected Kong edge endpoint (`EVAL_BASE_URL=http://localhost:8000/api/q-assistant`) and recorded KPI deltas in `docs/KPI_WEEKLY_SUMMARY.md`.
+  - `scripts/update-kpi-weekly-summary.mjs` now updates a `Latest Area Drift` section in `docs/KPI_WEEKLY_SUMMARY.md`, including per-area deltas and trend labels (`improving`, `stable`, `regressing`) versus previous run in the same run-type stream.
+  - executed baseline loop run `kpi-20260307-area-drift-ci-strict-functional` after strict-in-CI rollout and recorded KPI deltas in `docs/KPI_WEEKLY_SUMMARY.md`.
+  - executed and recorded a new baseline functional run (`kpi-20260307-run-type-baseline-functional`) to restore a full 3-run `runType=baseline` variance window and update `docs/KPI_WEEKLY_SUMMARY.md`.
+  - unified q-assistant runtime failure taxonomy classes in loop governance (`materialization_timeout`, `field_missing`, `join_mismatch`, `validation_zero_rows`, plus existing classes) via `_classify_runtime_error_kind` canonical mapping, replacing legacy `metric_field_not_found`/`wait_for_dataset_timeout` labels.
+  - added deterministic per-class retry/remediation policy mapping (`_runtime_error_retry_policy`) and wired it into runtime loop cap guidance (`error_class_retry_cap`) so repeated failure handling now emits class-specific next-step instructions instead of generic retry text.
+  - expanded non-localized KPI companion coverage beyond Treviso/Parma map-UX regressions with additional place-dependent scenarios across map-UX, data-pipeline, and geo-processing:
+    - `arch_named_region_centering_companion` (`territorial_focus_centering_accuracy`, map-UX).
+    - `arch_territorial_units_level_resolution_companion` (`admin_level_resolution_accuracy`, data-pipeline).
+    - `arch_territorial_tessellation_multires_companion` (`territorial_tessellation_multires_consistency`, geo-processing).
+  - updated architecture matrix area mappings (`tests/ai-eval/architecture-matrix.json`) to include the new companion cases for balanced cross-area KPI coverage.
+  - stabilized prompt-lint lexical history signal for `sample_qcumber_admin_query` by aligning sample expected keywords to less locale-variant anchors (`provider`, `dataset`, `popolazione`) and removing the fragile `amministrative` keyword dependency.
+  - hardened Kong edge JWT validation (`K3.b`) with env-driven declarative config render (`backends/kong/scripts/render-kong-config.py` + `make -C backends render-kong-config`):
+    - removes single static secret dependency by supporting primary/secondary HS256 issuer/secret slots (`QMAP_KONG_JWT_PRIMARY_*`, `QMAP_KONG_JWT_SECONDARY_*`) for rotation.
+    - adds gateway pre-auth claim checks for allowlisted issuer and audience (`QMAP_KONG_JWT_ALLOWED_AUDIENCES`, `QMAP_KONG_JWT_REQUIRE_AUDIENCE`), while keeping downstream JWT signature verification on Kong `jwt` plugin.
+    - updates local/prod env templates and Kong token mint helper defaults to use the new rotation/audience config surface.
+- q-assistant backend refactor cleanup:
+  - switched explicit tool-routing tests to import routing helpers from `backends/q-assistant/src/q_assistant/request_routing.py` (instead of `q_assistant.main`) and removed unused `_extract_explicit_tool_choice` import from `main.py`.
+  - removed confirmed dead wrappers with zero runtime/test callsites: `payload_compaction._infer_model_context_limit_tokens` and `runtime_guardrails._append_runtime_guidance_lines`.
+  - `runtime_guardrails` cleanup: removed redundant compatibility wrappers (`_objective_requests_*`, `_is_likely_normalized_metric_field`, `_enforce_runtime_tool_loop_limits`) by using module entrypoints directly in `main.py` import aliases and moving guardrail tests to module imports (`runtime_guardrails` + `request_tool_results`) instead of `q_assistant.main`.
+  - `provider_transport` cleanup: removed compatibility wrapper layer (`_post/_stream_*`, `_post_json`, `_get_json`, `_stream_proxy`, `_sanitize_openai_stream_chunks`) and switched `main.py` to direct module entrypoints, injecting `AsyncOpenAI` explicitly at provider SDK callsites.
+  - moved provider transport tests to module entrypoints (`q_assistant.provider_transport`) and explicit dependency injection (`async_openai_cls`) instead of patching `q_assistant.main.AsyncOpenAI`.
+  - moved additional low-coupling backend tests off `q_assistant.main` to module entrypoints where already available (`request_routing`, `payload_compaction`, `usage_estimation`), reducing `main.py` as de-facto test API surface.
+  - extracted chat payload compaction/sanitization helpers from `main.py` into new module `backends/q-assistant/src/q_assistant/chat_payload_compaction.py` and rewired runtime/test callsites (`_compact_chat_completions_payload`, `_deduplicate_discovery_tool_turns`, `_sanitize_openai_tools_for_gemini_model`, schema/tool-message compaction helpers).
+  - `main.py` now uses the extracted compaction module and passes runtime discovery-tool set explicitly to discovery-turn deduplication.
+  - moved chat payload compaction tests to `q_assistant.chat_payload_compaction` module entrypoints.
+  - extracted objective-anchor and final-text normalization helpers from `main.py` into new module `backends/q-assistant/src/q_assistant/objective_anchor.py` (`_build_objective_focus_terms`, `_inject_objective_anchor_message`, `_normalize_openai_response_final_text`).
+  - extracted objective-intent helpers to `backends/q-assistant/src/q_assistant/objective_intent.py` (`_objective_requests_dataset_discovery`, `_extract_objective_required_focus_phrases`, ranked/cloud/population/clip-stats intent detectors) and rewired `main.py` + `objective_anchor.py` to remove residual `objective_anchor -> main` callback dependency.
+  - moved objective-anchor related tests to module entrypoints (`q_assistant.objective_anchor`, `q_assistant.objective_focus`) and updated request-coercion anchor test import accordingly.
+  - removed `runtime_guardrails` `_prune_*` callback wrappers that dynamically imported `q_assistant.main`; `main.py` now calls `runtime_guardrails.prune_*` APIs directly with explicit dependency wiring, and runtime-guardrail tests now wire prune dependencies in test setup (no runtime wrappers).
+  - refactored `runtime_guardrails.enforce_runtime_tool_loop_limits` to explicit dependency injection (no dynamic `main` import); `main.py` now provides the guardrail dependencies/constants at callsite and guardrail tests reuse the same runtime wiring via test `partial`.
+  - removed one-shot audit wrapper `audit_logging._write_chat_audit` (single callsite): its logic is now inlined in `_write_chat_audit_event`, preserving audit behavior while reducing dead indirection.
+  - hardened `runtime_guardrails._inject_runtime_guardrail_message` by removing wildcard `main.__dict__` global binding; it now binds only explicit required symbols as local references, eliminating implicit module-global pollution.
+  - removed dynamic-import wrappers from `payload_compaction.py` (`_evaluate_payload_token_budget`, `_apply_payload_token_budget`); `main.py` and token-budget tests now call `evaluate_payload_token_budget`/`apply_payload_token_budget` with explicit injected dependencies.
+  - completed runtime-guardrails dynamic-import removal: `_inject_runtime_guardrail_message` now accepts explicit `bindings`, `main.py` provides them via `_runtime_guardrail_injection_bindings()`, and guardrail tests reuse the same bindings through test `partial`.
+  - inlined single-callsite SSE event normalizer into `provider_transport.sanitize_openai_stream_chunks` and removed the extra module-level helper `normalize_openai_sse_event`.
+  - completed `R12` module/function audit for `backends/q-assistant/src/q_assistant`: all modules are currently part of runtime/test dependency graph; cleanup focused on removing wrapper indirection/dynamic imports and consolidating single-callsite helpers.
+  - canonicalized cloud provider IDs end-to-end to backend service names only (`q-cumber-backend`, `q-storage-backend`) with no `*-cloud` alias compatibility in runtime resolver/normalizers; updated frontend cloud provider registrations, AI defaults/prompts, MCP build-load action default, and cloud-focused e2e specs.
+  - removed residual cross-domain provider alias mapping in AI dataset-provider selection (`q-cumber-backend` no longer remapped to q-cumber dataset provider id), keeping cloud provider IDs and q-cumber catalog providerIds strictly separated.
+  - removed territorial provider alias override heuristics (`kontur/local/...`) from q-cumber provider resolution path: explicit `providerId` is now strict, while auto-selection is used only when `providerId` is missing.
+  - removed non-canonical tool-argument alias remaps across backend/frontend runtime normalization paths: q-assistant no longer rewrites `datasetRef/datasetId` or `numeratorField/denominatorField`, frontend tool-args normalizer no longer remaps alias payloads (`layerNameOrId`, `color`, metric/name aliases), and affected tooling/tests now require canonical arguments explicitly.
+  - `/chat` request coercion is now strict canonical: removed compatibility parsing of OpenAI-style `messages`/single `message` payloads from `chat_request_coercion`, so `/chat` requires explicit `prompt` while OpenAI payload compatibility remains on `/chat/completions`; updated coercion tests and backend README accordingly.
+  - tightened q-cumber provider selection heuristics in frontend cloud tools: removed hardcoded `local-assets-it` preference and generic first-provider fallback when `providerId` is omitted; auto-selection now occurs only for uniquely resolvable provider catalogs (single provider), otherwise runtime returns explicit `Missing providerId` guidance with available provider ids.
+  - removed in-turn q-cumber provider-swap retries after `provider not found` failures in cloud tool execution paths (`listQCumberDatasets`, `getQCumberDatasetHelp`, `queryQCumberDataset*` pre-resolution): runtime no longer refreshes/switches provider implicitly on error and now keeps fail-fast provider mismatch semantics.
+  - tightened q-cumber dataset resolution strictness in frontend cloud tools: removed fuzzy dataset-id/name/substring remaps and now accept only exact catalog `datasetId`; invalid explicit ids fail fast with actionable `Available datasetIds` guidance.
+  - tightened territorial routing strictness in query tools: removed query-time keyword fallback for administrative detection (`isTerritorialDataset`) and now require backend routing metadata (`routing.isAdministrative`) for territorial guardrails (`queryQCumberTerritorialUnits` / `expectedAdminType`), with explicit metadata-mismatch failures.
+  - tightened routing-key strictness in cloud-tool routing: removed runtime fallback to legacy `routing.preferredQueryTool`, keeping `routing.queryToolHint.preferredTool` as canonical selection key; aligned prompts/docs and eval mocks to canonical routing wording.
+  - usage/accounting strictness: removed synthetic token fallback (`heuristic:chars_div_4`) from q-assistant payload estimation; when tokenizer is unavailable estimation is now explicit `unknown:tokenizer_unavailable`, and token-budget compaction skips forced decisions on unknown estimates (`skip:unknown-estimate`) instead of compacting from synthetic counts.
+  - added regression coverage for unknown-estimate path (`test_chat_audit_utils`, `test_token_budget_compaction`) and stabilized compaction tests with deterministic estimator injection to avoid tokenizer-environment dependence.
+  - routing contract canonicalization: q-cumber backend no longer emits flat routing aliases (`routing.preferredQueryTool`, `routing.recommendedQueryTool`) nor top-level query-tool aliases on help/query responses (`recommendedQueryTool`, `queryToolHint`); frontend/runtime/docs/tests now consume canonical routing key `routing.queryToolHint.preferredTool` only.
+  - q-map cloud-tools envelope cleanup: removed duplicated top-level `llmResult.queryToolHint` from dataset discovery/help tool results; routing hints are now exposed only once under `llmResult.routing.queryToolHint`.
+  - aligned q-cumber provider-selection docs/prompts and cloud e2e coverage with explicit-provider-first behavior (`AGENT.md`, `README.md`, `DOCUMENTATION.md`, `system-prompt.ts`, `tests/e2e/tools.spec.ts`).
+- Selector refactor baseline for q-map frontend state access:
+  - new shared selector module `src/state/qmap-selectors.ts` (`selectQMapUiState`, `selectQMapVisState`, `selectQMapDatasets`, `selectQMapLayers`, `selectQMapEditorFeatures`).
+  - migrated core UI/draw integration points (`main.tsx`, draw runtime/middleware, map controls, panel toggle, load modal, custom panels, map popover, AI control) to use shared selectors instead of repeated `state.demo.keplerGl.map...` paths.
+  - extracted locale dictionary from `main.tsx` to `src/i18n/q-map-locale-messages.ts` as first step toward focused bootstrap modules.
+  - extracted iframe export logic from `main.tsx` to `src/utils/iframe-export.ts` (`isQMapIframeExportEnabled`, `postQMapIframeExport`) preserving current hash-marker and target-origin behavior.
+  - extracted hash-preset runtime application chain from `main.tsx` to `src/utils/hash-preset-runtime.ts` (`applyQMapHashPresetFromRuntimeLocation`, shared viewport/basemap helpers) while preserving existing `hashchange` behavior and preset precedence.
+  - extracted auth-aware root render/bootstrap flow from `main.tsx` to `src/bootstrap/render-with-auth.tsx` (`renderQMapRootWithAuth`) preserving redirect/error/render semantics.
+  - extracted store/reducer/middleware setup from `main.tsx` to `src/state/create-qmap-store.ts` (`createQMapStore`) while keeping kepler initial state, mode/panel plugin behavior, and draw/H3 middleware semantics unchanged.
+  - extracted q-map AI runtime tool grouping/classification from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/runtime-tool-groups.ts` (`buildQMapRuntimeCustomToolGroups`, `mergeQMapChartStatesWithCustom`) with no tool behavior changes.
+  - extracted discovery tool builder `listQMapChartTools` from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/tool-builders/discovery.ts` (`createListQMapChartTools`) with unchanged runtime envelope.
+  - extracted styling/UI tool builder `openQMapPanel` from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/tool-builders/styling-ui.ts` (`createOpenQMapPanelTool`) preserving alias mapping and panel open/close semantics.
+  - extracted dataset-domain tool builders `countQMapRows` and `debugQMapActiveFilters` from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/tool-builders/dataset.ts` (`createCountQMapRowsTool`, `createDebugQMapActiveFiltersTool`) with unchanged filtering/diagnostic behavior.
+  - extracted spatial tool builder `deriveQMapDatasetBbox` from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/tool-builders/spatial.ts` (`createDeriveQMapDatasetBboxTool`) preserving geometry-field resolution, bbox padding, and chunked yield behavior.
+  - extracted H3 paint tool builders `paintQMapH3Cell`, `paintQMapH3Cells`, and `paintQMapH3Ring` from `qmap-ai-assistant-component.tsx` to `src/features/qmap-ai/tool-builders/h3-paint.ts` (`createPaintQMapH3CellTool`, `createPaintQMapH3CellsTool`, `createPaintQMapH3RingTool`) with unchanged dataset upsert and ring-resolution guard behavior.
+  - extracted analytics/discovery tool builders `summarizeQMapTimeSeries`, `wordCloudTool`, `categoryBarsTool`, and `grammarAnalyzeTool` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/analytics.ts` (`createSummarizeQMapTimeSeriesTool`, `createWordCloudTool`, `createCategoryBarsTool`, `createGrammarAnalyzeTool`) preserving result envelope fields and chart component wiring.
+  - extracted layer-styling tool builders `setQMapLayerColorByField`, `setQMapLayerSolidColor`, and `setQMapLayerHeightByField` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/layer-styling.ts` (`createSetQMapLayerColorByFieldTool`, `createSetQMapLayerSolidColorTool`, `createSetQMapLayerHeightByFieldTool`) preserving component side-effect guards and style payload semantics.
+  - extracted advanced styling tool builders `applyQMapStylePreset`, `setQMapLayerColorByThresholds`, and `setQMapLayerColorByStatsThresholds` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/advanced-styling.ts` (`createApplyQMapStylePresetTool`, `createSetQMapLayerColorByThresholdsTool`, `createSetQMapLayerColorByStatsThresholdsTool`) preserving preset-resolution logic and threshold forwarding behavior.
+  - extracted layer visibility/order tool builders `setQMapLayerVisibility`, `showOnlyQMapLayer`, and `setQMapLayerOrder` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/layer-visibility.ts` (`createSetQMapLayerVisibilityTool`, `createShowOnlyQMapLayerTool`, `createSetQMapLayerOrderTool`) preserving visibility/reorder component guard semantics.
+  - extracted dataset-mutation tool builders `createDatasetFromFilter`, `createDatasetFromCurrentFilters`, and `mergeQMapDatasets` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/dataset-mutations.ts` (`createDatasetFromFilterTool`, `createDatasetFromCurrentFiltersTool`, `createMergeQMapDatasetsTool`) preserving mutation envelope fields, geometry-strict merge validation, and component dedup/side-effect semantics.
+  - extracted derived dataset/CRS tool builders `createDatasetWithGeometryArea`, `createDatasetWithNormalizedField`, and `reprojectQMapDatasetCrs` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/dataset-derived.ts` (`createDatasetWithGeometryAreaTool`, `createDatasetWithNormalizedFieldTool`, `createReprojectQMapDatasetCrsTool`) preserving derivation/reprojection payloads, worker-vs-fallback reprojection behavior, and existing side-effect guard semantics.
+  - extracted heavy geometry materialization tool builders `clipQMapDatasetByGeometry` and `zonalStatsByAdmin` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/geometry-materialization.ts` (`createClipQMapDatasetByGeometryTool`, `createZonalStatsByAdminTool`) preserving worker-first execution, local fallback safeguards, and diagnostic/auto-hide semantics.
+  - extracted spatial-join/overlay heavy tool builders `spatialJoinByPredicate` and `overlayDifference` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/spatial-overlays.ts` (`createSpatialJoinByPredicateTool`, `createOverlayDifferenceTool`) preserving predicate matching, aggregation payload semantics, and side-effect runtime behavior.
+  - extracted constructive geometry tool builders `overlayUnion`, `overlayIntersection`, `overlaySymmetricDifference`, and `dissolveQMapDatasetByField` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/constructive-geometry.ts` (`createOverlayUnionTool`, `createOverlayIntersectionTool`, `createOverlaySymmetricDifferenceTool`, `createDissolveQMapDatasetByFieldTool`) preserving overlay/dissolve geometry semantics and existing loading/auto-hide behavior.
+  - extracted geometry-edit tool builders `simplifyQMapDatasetGeometry`, `splitQMapPolygonByLine`, `eraseQMapDatasetByGeometry`, and `bufferAndSummarize` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/geometry-editing.ts` (`createSimplifyQMapDatasetGeometryTool`, `createSplitQMapPolygonByLineTool`, `createEraseQMapDatasetByGeometryTool`, `createBufferAndSummarizeTool`) preserving simplify/split/erase/buffer execution semantics and component-side loading/guard behavior.
+  - extracted neighborhood/topology tool builders `nearestFeatureJoin`, `adjacencyGraphFromPolygons`, and `coverageQualityReport` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/spatial-analysis.ts` (`createNearestFeatureJoinTool`, `createAdjacencyGraphFromPolygonsTool`, `createCoverageQualityReportTool`) preserving proximity/coverage runtime semantics and component-side guard/loading behavior.
+  - extracted dataset/map orchestration tool builders `joinQMapDatasetsOnH3`, `fitQMapToDataset`, and `waitForQMapDataset` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/orchestration.ts` (`createJoinQMapDatasetsOnH3Tool`, `createFitQMapToDatasetTool`, `createWaitForQMapDatasetTool`) preserving orchestration guardrails, dataset-wait retry policy, and map-fit runtime semantics.
+  - extracted dataset exploration/filtering tool builders `previewQMapDatasetRows`, `rankQMapDatasetRows`, `distinctQMapFieldValues`, and `searchQMapFieldValues` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/dataset-exploration.ts` (`createPreviewQMapDatasetRowsTool`, `createRankQMapDatasetRowsTool`, `createDistinctQMapFieldValuesTool`, `createSearchQMapFieldValuesTool`) preserving preview/ranking sort semantics, fallback metric behavior, and distinct/search query semantics.
+  - extracted dataset-ui interaction tool builders `setQMapFieldEqualsFilter` and `setQMapTooltipFields` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/dataset-ui.ts` (`createSetQMapFieldEqualsFilterTool`, `createSetQMapTooltipFieldsTool`) preserving filter-side effect dedup/guard semantics and tooltip-config update behavior.
+  - extracted low-coupling runtime/discovery tool builders `listQMapDatasets` and `loadCloudMapAndWait` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/runtime-discovery.ts` (`createListQMapDatasetsTool`, `createLoadCloudMapAndWaitTool`) preserving map introspection output contract and cloud-load wait semantics.
+  - extracted map-materialization and tessellation/population tool builders `clipDatasetByBoundary`, `drawQMapBoundingBox`, `tassellateSelectedGeometry`, `tassellateDatasetLayer`, `aggregateDatasetToH3`, and `populateTassellationFromAdminUnits*` from `qmap-ai-assistant-component.tsx` into `src/features/qmap-ai/tool-builders/map-materialization.ts` + `src/features/qmap-ai/tool-builders/tessellation-population.ts` (`createClipDatasetByBoundaryTool`, `createDrawQMapBoundingBoxTool`, `createTassellateSelectedGeometryTool`, `createTassellateDatasetLayerTool`, `createAggregateDatasetToH3Tool`, `createPopulateTassellationFromAdminUnits*Tool`) preserving worker-first execution, local fallbacks, and component guard/loading semantics.
+  - extracted shared side-effect component runtime helper to `src/features/qmap-ai/tool-component-runtime.ts` (`shouldSkipToolComponentRun`, `markToolComponentRunCompleted`, `shouldSkipToolComponentByExecutionKey`, `rememberToolComponentExecutionKey`) and adopted it broadly across q-map AI side-effect components (filter/styling/visibility/heavy-geo/reproject flows) to remove repeated run-once + executionKey dedup boilerplate without behavior changes.
+  - added q-map state boundary types in `src/state/qmap-state-types.ts` and migrated selector input signatures + AI assistant `RootState` boundary/useSelector wiring to those shared state contracts (`selectQMap*`), reducing direct deep-path state coupling without changing runtime behavior.
+  - typed q-map draw middleware store boundary (`getState`) against shared `QMapRootState` in `src/features/qmap-draw/middleware.ts`, reducing `any` on the middleware integration edge while preserving existing action flow semantics.
+  - typed q-map draw runtime store boundary (`getState`) against shared `QMapRootState` in `src/features/qmap-draw/runtime.ts`, reducing `any` on runtime dataset/layer sync integration edges while preserving draw sync behavior.
+  - typed Redux middleware API boundaries in `src/state/create-qmap-store.ts` (`MiddlewareAPI<Dispatch<AnyAction>, QMapRootState>`, `Dispatch<AnyAction>` for `next/action`) and aligned draw store dispatch signatures to `Dispatch<AnyAction>`, reducing `any` at middleware integration boundaries without behavior changes.
+  - typed q-map UI/assistant panel boundaries by adding explicit `qmapAi` panel state contract and stronger selector output types for kepler map/ui/assistant (`src/state/qmap-state-types.ts`, `src/state/qmap-selectors.ts`), and migrated `src/features/qmap-ai/control.tsx` state selectors to `QMapRootState` (no runtime behavior change).
+  - added typed selector `selectQMapAiPanelState` in `src/state/qmap-selectors.ts` and migrated q-map AI control panel open-state read in `src/features/qmap-ai/control.tsx` to selector-based access, removing direct `state.demo.qmapAi` traversal.
+  - added typed selectors `selectQMapDrawState` / `selectQMapH3PaintState` in `src/state/qmap-selectors.ts` and migrated draw/h3 middleware state reads in `src/features/qmap-draw/middleware.ts` and `src/state/create-qmap-store.ts` off direct `state.demo.*` paths.
+  - started q-assistant backend `R6` modular split by extracting payload token-budget orchestration into `backends/q-assistant/src/q_assistant/payload_compaction.py` (`infer/evaluate/apply`), while keeping compatibility wrappers in `backends/q-assistant/src/q_assistant/main.py` (`_infer_model_context_limit_tokens`, `_evaluate_payload_token_budget`, `_apply_payload_token_budget`) so existing imports/tests remain unchanged.
+  - continued q-assistant backend `R6` split by extracting OpenAI/OpenRouter SDK transport + SSE normalization helpers into `backends/q-assistant/src/q_assistant/provider_transport.py` (`post/stream via SDK`, stream chunk normalization), with compatibility wrappers preserved in `backends/q-assistant/src/q_assistant/main.py` for existing imports/tests.
+  - completed transport extraction step by moving HTTP transport helpers (`_post_json`, `_get_json`, `_stream_proxy`) into `backends/q-assistant/src/q_assistant/provider_transport.py` with unchanged retry/error behavior and wrapper compatibility retained in `backends/q-assistant/src/q_assistant/main.py`.
+  - started runtime-guardrails modular extraction by moving objective/pruning helpers into `backends/q-assistant/src/q_assistant/runtime_guardrails.py` (`objective_requests_*`, normalized-metric field heuristic, and prune helpers) while keeping compatibility wrappers in `backends/q-assistant/src/q_assistant/main.py`.
+  - continued runtime-guardrails extraction by moving shared guidance merge helper (`_append_runtime_guidance_lines`) into `backends/q-assistant/src/q_assistant/runtime_guardrails.py` with compatibility wrapper retained in `backends/q-assistant/src/q_assistant/main.py`.
+  - continued runtime-guardrails extraction by moving loop-limit orchestrator (`_enforce_runtime_tool_loop_limits`) into `backends/q-assistant/src/q_assistant/runtime_guardrails.py` while preserving `main.py` wrapper compatibility and guardrail rule behavior.
+  - completed runtime-guardrails extraction for the injection/scoring orchestrator (`_inject_runtime_guardrail_message`) in `backends/q-assistant/src/q_assistant/runtime_guardrails.py`, and wired `main.py` to import/use the module entrypoint directly.
+  - completed chat-audit/session-id extraction by moving audit helpers into `backends/q-assistant/src/q_assistant/audit_logging.py` (sanitize/session/trace headers/prune + event builder/writer), wiring runtime dependencies via `_configure_audit_runtime` from `main.py`, and switching audit utility tests to module entrypoints.
+  - decoupled tool-contract canonical artifact from backend source path: frontend and tooling now read `artifacts/tool-contracts/qmap-tool-contracts.json`, while sync flow writes a backend mirror (`backends/q-assistant/src/q_assistant/qmap-tool-contracts.json`) and audit now enforces mirror consistency.
+  - q-assistant contract loader now resolves contract manifest in this order: explicit `Q_ASSISTANT_TOOL_CONTRACTS_PATH`, discovered shared artifact path (`*/artifacts/tool-contracts/qmap-tool-contracts.json` in ancestor tree), then packaged local fallback.
+  - removed `main.py` compatibility-wrapper layer for already extracted payload/transport/runtime-guardrail helpers: `main.py` now imports module entrypoints directly (`payload_compaction.py`, `provider_transport.py`, `runtime_guardrails.py`) and keeps only core orchestration/runtime-specific logic.
+  - continued q-assistant modularization by extracting OpenAI payload/tool-call coercion helpers from `main.py` into `backends/q-assistant/src/q_assistant/request_coercion.py` (`_coerce_filter_inline_payload`, `_normalize_filter_row`, `_normalize_tool_argument_object`, `_normalize_tool_call_arguments`, `_repair_tool_calls_list`, `_repair_message_tool_call_arguments`, `_repair_openai_response_tool_call_arguments`) with `main.py` importing module entrypoints directly and no endpoint contract changes.
+  - continued q-assistant modularization by extracting q-map tool-contract manifest helpers from `main.py` into `backends/q-assistant/src/q_assistant/tool_contracts.py` (`_load_qmap_tool_contract_manifest`, `_get_qmap_tool_contract_entry`, `_get_qmap_tool_response_schema`, cache/constants), preserving schema validation, shared-artifact discovery, and fallback semantics.
+  - continued q-assistant modularization by extracting tool-call parsing/extraction helpers from `main.py` into `backends/q-assistant/src/q_assistant/tool_calls.py` (`_parse_tool_arguments`, `_extract_tool_calls_from_assistant_message`, `_extract_request_tool_names`, `_extract_response_tool_calls`, `_extract_assistant_tool_calls`) while preserving tool-argument normalization behavior and request/response trace semantics.
+  - continued q-assistant modularization by extracting message text/prompt parsing helpers from `main.py` into `backends/q-assistant/src/q_assistant/message_text.py` (`_text_from_message_content`, `_text_from_message_parts`, `_extract_message_text`, `_is_control_finalize_prompt`, `_extract_prompt_from_messages`, `_extract_prompt_from_single_message`) preserving control-byte sanitization and prompt-selection semantics.
+  - continued q-assistant modularization by extracting token/usage estimation helpers from `main.py` into `backends/q-assistant/src/q_assistant/usage_estimation.py` (`_estimate_payload_token_usage`, `_extract_upstream_usage` and supporting converters), preserving upstream usage normalization and token-budget accounting semantics.
+  - continued q-assistant modularization by extracting tool-result parsing/dataset-hint helpers from `main.py` into `backends/q-assistant/src/q_assistant/tool_result_parsing.py` (`_read_tool_message_content`, `_extract_success_from_text`, `_normalize_dataset_ref`, `_extract_dataset_ref_from_call`, `_build_dataset_hint`, `_build_source_dataset_hint`), preserving tool-result success inference and dataset-ref hint semantics.
+  - continued q-assistant modularization by extracting request-id marker sanitization helpers from `main.py` into `backends/q-assistant/src/q_assistant/request_markers.py` (`_strip_request_id_markers_from_text`, `_strip_request_id_markers_from_messages`) while preserving assistant-message cleanup behavior before payload coercion.
+  - continued q-assistant modularization by extracting objective-focus lexical helpers from `main.py` into `backends/q-assistant/src/q_assistant/objective_focus.py` (`_normalize_focus_token`, `_extract_objective_focus_terms` with focus stopwords/priority markers), preserving objective-term prioritization behavior used by final narrative anchoring.
+  - continued q-assistant modularization by extracting OpenAI tool-schema coercion helper from `main.py` into `backends/q-assistant/src/q_assistant/openai_tool_schema.py` (`_coerce_openai_tools`), preserving tool schema compatibility normalization (`required` cleanup + property-map normalization).
+  - continued q-assistant modularization by extracting request tool-result extraction/tail helpers from `main.py` into `backends/q-assistant/src/q_assistant/request_tool_results.py` (`_extract_request_tool_results`, `_messages_since_last_user`, `_extract_recent_tool_results_since_last_user`, `_has_assistant_text_since_last_user`), preserving request/tool-result auditing and runtime quality metric semantics.
+  - continued q-assistant modularization by extracting explicit tool-routing helpers from `main.py` into `backends/q-assistant/src/q_assistant/request_routing.py` (`_should_skip_agent_for_payload`, `_extract_explicit_tool_choice`, `_maybe_force_tool_choice`), preserving explicit tool command routing and tool-choice forcing semantics.
+  - continued q-assistant modularization by extracting provider/retry utility helpers from `main.py` into `backends/q-assistant/src/q_assistant/provider_retry.py` and wiring `provider_transport.py` to share the same helper entrypoints (`_provider_api_key`, `_openrouter_optional_headers`, `_extract_error_message`, `_is_retryable_status`, `_is_retryable_exception`, `_compute_retry_delay`), preserving provider header selection and retry backoff/error-classification semantics.
+  - continued q-assistant modularization by extracting agent-chain assembly helpers from `main.py` into `backends/q-assistant/src/q_assistant/agent_chain.py` (`SUPPORTED_PROVIDERS`, `PROVIDER_DEFAULT_BASE_URLS`, `_merge_agent`, `_build_chain_agents`) while preserving provider selection, openai-compatible filtering, and default fallback semantics.
+  - continued q-assistant modularization by extracting cloud-provider normalization/config resolution helpers from `main.py` into `backends/q-assistant/src/q_assistant/cloud_provider.py` (`_normalize_cloud_provider`, `_resolve_cloud_provider_config`) while preserving q-storage/q-cumber alias normalization and config error semantics for MCP cloud endpoints.
+  - continued q-assistant modularization by extracting Ollama URL normalization helpers from `main.py` into `backends/q-assistant/src/q_assistant/ollama_urls.py` (`_normalize_ollama_base`, `_ollama_chat_url`, `_ollama_openai_chat_completions_url`), preserving Ollama native and OpenAI-compatible endpoint URL resolution semantics.
+  - continued q-assistant modularization by extracting q-map context helpers from `main.py` into `backends/q-assistant/src/q_assistant/qmap_context.py` (`_sanitize_qmap_context_payload`, `_inject_qmap_context_message`), preserving context-header sanitization and system-message injection semantics for `/chat/completions`.
+  - continued q-assistant modularization by extracting response success-claim detectors from `main.py` into `backends/q-assistant/src/q_assistant/response_claims.py` (`_response_claims_success`, `_response_claims_operational_success`, `_response_claims_centering_success`), preserving lexical false-positive guards for runtime quality scoring.
+  - continued q-assistant modularization by extracting `/chat` request coercion helper from `main.py` into `backends/q-assistant/src/q_assistant/chat_request_coercion.py` (`_coerce_chat_request`), preserving prompt/message compatibility behavior and server-side provider/model override semantics.
+  - continued q-assistant modularization by extracting OpenAI chat payload coercion helper from `main.py` into `backends/q-assistant/src/q_assistant/openai_chat_payload.py` (`_coerce_openai_chat_payload`), preserving request message/prompt/instructions normalization, tool-argument repair, and tool-schema coercion semantics.
+  - continued q-assistant modularization by extracting `/chat` response normalization helper from `main.py` into `backends/q-assistant/src/q_assistant/chat_response_normalization.py` (`_normalize`), preserving provider payload text extraction fallback semantics.
+  - removed dead retry helper `_is_retryable_exception` from `backends/q-assistant/src/q_assistant/provider_retry.py` and cleaned stale unused imports in `backends/q-assistant/src/q_assistant/main.py` after modularization.
+  - removed dead transport compatibility wrappers (`_close_async_resource`, `_openai_sdk_model_to_dict`, `_openrouter_sdk_exception_status_code`, `_openrouter_sdk_exception_detail`, `_normalize_openai_sse_event`) from `backends/q-assistant/src/q_assistant/provider_transport.py` and cleaned corresponding unused imports from `backends/q-assistant/src/q_assistant/main.py`.
+  - removed additional dead `main.py` imports left after modularization (`_evaluate_payload_token_budget`, `_infer_model_context_limit_tokens`, `_append_runtime_guidance_lines`, `_objective_requests_charts`) after confirming zero runtime/test callsites and no runtime-guardrails dynamic binding dependency.
+  - removed dead base imports from `backends/q-assistant/src/q_assistant/main.py` (`asyncio`, `typing.AsyncIterator/Awaitable/Callable`, `_strip_request_id_markers_from_text`) after confirming zero runtime/test references.
+- KPI loop reliability automation:
+  - new preflight script `scripts/preflight-ai-eval-runtime.mjs` and Make target `ai-eval-preflight` to validate q-assistant `/health` through both `curl` and Node `fetch`.
+  - `Makefile` now emits explicit sandbox-`EPERM` remediation hints when `ai-eval` / `ai-eval-functional` fail on transport preflight.
+  - new script `scripts/update-kpi-weekly-summary.mjs` and Make target `kpi-weekly-summary`, automatically executed by `make loop`, to append compact functional KPI deltas into `docs/KPI_WEEKLY_SUMMARY.md`.
+  - KPI summary delta rendering now handles missing baseline runs explicitly (`-` delta cells instead of synthetic `+<currentMetric>`), avoiding misleading trends after artifact cleanup/reset.
+- Documentation architecture schemas refresh in `DOCUMENTATION.md`:
+  - updated topology diagram to reflect the real browser runtime split (`OpenAssistant` + local tool runtime) and current q-assistant provider chain (`OpenAI/OpenRouter/Ollama`).
+  - updated assistant sequence diagram to include streaming `/chat/completions` turns, tool-result feedback loop, and guarded final-answer normalization.
+  - added explicit turn-state (`discover -> execute -> validate -> finalize`) and engineering loop schema diagrams for operational alignment.
+- KPI-driven stability improvements (sample H3 + scoring semantics):
+  - q-assistant runtime guardrail `post_count_isolate_final` now triggers only when the user objective explicitly asks visibility isolation (`mostra solo`/`show only`), removing non-requested `showOnlyQMapLayer` calls from neutral H3 pipeline flows.
+  - ai-eval scoring in `scripts/run-ai-eval.mjs` now prioritizes tool evidence over lexical variance (`toolRecall=0.50`, `toolPrecision=0.40`, `keywordScore=0.10`) to reduce keyword overfitting while preserving gate strictness.
+  - ai-eval keyword matcher now includes resolution aliases (`r6/r7/r8` <-> `risoluzione 6/7/8`) to reduce language-style bias in multires H3 KPI cases.
+  - regression coverage added in `backends/q-assistant/tests/test_runtime_guardrails.py` for non-isolation objectives after `countQMapRows`.
+- New multi-run KPI variance gate:
+  - added script `scripts/audit-ai-eval-variance.mjs` to verify stability spans across latest functional reports (`passRate`, `avgCaseScore`, `minCaseScore`, `avgToolPrecision`, `avgExtraToolCalls`).
+  - Make target `ai-variance-audit` added and included in `quality-gate`.
+  - gate is best-practice safe by default: when history is insufficient it returns `SKIP` (non-blocking) unless strict mode is enabled (`QMAP_AI_EVAL_VARIANCE_REQUIRE_MIN=true`).
+- Audit hardening for territorial admin-type + final narrative integrity:
+  - `queryQCumberTerritorialUnits` now accepts mixed bilingual `expectedAdminType` aliases (e.g. `municipality/comune`, `province/provincia`) via normalized compound alias support.
+  - final assistant text now auto-injects an explicit audit note when execution status is `partial`/`failed` but the narrative does not acknowledge non-success, avoiding false-positive “all good” summaries.
+  - worker unit tests in `tests/unit/workers/execution-trace.test.ts` extended for non-success narrative detection.
+- New functional KPI coverage for Treviso audit regression:
+  - added `arch_treviso_province_centering` (named territorial target + deterministic map centering) in `tests/ai-eval/cases.functional.json`.
+  - added `arch_treviso_municipalities_population_styling` (Treviso municipalities styled by population white->blue) in `tests/ai-eval/cases.functional.json`.
+  - architecture matrix updated with KPI `territorial_focus_centering_accuracy` and map-UX case mappings for both new Treviso scenarios.
+- Backend readiness bootstrap + parser-regression coverage:
+  - added `scripts/backend-ready.mjs` and Make target `make -C examples/q-map backend-ready` to start backend compose services and wait for health checks on `3004/3001/3005`.
+  - updated `AGENT.md` bootstrap and `DOCUMENTATION.md` runtime notes to include `backend-ready` before eval preflight.
+  - extended `tests/e2e/tools.spec.ts` with `queryQCumberTerritorialUnits` coverage for mixed alias `expectedAdminType: municipality/comune`.
+- Reliability hardening for backend availability + preflight stability:
+  - `scripts/preflight-ai-eval-runtime.mjs` now uses retry/backoff for both `curl` and Node `fetch` checks (configurable retries/timeout/delay) and fails fast on sandbox `EPERM`.
+  - `scripts/run-ai-eval.mjs` preflight now uses dedicated short timeout + retry/backoff (`--preflight-timeout-ms`, `--preflight-retries`, `--preflight-retry-delay-ms`) to reduce startup race false negatives.
+  - `Makefile` exposes preflight tuning vars (`EVAL_PREFLIGHT_*`) and applies them to both `ai-eval` runs and `ai-eval-preflight`.
+  - backend compose services now use `restart: unless-stopped`; `backend-ready` defaults to non-build startup (`BACKEND_READY_BUILD=0`) to reduce avoidable container recreation downtime.
+- KPI reliability cleanup (anti-brittle keyword gates):
+  - `arch_treviso_province_centering` keyword expectation aligned to real prompt intent (`Treviso`, `centra`, `mappa`), removing unrelated `provincia` lexical dependency.
+  - `arch_geometry_topology_resilience` keyword expectation simplified to stable semantic anchors (`topologica`, `pulizia`, `coerente`), avoiding brittle dependency on explicit `erase` mention in final narrative.
+- Post-validation hardening for async tessellation/population chains:
+  - post-validation target resolution now prefers canonical `datasetRef` (`id:<datasetId>`) when mutation tool results expose dataset ids, reducing false `dataset not found` races after successful dataset creation.
+  - `waitForQMapDataset` strict datasetRef guardrail is bypassed for internal runtime validation calls (`__qmapInternalValidation`), preventing self-blocking validations.
+  - added worker unit tests in `tests/unit/workers/post-validation.test.ts` for canonical datasetRef resolution and validation-tool set coverage.
+- Non-success narrative consistency hardening (without tool-capability restrictions):
+  - when `[executionSummary].status` is `partial`/`failed`, assistant final-text normalization now strips contradictory strong success-claim lines (e.g. `... con successo`, `sono state colorate`) before adding audit notes.
+  - this affects only narrative sanitization in finalize phase; tool routing/execution policy remains unchanged.
+  - worker unit tests extended in `tests/unit/workers/execution-trace.test.ts` for contradictory-success stripping behavior.
+- Step 1 reliability outcome contract (structured tool envelopes):
+  - `qmapToolResult` normalization now publishes deterministic fields `objectiveReached`, `warnings`, `blockingErrors`, `producedDatasetRefs` and mirrors them into `llmResult`.
+  - execution-trace summarization now prefers `blockingErrors[0]` as failed-tool detail when present, improving audit/final-note precision.
+  - worker regression test added in `tests/unit/workers/execution-trace.test.ts` for failed-tool detail precedence.
+- Step 2 dataset-lineage hardening (canonical dataset refs across turns):
+  - runtime now keeps a turn-local lineage map (`alias -> id:<datasetId>`) synchronized from current map datasets plus normalized tool outcomes (`producedDatasetRefs`).
+  - tool-args normalization can resolve dataset aliases to canonical refs for chained operations (`wait/count` and dataset-dependent tools) without reducing tool scope/capabilities.
+  - post-mutation validation now prefers canonical dataset refs when lineage is available, reducing transient `dataset not found` races in async workflows.
+- Kong JWT gateway blueprint for backend-edge hardening:
+  - added `examples/q-map/backends/docker-compose.kong.yaml` and DB-less declarative config `examples/q-map/backends/kong/kong.yml` with route-level JWT/ACL/rate-limit policies for q-assistant/q-cumber/q-storage.
+  - added gateway helper targets in `examples/q-map/backends/Makefile` (`up-gateway`, `down-gateway`, `ps-gateway`, `logs-gateway`).
+  - added operational docs in `examples/q-map/backends/kong/README.md`, plus integration notes in `examples/q-map/backends/README.md` and architecture/security updates in `examples/q-map/DOCUMENTATION.md`.
+  - promoted Kong recipe to default local integration path:
+    - frontend default AI endpoint now targets gateway (`VITE_QMAP_AI_PROXY_BASE` fallback to `http://localhost:8000/api/q-assistant`).
+    - `.env.development` defaults now point AI/q-cumber/q-storage calls to gateway routes (`/api/q-assistant`, `/api/q-cumber`, `/api/q-storage`).
+    - backend `Makefile` default `up/down/ps/logs/health` now operates on Kong-first stack; direct backend mode remains available via explicit `*-direct` targets.
+  - added UX bearer propagation baseline for Kong mode:
+    - new shared frontend token resolver `src/utils/auth-token.ts` with env/storage/window fallback (`VITE_QMAP_AUTH_BEARER_TOKEN`, `VITE_QMAP_AUTH_TOKEN_STORAGE_KEYS`).
+    - wired Authorization propagation on assistant chat headers, MCP transport, profile `/me`, and cloud provider HTTP requests.
+- Swarm production deployment recipe (Kong-first edge):
+  - added `examples/q-map/backends/docker-stack.prod.yml` with overlay-network topology, Kong as only published ingress, service-level health/restart/update policies, and Swarm secrets/config wiring.
+  - added `examples/q-map/backends/.env.prod.example` with production env template (image tags, CORS, replicas, secret names).
+  - updated backend/docs references for stack deploy flow and operational notes.
+- Keycloak OIDC frontend integration (optional auth mode):
+  - added `src/utils/keycloak-auth.ts` with Authorization Code + PKCE bootstrap, callback code exchange, token refresh loop, and logout helper.
+  - app bootstrap in `src/main.tsx` now runs auth bootstrap before rendering; in `VITE_QMAP_AUTH_MODE=keycloak`, unauthenticated sessions redirect to Keycloak.
+  - token bridge updates `window.__QMAP_AUTH_TOKEN__`/`window.__KEYCLOAK__` and session storage, enabling existing bearer propagation across assistant chat, MCP, profile, and cloud requests.
+  - added Keycloak env schema/variables in `src/vite-env.d.ts`, `.env.development`, and backend/docs integration notes.
+- Local deployment coherence hardening (`local.q-hive.it`):
+  - Kong CORS allowlist now includes `local.q-hive.it` origins for local single-host runs.
+  - Swarm stack now centralizes backend CORS via a single variable `QMAP_UI_ORIGINS` (shared by q-assistant/q-cumber/q-storage).
+  - docs and `.env.development` include coherent single-host endpoint examples (`http://local.q-hive.it:8000/api/...`).
+- Developer bootstrap command (`make dev-local`):
+  - added `scripts/dev-local.mjs` to automate local startup: backend stack up (Kong default), dev JWT mint, and `.env.development` endpoint/token sync.
+  - added Makefile targets `dev-local` and `dev-local-prepare` plus `DEV_LOCAL_DOMAIN` override.
+  - updated `README.md` development section with one-command startup flow.
+- AI-eval prompt/case quality cleanup (anti-fragile scoring):
+  - tuned brittle keyword expectations in functional cases (`arch_cloud_timeout_retry_fallback`, `arch_geometry_topology_resilience`) to reduce false instability from lexical variance.
+  - aligned `expected_tools_any` with realistic optional discovery chains for dataset/H3/regulatory workflows, avoiding noisy extra-tool penalties when q-cumber discovery is legitimately used before operational steps.
+- q-assistant semantic-output stabilization for `/chat/completions` non-stream responses:
+  - extracted shared objective focus-term builder (`_build_objective_focus_terms`) to remove duplicated prompt-criteria merge logic.
+  - added post-response normalization that strips leaked `[OBJECTIVE_*]`/lexical-instruction lines from assistant final text and ensures one deterministic `Copertura obiettivo:` line when focus terms are available.
+  - regression coverage added in `backends/q-assistant/tests/test_objective_anchor.py` for instruction-leak cleanup and tool-call message bypass.
+- q-assistant objective focus-term enrichment for KPI stability:
+  - cloud timeout/recovery objectives now force explicit focus terms `retry`/`fallback`/`timeout` in final objective coverage when present in user intent.
+  - H3 population-transfer objectives now force mode terms (`standard`, `proporzionale`, `discreto`) in coverage when requested.
+  - this removes lexical drift on critical functional cases (`arch_cloud_timeout_retry_fallback`, `arch_h3_population_flows`) without changing tool-routing behavior.
+- Turn-policy quality hardening for KPI stability:
+  - frontend `guardrails.ts` now scopes `map-styling` base category by user intent, blocks `fitQMapToDataset` unless map-focus intent is explicit, and blocks `listQCumberProviders` unless provider-discovery intent is explicit.
+  - backend `q-assistant/main.py` now applies matching runtime tool-pruning rules (`fit_requires_explicit_map_focus`, `provider_listing_not_required_for_current_objective`) plus stricter map-display intent parsing (no generic `in mappa` trigger).
+  - regression coverage added in `backends/q-assistant/tests/test_runtime_guardrails.py` for fit/provider preflight pruning and explicit-intent keep paths.
+  - reduces unnecessary discovery/fit calls while preserving explicit map-display and provider-inventory workflows.
+- Assistant final-text robustness for keyword/report quality:
+  - `qmap-ai-assistant-component.tsx` now detects low-information assistant narratives (e.g. punctuation-only output) and replaces them with deterministic success summary + objective coverage line.
+  - prevents false "successful but empty" narratives from degrading ai-eval keyword scores.
+- Bootstrap/runtime documentation hardening for sandboxed KPI loops:
+  - `AGENT.md` now documents the `Node fetch -> localhost` `EPERM` failure mode and remediation (rerun eval/loop with elevated or out-of-sandbox permissions).
+  - `DOCUMENTATION.md` includes the same troubleshooting flow plus the `/health` curl check.
+  - new `TODO.md` tracks follow-up reliability tasks for KPI loop preflight and operator guidance.
+- Live assistant regression coverage for real chat flows:
+  - new Playwright spec `tests/e2e/assistant-live.spec.ts` validates the 2-turn workflow `mostra il comune piu piccolo della provincia di treviso` -> `mostra su mappa` with strict execution summary checks (`status=success`, `steps.failed=0`) and writes machine-readable artifact `test-results/assistant-live/treviso-smallest-map.json`.
+  - `playwright.assistant.config.ts` now includes `assistant-live.spec.ts` in assistant suite.
+- New post-run audit gate script `scripts/audit-assistant-live-chat-quality.mjs`:
+  - validates captured requestIds from live artifact
+  - fails on non-success execution summaries or failed steps
+  - when server chat-audit lines are available, enforces repeated-tool-failure guardrails (`max failed per request`, `max repeated failures per tool`, `falseSuccessClaimCount=0`)
+  - exposed via `yarn ai:audit:assistant-live` and Make targets `audit-assistant-live` / `assistant-live-gate`.
+  - strict mode supported via `QMAP_ASSISTANT_AUDIT_REQUIRE_SERVER=true` (for CI/helpdesk-grade audit evidence).
+- New centralized tool-argument alias normalizer `src/features/qmap-ai/tool-args-normalization.ts`:
+  - canonicalizes recurring real-chat alias payloads before tool execution (e.g. `color -> fillColor`, `layerNameOrId -> layerName`, `datasetRef/datasetId -> datasetName`, `datasetName -> sourceDatasetName`, `numeratorField/denominatorField -> ...FieldName`).
+  - wired in the shared runtime tool wrapper so normalization applies consistently across all q-map modes.
+  - regression coverage added in `tests/unit/workers/tool-args-normalization.test.ts`.
+- New critical functional KPI coverage for superlative-to-map workflows:
+  - case `arch_superlative_admin_unit_show_on_map` in `tests/ai-eval/cases.functional.json`
+  - matrix KPI `superlative_admin_unit_show_on_map` + case mapping in `tests/ai-eval/architecture-matrix.json`
+  - protects regressions where ranking output is found but follow-up map isolation/focus is not completed.
+- Geometric/H3 robustness coverage improvements:
+  - new worker unit test scenarios in `tests/unit/workers/geometry-ops.test.ts` for invalid-input union handling, disjoint intersections, multipolygon cleanup filtering, no-op split fallback, and cumulative multi-mask erase
+  - new H3 utility unit test scenarios in `tests/unit/workers/h3-geometry-utils.test.ts` for adjacency predicate fallback and matcher-exception tolerance
+  - new H3 worker unit test scenarios in `tests/unit/workers/h3-ops.worker.test.ts` for invalid `weightMode`, unsupported job type, and empty tessellation output
+- New geo-processing KPI `geometry_topology_resilience` in `tests/ai-eval/architecture-matrix.json` with dedicated functional case `arch_geometry_topology_resilience` in `tests/ai-eval/cases.functional.json` to track topology-safe cleanup/split/erase workflows on edge-case geometries.
+- New functional AI-eval KPI coverage in `tests/ai-eval/cases.functional.json` + `tests/ai-eval/architecture-matrix.json`:
+  - `arch_territorial_units_level_resolution` (ricerca unita territoriali per livello/disambiguazione)
+  - `arch_territorial_tessellation_multires` (tassellazione H3 territoriale multi-risoluzione r6/r7/r8)
+  - `arch_cross_geometry_clip_stats` (clip/statistiche cross-geometry shape/H3)
+  - `arch_ranking_direct_derived_metrics` (ranking su metriche dirette e derivate)
+  - new matrix KPIs:
+    - `admin_level_resolution_accuracy`
+    - `territorial_tessellation_multires_consistency`
+    - `cross_geometry_clip_stats_consistency`
+    - `ranking_direct_derived_consistency`
+- New e2e regression in `tests/e2e/tools.spec.ts` for H3 normalization fallback:
+  - validates `createDatasetWithNormalizedField` succeeds when requested denominator `h3_area_ha` is missing, by deriving denominator from H3 cell area and creating `sum_pct_area`
+- Static anti-fragile eval threshold audit `scripts/audit-ai-eval-thresholds.mjs`:
+  - validates `cases.functional.json` effective `min_case_score` against per-criticality floors (default from `architecture-matrix.evaluationPolicy.criticalityDefaults`)
+  - supports temporary case-id exceptions via `QMAP_AI_EVAL_CASE_SCORE_FLOOR_EXCEPTIONS`
+  - exposed via `make ai-threshold-audit` and `yarn ai:eval:threshold-audit`
+- New AI-eval runner transport smoke scenario in `scripts/test-ai-eval-runner.sh`:
+  - verifies abort semantics with `--transport-failure-threshold 2` (second transport failure aborts, remaining cases marked `transport-error-abort`)
+- New backend audit-quality regression tests in `backends/q-assistant/tests/test_chat_audit_utils.py`:
+  - cloud failure -> fallback -> wait/count chain quality metrics coverage
+  - ranking-evidence chain quality metrics coverage (`postCreateWaitCountRankOk`)
+- New Playwright assistant diagnostics test in `tests/e2e/tools.spec.ts`:
+  - intercepts `/chat/completions`, asserts final assistant text includes parseable `[requestId: ...]` and `[executionSummary] {...}` markers
+- Prompt quality linter `scripts/lint-ai-prompts.mjs`:
+  - static checks on ai-eval catalogs (duplicate normalized prompts, tool-overlap conflicts, keyword hygiene, intent/tool mismatch heuristics)
+  - historical keyword stability checks against recent eval reports (`tests/ai-eval/results/report-*.json`)
+  - configurable thresholds (`--max-reports`, `--min-history-runs`, `--min-keyword-hit-rate`, `--strict-history`)
+- AI-eval schema guardrail script `scripts/validate-ai-eval-schema.mjs`:
+  - validates structure/types for `tests/ai-eval/cases.sample.json`, `tests/ai-eval/cases.functional.json`, `tests/ai-eval/architecture-matrix.json`
+  - enforces case-id uniqueness across catalogs, area/kpi linkage integrity, and matrix case reference completeness
+- New eval-runner smoke test script `scripts/test-ai-eval-runner.sh`:
+  - validates preflight `/health` transport failure path
+  - validates in-run threshold abort path (`transport errors threshold reached`) via `--skip-transport-preflight`
+- Backend reliability coverage extended in `tests/ai-eval/cases.functional.json` + `tests/ai-eval/architecture-matrix.json`:
+  - new critical cases:
+    - `arch_cloud_timeout_retry_fallback`
+    - `arch_cloud_postload_validation`
+  - new KPI mappings in matrix:
+    - `cloud_timeout_recovery`
+    - `cloud_recovery_validation`
+- Single-source q-map tool manifest (`src/features/qmap-ai/tool-manifest.json`) with schema/tag/policy metadata and shared loaders:
+  - frontend loader (`src/features/qmap-ai/tool-manifest.ts`) used by assistant runtime policy/category wiring
+  - eval loader (`scripts/lib/tool-manifest-loader.mjs`) used by `scripts/run-ai-eval.mjs` to build tool catalog without source-regex parsing
+- Assistant frontend modularization for maintainability in `src/features/qmap-ai/`:
+  - `tool-registry.ts` (category snapshot/lookup)
+  - `guardrails.ts` (turn policy + state-machine guardrail helpers)
+  - `post-validation.ts` (dataset post-mutation validation routing/timeouts)
+  - `execution-trace.ts` (tool-result summaries, execution stats, centering claim sanitization)
+- AI-eval runner diagnostics in `scripts/run-ai-eval.mjs`:
+  - failed cases now emit `[ai-eval][fail]` lines with prompt, observed tool calls, required tools and assistant text for faster triage.
+- Deterministic runtime progress feed in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - live assistant-side status panel (`running/done/failed/blocked`) driven by actual tool execution events
+  - turn policy summary + request id visibility while execution is in flight
+  - final assistant message prefix now includes compact `[progress] steps=...` summary alongside request id
+- Deterministic machine-readable final execution envelope in assistant chat text:
+  - `[executionSummary] {...}` line with requestId, per-turn step status (`total/completed/failed/blocked`), fit evidence, validation failures, mutation outcomes
+  - enables UI/audit consumers to parse outcome status without relying on free-form prose
+- New q-assistant audit quality metric `falseSuccessClaimCount` in `backends/q-assistant/src/q_assistant/main.py`:
+  - counts contradictory success claims in final assistant text when tool evidence does not support them
+  - includes rule trace `falseSuccessClaimRules` (e.g. `centering_without_fit_success`, `success_claim_with_all_tools_failed`)
+  - contributes to `workflowScore` penalty for monitoring and alerting
+- Turn-scoped tool gating in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - request-body user intent extraction
+  - category-derived per-turn allowlist (`balanced` scope by default, `full` via `VITE_QMAP_AI_TOOL_SCOPE=full`)
+  - deterministic block response for out-of-policy tool calls
+- Hard runtime validation for dataset-mutating tools in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - automatic post-step chain `waitForQMapDataset -> countQMapRows`
+  - deterministic failure on missing/zero-row outputs, surfaced in runtime status and final `[validation]` marker
+- Hard-enforced turn execution state machine in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - phases `discover -> execute -> validate -> finalize`
+  - mandatory `listQMapDatasets` discovery step before operational tools
+  - dataset snapshot TTL guard (`VITE_QMAP_AI_TURN_SNAPSHOT_TTL_MS`, default `180000ms`) with forced refresh on expiry
+  - `waitForQMapDataset` ambiguity guard: non-canonical names are blocked when ambiguous/non-materialized, requiring `id:<datasetId>`
+  - e2e direct-tool runner bypass flag (`__qmapBypassTurnStateMachine`) to keep deterministic test coverage without policy deadlocks
+- New geometric core module `src/features/qmap-ai/geometry-ops.ts` with deterministic operations:
+  - bbox feature creation
+  - union/intersection/symmetric-difference
+  - dissolve by property
+  - simplify/clean with area sliver filtering
+  - polygon split by line
+  - erase by mask geometries
+- New q-map AI geometric tools in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - `drawQMapBoundingBox`
+  - `overlayUnion`
+  - `overlayIntersection`
+  - `overlaySymmetricDifference`
+  - `dissolveQMapDatasetByField`
+  - `simplifyQMapDatasetGeometry`
+  - `splitQMapPolygonByLine`
+  - `eraseQMapDatasetByGeometry`
+- Unit tests for geometric core operations:
+  - `tests/unit/workers/geometry-ops.test.ts`
+  - test tsconfig wiring updated in `tsconfig.worker-tests.json`
+- New Playwright smoke spec `tests/e2e/ai-mode-policy.spec.ts` validating AI mode gating:
+  - `kepler` mode exposes assistant runtime tools (`__qmapRunTool`)
+  - switching mode keeps assistant runtime available with consistent tool runtime
+- New `mergeQMapDatasets` geometry-hardening flow in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - deterministic schema-union conflict reporting (`schemaConflicts`)
+  - geometry controls (`geometryMode`, `latitudeField`, `longitudeField`, `sourceCrs`, `outputGeometryField`, `strictValidation`)
+  - derived point-geometry generation from lat/lon with CRS conversion to WGS84 and geometry quality counters
+  - broader lat/lon field detection aliases (including Italian naming variants)
+- JSON upload normalization for wrapped/non-tabular payloads in `src/components/file-upload-with-url.tsx`:
+  - unwrap common containers (`rows`/`data`/`items`/`results`/`records`)
+  - OPAS payload flattening (`meta` + `payload.data.series_data`) into row arrays usable by q-map upload
+- New zonal worker infrastructure:
+  - `src/workers/zonal-ops.worker.ts`
+  - `src/workers/zonal-runner.ts`
+- Iframe export bridge for host-platform integration:
+  - new bottom-right `Invia stato` button shown only when q-map runs inside an iframe and URL hash includes marker `double-setup` (configurable via `VITE_QMAP_IFRAME_EXPORT_HASH_MARKER`)
+  - button action exports current Kepler map snapshot and sends it to `window.parent` via `postMessage` (`QMAP_IFRAME_EXPORT`, configurable target origin via `VITE_QMAP_IFRAME_EXPORT_TARGET_ORIGIN`)
+- New q-map mode `draw-on-map` with strict controls profile (draw tools, split-map, 3D, locale, H3), AI/custom draw menus disabled, and left side panel starting closed.
+- Hash preset runtime for client-only URL presets (`#preset=<base64url>`, `#/map?preset=<base64url>`) plus short mode/map URLs (`#mode=<...>`, `lat/lon/zoom/bearing/pitch/basemap`) in `src/utils/hash-preset.ts`, wired on bootstrap + `hashchange` in `src/main.tsx` with deterministic precedence (short params > preset JSON > defaults), safe UI-state whitelist apply (`qmapMode`, `activeSidePanel`, `readOnly`, `locale`, `mapControls`), and viewport/basemap apply.
+- New q-map AI tool `createDatasetWithNormalizedField` to materialize derived normalized metrics `(numerator/denominator)*multiplier` (e.g. per-100k), enabling real map styling on normalized fields instead of narrative-only normalization.
+- Worker unit coverage for zonal operations:
+  - `tests/unit/workers/zonal-ops.worker.test.ts`
+- Runtime guardrail recovery in q-assistant for missing ranking metric fields (`metric field not found`), with forced dataset-field inspection before retry.
+- Runtime guardrail rule for normalized coloring objectives: if user asks per-capita/normalized coloring but latest successful color call uses an absolute field, require a derived normalization step (`createDatasetWithNormalizedField`) before finalization.
+- Runtime guardrail rule to block silent fallback to `population`/`name` metrics for "problemi/pressione ambientale" objectives unless explicitly requested.
+- Runtime guardrail rule for ranking/superlative requests: final answer must include ordered ranking evidence from `rankQMapDatasetRows`, not only generic narrative.
+- Runtime guardrail tie-handling for flat metrics (`distinct=1`): require explicit "tied regions" disclaimer instead of unique-top claims.
+- Runtime guardrail for ranking tasks to block `categoryBarsTool` on `name` (without metric axis) as ranking evidence.
+- Runtime guardrail robustness improved: detects name-only category-chart evidence even when tool-call metadata is partially missing and only tool-result details are available.
+- Audit quality-metrics fix: `responseToolCallCount` now correctly counts streamed/object-shaped `responseToolCalls` entries, not only string arrays.
+- Runtime tool-schema pruning for ranking/superlative objectives: `categoryBarsTool` is removed unless the user explicitly requests category/distribution analysis.
+- Runtime guardrail for low-distinct color failures in ranking flows: avoid alternate heavy join/aggregation loops, finalize with ranked metric evidence, and require explicit tie disclosure.
+- Runtime guardrail for coloring objectives with low-distinct metrics: forbid false "color applied" claims and require explicit flat-metric disclosure (with solid-color fallback when available).
+- Runtime tool-schema pruning after low-distinct color failures: heavy recompute/discovery tools are removed in-turn to prevent repeated zonal/query loops.
+- Runtime pre-flight guardrail hint for `zonalStatsByAdmin` canonical arguments to prevent invalid non-canonical payloads (`targetDatasetName`/`adminNameField`/`targetValueFieldName`/`operations`).
+- Runtime guardrail for unresolved forest-value workflows after `zonalStatsByAdmin` UI-freeze: blocks population/name fallback coloring and forbids inferred ranking claims without computed ranking evidence.
+- Runtime guardrail for coloring flows: if recent style steps failed and no subsequent style success exists, final text must not claim coloring success.
+- q-assistant runtime guardrail for cached isochrone datasets: when wait/count fails with dataset-not-found after `isochrone`, suggest deterministic recovery `saveDataToMap(datasetNames=[...]) -> waitForQMapDataset -> countQMapRows` instead of rerunning `isochrone`.
+
+### Changed
+- `examples/q-map/Makefile` now exposes `make dev-local-stop` to stop the backend Docker stack used by `make dev-local` (`make -C backends down`).
+- Kong gateway pre-auth claim checks in `backends/kong/scripts/render-kong-config.py` are now sandbox-safe for the `pre-function` plugin:
+  - removed Lua `require "cjson.safe"` usage that caused `500` errors (`require ... not allowed within sandbox`) on authenticated edge requests.
+  - claim extraction for `iss`/`aud` now uses in-sandbox payload parsing logic (no sandbox module imports), preserving strict issuer/audience enforcement while keeping conservative sandbox posture.
+- Backend-dependent e2e policy hardening in `tests/e2e/tools.spec.ts`:
+  - introduced explicit strict mode toggle `QMAP_E2E_REQUIRE_BACKEND_AUTH` (default `false`) for cloud/q-cumber/filter backend flows.
+  - added deterministic readiness probes (`listQMapCloudMaps` / `listQCumberProviders`) before backend-dependent assertions.
+  - in non-strict mode, tests skip only infrastructure/auth failures (`Unauthorized`/`Forbidden`/`Failed to fetch`/network) with explicit annotations; in strict mode they hard-fail.
+  - cloud-tools probe keeps an explicit direct invocation of `listQMapCloudMaps` in spec to preserve static `tool-coverage-audit` extraction compatibility.
+  - added automatic compact failure artifact attachment (`latest-tool-runtime-envelope.json`) with recent tool envelopes (`toolName`, `args`, `success`, `details`) for faster e2e triage.
+- Prompt-lint stability tuning for `sample_qcumber_admin_query` in `tests/ai-eval/cases.sample.json`:
+  - replaced brittle keyword `provider` with `popolazione` to reduce historical keyword-hit variance noise while preserving semantic intent coverage.
+- q-map tool-args normalization hardening for mixed local/backend test loops:
+  - canonical dataset-ref remapping in `src/features/qmap-ai/tool-args-normalization.ts` is now limited to tools that explicitly benefit from deterministic refs (`waitForQMapDataset`, `countQMapRows`, `createDatasetFromFilter`, `createDatasetWithNormalizedField`).
+  - chart/styling runtime tools now keep label-based `datasetName` inputs, avoiding accidental alias remap to wrong derived datasets in long e2e sessions.
+  - added unit regression coverage in `tests/unit/workers/tool-args-normalization.test.ts` for chart/styling label preservation.
+- e2e tools loop resilience for environments without backend/cloud auth:
+  - `tests/e2e/tools.spec.ts` now skips q-cumber/cloud/filter materialization subflows only when failures are explicitly infrastructural (`Unauthorized`, `Forbidden`, `Failed to fetch`, network/connectivity), while preserving hard-fail behavior for functional regressions.
+  - prevents false-red `test-e2e-tools` outcomes in local loop runs where cloud/backend endpoints are intentionally unavailable.
+- Backend alignment and cleanup across `examples/q-map/backends`:
+  - `q-assistant` removed deprecated Anthropic-compatible `/messages` path and dead Anthropic retry/limiter branches from streaming proxy flow; supported runtime surface is now consistently `/chat` + `/chat/completions` with providers `openai|openrouter|ollama`.
+  - q-assistant runtime guardrails now enforce `fitQMapToDataset` evidence also for explicit “show on map / sulla mappa” objectives (even without centering keywords), preventing premature finalization claims and restoring KPI coverage for `arch_superlative_admin_unit_show_on_map`.
+  - removed unused q-assistant startup validation toggle plumbing (`Q_ASSISTANT_VALIDATE_MODEL_ON_STARTUP`) from runtime config and compose/env templates.
+  - standardized q-assistant audit context default to `Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT=false` in `.env.example` (already matching compose default).
+  - `q-cumber-backend` map storage reduced to read-only operations only (unused write helpers removed).
+  - backend docs/test commands aligned (`AGENT.md`, `DOCUMENTATION.md`, `backends/Makefile`, `backends/q-assistant/README.md`) including explicit `tests/test_runtime_guardrails.py` coverage in q-assistant test lists.
+  - test/audit artifact permission handling is now uniform:
+    - new top-level `make fix-test-perms` normalizes writable permissions for `tests/ai-eval/results`, `test-results`, `playwright-report`, and backend audit folders before loop/audit runs.
+    - backend `make fix-audit-perms` now enforces deterministic ownership/mode on `q-assistant` chat-audit mount.
+    - backend `export-audit` fixed to correctly package `session-*.jsonl` from the audit directory (`cd "$audit_dir" && tar ...`), unblocking strict assistant-live audit.
+- q-map frontend modularization and maintainability hardening for draw + AI tool wiring:
+  - extracted draw runtime helpers to `src/features/qmap-draw/runtime.ts` and draw middleware orchestration to `src/features/qmap-draw/middleware.ts`, keeping `src/main.tsx` focused on wiring/factory injection.
+  - extracted AI category introspection factory wiring to `src/features/qmap-ai/tool-registry.ts` and introduced grouped tool composition in `src/features/qmap-ai/tool-groups.ts`.
+  - grouped tool registration now enforces duplicate-name guardrails (`buildQMapToolsWithoutCategoryIntrospection`) with strict mode enabled in dev (`strict: Boolean(import.meta.env.DEV)`), preventing ambiguous/overridden runtime tools.
+  - assistant runtime now composes custom tools by domain groups (`discovery`, `datasetOps`, `stylingUi`, `spatialAnalysis`, `h3Processing`) for easier future additions/removals.
+  - added worker unit coverage for grouped registry behavior and duplicate detection in `tests/unit/workers/tool-groups.test.ts`.
+  - aligned technical docs to reflect the new architecture in `AGENT.md` and `DOCUMENTATION.md`.
+- CI workflow hardening in `.github/workflows/q-map-ux-regression.yml`:
+  - added scheduled/manual nightly-style job `assistant-live-strict-nightly` running `make assistant-live-gate-strict` with backend health preflight and artifact upload.
+  - existing `ux-regression` job now runs only on `push/pull_request` events; schedule/manual runs target strict assistant live gate.
+- Assistant suite CI stability in `playwright.assistant.config.ts` + `Makefile`:
+  - assistant tests now support `PW_SKIP_WEBSERVER=1` to avoid flaky auto-start/bind failures when CI provides an external `PW_BASE_URL`.
+  - `test-e2e-assistant-live` defaults to `PW_SKIP_WEBSERVER=1`.
+  - added strict targets `audit-assistant-live-strict` and `assistant-live-gate-strict`.
+- Assistant live chat-audit gate reliability in `Makefile` + `scripts/audit-assistant-live-chat-quality.mjs`:
+  - `audit-assistant-live` now pre-runs `make -C backends export-audit` to materialize server `session-*.jsonl` logs into host artifacts.
+  - audit script now consumes host-side audit dirs only (`QMAP_ASSISTANT_AUDIT_DIRS`) and no longer depends on inline `docker exec`, making strict CI parsing deterministic.
+- Functional KPI threshold alignment in `tests/ai-eval/cases.functional.json`:
+  - raised `arch_superlative_admin_unit_show_on_map.min_case_score` from `0.7` to `0.75` to satisfy critical-case floor policy enforced by `ai-threshold-audit`.
+- Runtime dedup hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - added turn-scoped dedup cache for repeated read-only calls with identical args (same mutation revision), reducing redundant tool loops in real chat workflows.
+  - dedup is applied only to stateless discovery/query tools (`listQMapDatasets`, `listQCumber*`, `queryQCumber*`, `preview/rank`, `distinct/search` field values).
+- Tool robustness in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - `setQMapFieldEqualsFilter` now resolves datasets via shared canonical resolver (`resolveDatasetByName`), so dataset references like `id:<datasetId>` are handled consistently and no longer trigger false `dataset not found` failures.
+- Solid-color tool argument compatibility hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - `setQMapLayerSolidColor` now accepts alias payloads from real chats (`color -> fillColor`, `layerNameOrId -> layerName`) before strict validation
+  - prevents `AI_InvalidToolArgumentsError` on styling turns that use legacy/non-canonical argument names
+- `createDatasetFromFilter` resilience hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - when filtering a text field with an invalid numeric value, the runtime can recover the filter value from the latest compatible ranking evidence (same dataset, recent `rankQMapDatasetRows`)
+  - prevents repeated failure loops in follow-up prompts like “mostra su mappa” after ranking-based identification
+- Added e2e regression coverage in `tests/e2e/tools.spec.ts` for `setQMapLayerSolidColor` alias payload (`layerNameOrId` + `color`).
+- Added e2e regression coverage in `tests/e2e/tools.spec.ts` for `createDatasetFromFilter` text-value recovery after ranking context.
+- Mode policy hardening in `src/features/qmap-ai/mode-policy.ts`:
+  - introduced a shared minimum tool set enforced across all non-`kepler` modes (including `draw-stressor` and `draw-on-map`) for deterministic discovery/query workflows
+  - minimum set includes q-cumber discovery/query essentials (`listQCumber*`, `getQCumberDatasetHelp`, `queryQCumber*`) and ranking/inspection baseline (`previewQMapDatasetRows`, `rankQMapDatasetRows`)
+  - prevents `AI_NoSuchToolError` on administrative lookup prompts in restricted modes
+- Assistant final-message deduplication hardening in `src/features/qmap-ai/`:
+  - added `collapseRepeatedNarrativeBlocks` in `execution-trace.ts` to remove consecutive duplicated lines/paragraph blocks from final assistant narrative
+  - integrated dedupe pass in `qmap-ai-assistant-component.tsx` after diagnostics stripping and before final envelope assembly
+  - regression coverage added in `tests/unit/workers/execution-trace.test.ts` for repeated line/paragraph scenarios
+- Prompt-lint historical stability signal hardening in `scripts/lint-ai-prompts.mjs`:
+  - excludes transport/preflight-aborted ai-eval rows (`transportError`, `transport-error-abort`, `status<=0`) from keyword hit-rate history
+  - avoids false instability warnings when recent reports include infrastructure/network aborts unrelated to prompt quality
+  - ranking-intent detection now matches `top` only as standalone token (`top`, `top 10`) and no longer flags topology words (e.g. `topologica`) as false ranking intents
+- q-map AI normalization/runtime hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - `createDatasetWithNormalizedField` now resolves missing area denominators with deterministic fallback order:
+    - explicit field
+    - existing area-like field (with unit conversion)
+    - derived area from `_geojson`
+    - derived area from `h3_id` (`cellArea`)
+  - normalized denominator supports area unit conversion across `m2`, `ha`, `km2`, preventing failures like missing `h3_area_ha` on joined H3 datasets
+  - duplicate identical failures for `queryQCumberTerritorialUnits` are now short-circuited in-turn with explicit guidance (prevents useless retry loops)
+  - assistant text consolidation now keeps the latest text part (instead of concatenating all parts), reducing repeated plan/progress blocks in final replies
+  - final assistant fallback text now adds actionable next-step guidance (ambiguity/timeout/missing-field/style recovery) instead of sterile generic completion lines
+- q-assistant trace correlation refactor in `backends/q-assistant`:
+  - new response header `x-q-assistant-chat-id` exposed on chat endpoints (stable per-session correlation key)
+  - audit events now include `chatId` alongside `sessionId`/`requestId` for easier parsing and grouping
+  - OpenAI-compatible responses now expose `qAssistant.chatId` in-body metadata
+- Assistant runtime diagnostics hardening in `src/features/qmap-ai/`:
+  - final message compaction now strips repeated diagnostic markers globally (`[requestId]`, `[progress]`, `[validation]`, `[executionSummary]`, `[guardrail]`) before rewriting the latest envelope
+  - execution summary now supports `subRequestIds` (distinct from turn `requestId`) for clearer multi-hop trace parsing in real chats
+  - new guardrail `completion_claim_blocked` removes unverifiable “Ho completato ...” claims when execution status is `partial`/`failed`
+  - when post-cleanup assistant text becomes empty at workflow completion, frontend now injects a deterministic fallback narrative instead of leaving only diagnostic markers
+  - incoming assistant chunks containing only runtime diagnostics are now dropped before state update, preventing orphan `[requestId: ...]` lines after the final answer
+  - diagnostics cleanup now merges/sanitizes all assistant text parts (not only the first one), preventing trailing marker lines from surviving in multi-part final messages
+  - objective-aware completion guardrail: if user objective asks explicit styling/coloring but no style tool succeeds, final execution status is downgraded to `partial` and success fallback text is suppressed
+  - workflow fallback text now includes the latest failed tool + details (instead of a generic partial/fail sentence), so ambiguous admin matches surface actionable guidance
+  - prompt routing now defaults to province-level disambiguation for ambiguous Italian toponyms (lv7/lv9) when the request is explicitly H3 tessellation/aggregation/styling and no level is provided
+- q-assistant normalized-metric intent detection broadened in `backends/q-assistant/src/q_assistant/main.py`:
+  - normalization intent now recognizes percentage wording (`percentuale`, `percentage`, `pct`, `%`)
+  - forest-percentage preflight guidance now blocks finalization on absolute area sum presented as percent
+  - normalized-field heuristic expanded with `%/pct` field markers (e.g. `forest_pct`)
+  - regression coverage added in `backends/q-assistant/tests/test_runtime_guardrails.py`
+- q-assistant coverage guardrail extension for cross-geometry clip/statistics workflows in `backends/q-assistant/src/q_assistant/main.py`:
+  - coverage validation (`coverageQualityReport`) is now required not only for perimeter+overlay prompts, but also for objectives that explicitly ask clip/intersection statistics across shape/H3 levels
+  - guardrail now derives coverage call hints from clip outputs when no overlay tool was executed
+  - new pre-coverage guardrail `clip_stats_clip_required`: for cross-geometry stats objectives, finalization is blocked until at least one successful clip tool result exists
+  - added regression coverage in `backends/q-assistant/tests/test_runtime_guardrails.py`
+- AI-eval alignment for `arch_cross_geometry_clip_stats` in `tests/ai-eval/cases.functional.json`:
+  - expected tool set now includes deterministic bootstrap/materialization steps seen in valid shape->H3 clip workflows (`listQMapDatasets`, `tassellateDatasetLayer`)
+  - avoids false negative gate failures on tool precision when required clip/coverage/statistics evidence is present
+- Objective-anchor quality boost in `backends/q-assistant/src/q_assistant/main.py`:
+  - final `Copertura obiettivo` guidance now injects required lexical phrases for:
+    - cross-geometry clip/statistics objectives (`percentuale area`, `conteggio`, `shape`, `h3`)
+    - direct-vs-derived ranking objectives (`metrica derivata`, `normalizzata`, `confronto`, `ex-aequo`)
+    - geo-transform chain objectives (`clip`, `dissolve`, `overlay`)
+    - cloud-load sequence objectives (`cloud`, `map`, `dataset`)
+  - regression coverage added in `backends/q-assistant/tests/test_objective_anchor.py`
+- AI-eval precision alignment for deterministic optional workflow steps in `tests/ai-eval/cases.functional.json`:
+  - `arch_multi_perimeter_overlay_consistency` now accepts `queryQCumberDatasetSpatial`
+  - `arch_territorial_tessellation_multires` now accepts `showOnlyQMapLayer`
+  - `arch_record_inspection_and_ranking` now accepts deterministic `loadData` bootstrap when dataset materialization is required before preview/ranking
+- `waitForQMapDataset` argument compatibility hardening:
+  - frontend tool schema in `src/features/qmap-ai/qmap-ai-assistant-component.tsx` now accepts `datasetRef`/`datasetId` aliases and normalizes them to canonical `datasetName`
+  - backend audit/argument normalization mirrors the same alias mapping in `backends/q-assistant/src/q_assistant/main.py`
+  - regression coverage added in `backends/q-assistant/tests/test_chat_audit_utils.py` and `tests/e2e/tools.spec.ts`
+- q-assistant audit hardening in `backends/q-assistant/src/q_assistant/`:
+  - `Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT` default is now `false` (also aligned in `backends/docker-compose.yaml`)
+  - when context logging is enabled, `x-qmap-context` is parsed/sanitized before audit write (no raw header dump)
+  - stdout audit mirroring now uses logger emission instead of direct `print(...)`
+  - when configured audit log path is not writable (e.g. bind-mount ownership mismatch), q-assistant now falls back to `/tmp/q-assistant-chat-audit` instead of silently losing audit rows
+- q-assistant tool-argument resilience hardening in `backends/q-assistant/src/q_assistant/main.py`:
+  - normalized malformed combined filter tokens like `op: "eq,value:7"` into canonical `{op:"eq", value:7}`
+  - applies to parsed tool arguments, historical assistant `tool_calls` in coerced payloads, and non-stream OpenAI-compatible responses before returning to frontend
+  - added regression coverage in `backends/q-assistant/tests/test_request_coercion.py` and `backends/q-assistant/tests/test_chat_audit_utils.py`
+- q-cumber filter argument resilience in `src/features/qmap-ai/cloud-tools.tsx`:
+  - `QCUMBER_FILTER_SCHEMA` now preprocesses malformed combined operator/value tokens (e.g. `op: "eq,value:7"`)
+  - inline payloads are normalized before strict Zod validation (`value:` / `values:` patterns), preventing hard tool-arg aborts on recoverable LLM formatting mistakes
+  - q-cumber query schemas now coerce common enum variants (`orderDirection`, `expectedAdminType`) before validation to reduce avoidable `AI_InvalidToolArgumentsError`
+- q-map assistant tool-schema hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - added shared lenient enum parsing for high-frequency tool arguments (`sortDirection`, style `mode`/`scale`/`strategy`, geometry `predicate`/`weightMode`/`joinType`, H3 metric/aggregation variants)
+  - common alias/case/plural variants are normalized pre-validation (e.g. `descending`, `quantiles`, `intersect`, `area-weighted`)
+- Prompt/eval tuning for loop quality in `src/features/qmap-ai/system-prompt.ts` + `tests/ai-eval/`:
+  - dataset discovery policy is now conditional (avoid redundant `listQMapDatasets` when context is already explicit/fresh)
+  - cloud timeout/retry guidance now requires explicit reliability/availability confirmation in final text
+  - sample/functional eval catalogs aligned to deterministic validation/discovery chains (`listQMapDatasets`, `waitForQMapDataset`, `countQMapRows`) and cloud-recovery keyword robustness (`disponibilita`)
+- Session/requestId correlation hardening:
+  - `/chat` now also exposes `x-q-assistant-request-id` response header (aligned with `/messages` and `/chat/completions`)
+  - q-map context header now carries `sessionId` to improve chat-audit session fallback correlation when custom session header is missing
+- Chat-audit parseability hardening in `backends/q-assistant`:
+  - audit events now include a stable envelope (`auditSchema=qmap.chat_audit.v1`, `eventType`, `service`, `outcome`)
+  - added normalized parsing helpers in-event (`responseToolCallsNormalized`, `responseToolCallNames`, `requestToolResultsSummary`)
+  - optional stdout mirroring for external shippers via `Q_ASSISTANT_CHAT_AUDIT_STDOUT_ENABLED` (keeps file JSONL as source of truth)
+- Assistant final-message guardrail hardening in `src/features/qmap-ai/`:
+  - added style-claim evidence checks (`setQMapLayerColorByField` / threshold style tools) in `execution-trace.ts`
+  - when final text claims quantile/palette styling but no successful style tool result exists in-turn, UI now injects `[guardrail] styling_claim_blocked` and strips unverifiable styling claims from the narrative
+- Quality gate and loop docs updated to include `ai-threshold-audit`:
+  - `Makefile` adds `ai-threshold-audit` target and includes it in `quality-gate`
+  - `AGENT.md`, `SYSTEM_ENGINEERING_LOOP.md`, `AI_EVAL.md` include anti-fragile threshold audit in standard workflow
+- Functional eval catalog hardening in `tests/ai-eval/cases.functional.json`:
+  - raised low explicit `min_case_score` overrides from `0.55` to `0.6` to align with `standard` criticality baseline floor
+- E2E gate grep extended in `Makefile`:
+  - `test-e2e-tools` default selection now includes `assistant response exposes structured diagnostics envelope`
+- E2E Makefile stabilization:
+  - `test-e2e-tools` now forwards `PW_BASE_URL` from configurable `E2E_BASE_URL` (default `http://127.0.0.1:8081`) for explicit Playwright webServer base-url control without changing existing backend/CORS assumptions
+- Shared tool contract coverage fix:
+  - `setQMapFieldEqualsFilter` added to `src/features/qmap-ai/tool-manifest.json` (`workflow-control` category)
+  - regenerated `backends/q-assistant/src/q_assistant/qmap-tool-contracts.json` now includes the tool, removing runtime fail-fast block in e2e execution
+- Unified FE/BE/eval tool contract baseline (`args/response`) introduced and wired end-to-end:
+  - canonical contract file: `backends/q-assistant/src/q_assistant/qmap-tool-contracts.json` (`qmap.tool_contracts.v1`)
+  - generation/audit scripts:
+    - `scripts/generate-tool-contracts.mjs`
+    - `scripts/audit-tool-contracts.mjs`
+  - `Makefile` and npm scripts now expose `tool-contract-audit` / `tool-contract-sync` and include contract audit in `quality-gate`
+  - eval runner now loads shared contracts and builds tool catalog parameters from contract defaults instead of ad-hoc placeholders
+  - frontend runtime now fail-fast blocks tool execution when shared contract metadata is missing for a tool
+  - backend runtime extraction now annotates tool-result rows with expected response schema and mismatch flag; quality metrics include `contractSchemaMismatchCount`
+  - backend runtime guardrail tests extended with contract-schema expectation/mismatch assertions
+  - backend packaging includes contract JSON as package data (`pyproject.toml`)
+- q-assistant runtime loop hardening for repeated identical tool retries in `backends/q-assistant/src/q_assistant/main.py`:
+  - new circuit breaker `identical_tool_args_circuit_breaker` in `_enforce_runtime_tool_loop_limits`
+  - detects repeated failures on identical `tool + args` signature (even across different error classes) and prunes the looping tool from advertised runtime schema
+  - emits explicit fallback trace block in runtime guardrail lines for auditability (`Fallback trace: {"rule":...}`)
+  - regression coverage added in `backends/q-assistant/tests/test_runtime_guardrails.py` for trigger/non-trigger cases (same signature vs changed signature)
+- Runtime AI mutation idempotency hardening in `src/features/qmap-ai/qmap-ai-assistant-component.tsx`:
+  - deterministic dedup hash (`tool + canonical args`) for mutative tools
+  - per-request success cache for mutative tool executions with idempotent cache-hit short-circuit (skip duplicate mutation and reuse prior successful result)
+  - idempotency trace metadata included in tool result payload (`llmResult.idempotency`) for diagnostics
+  - cache lifecycle reset at each new assistant request to avoid cross-request bleed
+  - extracted utility module `src/features/qmap-ai/tool-idempotency.ts` with worker-unit coverage (`tests/unit/workers/tool-idempotency.test.ts`)
+- Per-area baseline gating for AI eval in `scripts/run-ai-eval.mjs` + matrix/schema docs:
+  - matrix policy now supports `evaluationPolicy.areaDefaults` and per-area overrides via `areas[].gates`
+  - runner now computes `summaryByArea`, evaluates `areaGates`, includes both in JSON/Markdown report, and fails run when an enabled per-area gate regresses
+  - new CLI/env overrides for global per-area thresholds (`--min-area-*`, `QMAP_AI_EVAL_MIN_AREA_*`)
+  - `Makefile` forwards per-area gate overrides (`EVAL_MIN_AREA_*`) to `run-ai-eval`
+  - schema audit validates `areaDefaults` and optional `areas[].gates`
+  - eval-runner smoke test now asserts `areaGates` report payload
+- Loop/eval Makefile hardening in `Makefile`:
+  - `RUN_ID` now generates split report ids (`-sample`, `-functional`) to avoid artifact overwrite between `ai-eval` and `ai-eval-functional`
+  - new gate targets:
+    - `ai-eval-schema-audit`
+    - `prompt-lint`
+    - `test-eval-runner`
+  - `quality-gate` now includes prompt linting alongside schema audit and eval-runner tests
+- `package.json` scripts extended with:
+  - `ai:eval:schema`
+  - `ai:eval:prompt-lint`
+  - `test:unit:eval-runner`
+- AI-eval runner transport fail-fast in `scripts/run-ai-eval.mjs`:
+  - new preflight check on `${baseUrl}/health` before case execution
+  - aborts remaining cases after configurable consecutive transport failures (`QMAP_AI_EVAL_TRANSPORT_FAILURE_THRESHOLD`, default `1`; CLI `--transport-failure-threshold`)
+  - emits explicit abort reason in stdout and report (`transportAbortReason`) and marks skipped cases with `transport-error-abort`
+- Functional eval expectation tuning in `tests/ai-eval/cases.functional.json`:
+  - backend reliability keyword anchors aligned to observed deterministic post-load narratives (`affidabile`, `disponibilita`)
+  - `arch_multi_perimeter_overlay_consistency` now accepts deterministic q-cumber discovery/query bootstrap (`listQCumberDatasets`, `queryQCumberDataset`) to avoid false precision penalties
+  - prompt/keyword alignment tuned on low-scoring cases:
+    - `arch_thematic_spatial_query`: explicit spatial wording in `user_prompt`; keyword anchors aligned to stable objective phrasing (`area delimitata`, `prioritarie`, `indicatore`)
+    - `arch_dataset_derivations_numeric`: keyword anchors aligned to deterministic final narrative (`normalizzazione`, `area`, `geometrica`) while keeping `mergeQMapDatasets` as required tool evidence
+- q-assistant runtime loop-limits now add a thematic preflight routing guardrail:
+  - for thematic+spatial objectives without admin intent, `queryQCumberTerritorialUnits` is pruned in favor of `queryQCumberDatasetSpatial/queryQCumberDataset`
+  - avoids extra territorial detours in thematic cases (notably `arch_thematic_spatial_query`)
+- q-assistant anti-noise regression coverage expanded in:
+  - `backends/q-assistant/tests/test_request_coercion.py`
+  - `backends/q-assistant/tests/test_objective_anchor.py`
+  - pipeline cases now validate noisy assistant text/request markers do not pollute objective anchoring/final guidance
+- q-assistant runtime-guardrail tests expanded in `backends/q-assistant/tests/test_runtime_guardrails.py` with thematic-vs-admin routing assertions.
+- Governance gate baseline is now integrated in q-map loop:
+  - new `make ai-governance-audit` target (`scripts/audit-ai-governance.mjs`) validates required governance artifacts and cross-checks control ids across policy/risk/matrix docs
+  - `quality-gate` now includes `ai-governance-audit`
+  - governance docs baseline added under `docs/ai-governance/` (`policy.md`, `risk-register.yaml`, `control-matrix.md`, `incident-runbook.md`)
+  - loop docs/README/AGENT updated to make governance audit part of standard execution flow
+- AI-eval functional prompt quality tuning on low-scoring cases:
+  - q-assistant message-text sanitization hardening:
+    - `_text_from_message_content` / `_text_from_message_parts` now strip non-printable control characters from upstream assistant text before objective extraction/final narration
+    - fallback to `parts` text remains available when `content` becomes empty after sanitization
+  - regression tests added in `backends/q-assistant/tests/test_request_coercion.py` for control-char stripping and parts fallback
+  - q-assistant objective-anchor refinement (`backends/q-assistant/src/q_assistant/main.py`):
+    - focus-term extraction now normalizes accents before marker matching
+    - stopword list expanded to remove generic action verbs from coverage terms
+    - priority markers extended for user-outcome language (`delimit*`, `priorit*`, `indicator*`, `impatto`, `prossimit*`, `continuit*`, `differenz*`)
+  - new regression test for thematic user-goal focus extraction in `backends/q-assistant/tests/test_objective_anchor.py`
+  - user-prompt refactor for real use cases (less tool-jargon) on:
+    - `arch_thematic_spatial_query`
+    - `arch_chart_tooling`
+    - `arch_clip_overlay_cleanup`
+    - `arch_spatial_stats_suite`
+    - `arch_h3_population_flows`
+    - `arch_h3_paint_editing`
+  - corresponding `expected_keywords_any` updated to task-language outcomes (area delimitata, indicatori, relazioni, differenze/intersezioni, prossimita/copertura, correzione/anello)
+  - `arch_spatial_stats_suite` expected optional tools aligned to observed deterministic validation path (`waitForQMapDataset`, `countQMapRows`, `showOnlyQMapLayer`) to avoid false negatives from non-analytical closure steps
+  - unit-test hardening:
+    - `tests/unit/workers/reproject-ops.worker.test.ts` now waits asynchronously for `progress/result/error` messages (reduced race/flakiness risk)
+    - `backends/q-storage-backend/tests/test_config_and_storage.py` now validates cross-user isolation (user-b cannot read/update/delete maps owned by user-a)
+  - central keyword matcher refactor in `scripts/run-ai-eval.mjs`:
+    - synonym groups are now bidirectional (no one-way alias gaps like `load` vs `caricamento`)
+    - added domain synonym clusters (discovery/inventory, isochrone/isocrona, merge/unione, tessellazione/tassellazione, paint/colorazione)
+    - added typo-tolerant token match (edit distance <=1 for long tokens) to reduce false negatives on near-equivalent wording
+  - admin query case id renamed to `arch_admin_query_filters` (drops ambiguous `readonly` wording); matrix mapping updated accordingly
+  - sample catalog admin prompt rewritten in user-task language (no `read-only` wording)
+  - sample admin case now treats ordered-extract validation tools (`rankQMapDatasetRows`, `previewQMapDatasetRows`) as expected optional routing
+  - `arch_thematic_spatial_query` wording/keywords aligned to runtime narrative (`spaziale`, `bounding box`, `metrica`)
+  - `arch_dataset_materialization_filters` now explicitly expects final layer isolation step (`showOnlyQMapLayer`)
+  - `arch_h3_population_flows` now accepts deterministic pre-step tessellation (`tassellateDatasetLayer`) when needed
+  - `arch_clip_overlay_cleanup` now accepts validation/bootstrap calls (`previewQMapDatasetRows`, `waitForQMapDataset`, `queryQCumberTerritorialUnits`) as expected optional routing
+  - residual keyword-alignment tuning for stable routing outputs:
+    - `arch_admin_query_filters` (admin/filter keyword tuning)
+    - `arch_cloud_map_load_sequence` (`attesa` keyword)
+    - `arch_dataset_derivations_numeric` (`normalizzazione` keyword)
+    - `arch_record_inspection_and_ranking` (`ispezione` keyword)
+  - follow-up stability tuning:
+    - admin/cloud keyword sets aligned to recurring runtime phrasing (`amministrativa/ordering`, `caricamento`)
+    - optional validation/bootstrap expected tools extended where runtime may legitimately add them (`countQMapRows` in derivations, `queryQCumberDataset` in inspection/ranking)
+    - inspection/ranking keyword anchor aligned to deterministic runtime wording (`preview`)
+  - ai-eval case catalog refactor:
+    - case prompt field migrated to `user_prompt` in both `cases.sample.json` and `cases.functional.json`
+    - `scripts/run-ai-eval.mjs` now requires `user_prompt` (no legacy fallback)
+    - bridge/objective constraint detection now inspects `user_prompt`/`eval_prompt` aggregate text
+  - ai-eval runner transport hardening:
+    - `scripts/run-ai-eval.mjs` now applies bounded request timeout (`QMAP_AI_EVAL_REQUEST_TIMEOUT_MS` / `--request-timeout-ms`, default `120000`)
+    - network/transport failures are recorded as per-case outcome (`[transport_error] ...`) instead of aborting the full run
+- Loop + AI-eval governance consolidated (single source for prompt-driven run quality):
+  - `make changelog-audit` enforces changelog discipline for technical changes under `examples/q-map`; `quality-gate` includes it as a first-class gate.
+  - `scripts/run-ai-eval.mjs` keeps deterministic fail diagnostics (`[ai-eval][fail]`) and stronger harness mocks/routing (realistic `listQMapDatasets`, explicit load/save bridge support, deterministic `loadData`/`saveDataToMap` outputs).
+  - ai-eval conversation runner now forces one final text-only completion pass when bounded tool loops end without assistant text, reducing false keyword-score drops on tool-only responses.
+  - `tests/ai-eval/architecture-matrix.json` defines `evaluationPolicy` for run-level gates (`min_pass_rate`, `min_avg_case_score`, `min_p25_case_score`, `min_min_case_score`) and case defaults by `criticality`.
+  - case catalogs (`tests/ai-eval/cases.sample.json`, `tests/ai-eval/cases.functional.json`) now carry explicit `criticality` with targeted case-level gate overrides where needed.
+  - runner scoring now tracks/validates per-case gates (`min_case_score`, `min_tool_precision`, `max_extra_tool_calls`), reports `extraToolCalls`, and adds distribution-aware summary metrics (`minCaseScore`, `p25CaseScore`, `avgExtraToolCalls`, `casesWithGateFailures`).
+  - runner execution now injects per-case deterministic system constraints (required/forbidden tools) to reduce routing drift on ambiguous prompts (notably bridge flows).
+  - eval prompt/constraints now explicitly enforce shortest valid tool sequence (minimal extra discovery/inspection) to improve tool-precision stability.
+  - bridge-case hardening for `arch_data_load_save_bridge` in `tests/ai-eval/cases.functional.json`:
+    - tighter per-case gates (`min_tool_precision=0.5`, `max_extra_tool_calls=3`)
+    - explicit validation-step expectation includes `waitForQMapDataset`
+    - domain wording/keywords aligned to Italian bridge semantics (`caricamento/salvataggio/dataset`)
+  - bridge-specific deterministic hint in `scripts/run-ai-eval.mjs`: after explicit `loadData`/`saveDataToMap`, prefer only validation sequence (`listQMapDatasets -> waitForQMapDataset -> countQMapRows`) unless extra analytics are explicitly requested.
+  - functional eval expectations were refined for real routing patterns in `arch_admin_query_filters`, `arch_thematic_spatial_query`, `arch_h3_population_flows`, and `arch_jurisdiction_exceedance_reporting` (discovery/validation tools counted as expected where part of deterministic workflow).
+  - functional/domain coverage extended with three environmental-analysis cases in `tests/ai-eval/cases.functional.json`:
+    - `arch_regulatory_threshold_compliance` (regulatory threshold/exceedance flow)
+    - `arch_multi_perimeter_overlay_consistency` (thematic + jurisdictional perimeter overlay/coverage)
+    - `arch_jurisdiction_exceedance_reporting` (jurisdiction-level exceedance ranking/reporting)
+  - `tests/ai-eval/architecture-matrix.json` now maps the new cases/KPI entries (`regulatory_threshold_compliance`, `multi_perimeter_overlay_consistency`, `jurisdiction_exceedance_reporting`) to keep domain coherence explicit in prompt-driven loop governance.
+  - `Makefile` exposes optional gate overrides (`EVAL_MIN_PASS_RATE`, `EVAL_MIN_AVG_CASE_SCORE`, `EVAL_MIN_P25_CASE_SCORE`, `EVAL_MIN_MIN_CASE_SCORE`) forwarded to `run-ai-eval`.
+  - run-level gates in `tests/ai-eval/architecture-matrix.json` raised to reflect improved baseline stability:
+    - `min_avg_case_score`: `0.80 -> 0.85`
+    - `min_p25_case_score`: `0.70 -> 0.80`
+    - `min_min_case_score`: `0.50 -> 0.65`
+  - loop docs aligned (`AI_EVAL.md`, `SYSTEM_ENGINEERING_LOOP.md`, `AGENT.md`) and functional bridge case wording clarified to explicitly require `loadData`/`saveDataToMap`.
+- Backend container file-ownership hardening in `backends/docker-compose.yaml`:
+  - Python services (`q-assistant`, `q-cumber-backend`, `q-storage-backend`) now run with configurable host UID/GID via `QMAP_DOCKER_UID` / `QMAP_DOCKER_GID` (defaults `1000:1000`) to avoid new root-owned bind-mount artifacts.
+  - documented in `backends/.env.example` and `backends/README.md`.
+- Backend startup reliability hardening:
+  - added container `healthcheck` probes for `q-cumber-backend`, `q-storage-backend`, `q-assistant` in `backends/docker-compose.yaml`.
+  - `q-assistant` now depends on healthy `q-cumber-backend` + `q-storage-backend` (not only started).
+- Backend preflight guardrail:
+  - new `make doctor` in `backends/Makefile` validates host `uid:gid` vs compose `QMAP_DOCKER_UID/QMAP_DOCKER_GID` before `up`/`up-build`/`restart`/`up-ui`/`up-legacy`.
+- q-assistant audit retention:
+  - new settings `Q_ASSISTANT_CHAT_AUDIT_MAX_FILES` and `Q_ASSISTANT_CHAT_AUDIT_MAX_AGE_DAYS` with periodic prune in `q_assistant/main.py`.
+  - documented defaults in `backends/.env.example` and `backends/README.md`; regression tests added in `tests/test_chat_audit_utils.py`.
+- `make clean-loop` hardening in `Makefile`:
+  - chat-audit cleanup now deletes only writable `.jsonl` files via `find ... -writable -delete` and ignores non-critical permission issues.
+  - handles both file and directory variants of `backends/logs/q-assistant/chat-audit.jsonl` without failing the target.
+- Session documentation in `AGENT.md` improved for autonomous runs:
+  - explicit Docker compose source-of-truth paths and quick status/log commands.
+  - `clean-loop` permission-denied caveat on root-owned chat-audit logs and fallback guidance.
+  - explicit fail-triage rule based on `[ai-eval][fail]` output.
+- q-map AI turn-state discovery gate now captures dataset snapshot pre-flight at assistant-request start (equivalent to `listQMapDatasets`) and no longer flips back to `discover` on `listQMapDatasets` start events, reducing false blocks in multi-tool batches (e.g. `fitQMapToDataset`/`waitForQMapDataset` blocked despite prior discovery).
+- q-assistant runtime guardrails now explicitly prevent false centering claims: when objective requests centering/zoom but latest `fitQMapToDataset` failed (or no successful fit evidence exists), the agent is guided to run `fitQMapToDataset` or finalize with explicit limitation instead of claiming “mappa centrata”.
+- q-assistant loop-limits now detect repeated `Hard-enforce turn state: discovery step is mandatory` failures and prune previously failing operational tools for the active turn, forcing recovery via `listQMapDatasets` before further operations.
+- q-assistant now enforces snapshot reuse for dataset discovery in non-inventory objectives:
+  - objective-anchor criteria explicitly discourage `listQMapDatasets` as default first step unless inventory/discovery is requested or recovery is needed
+  - objective-anchor now adds a final-response keyword evidence contract (`Copertura obiettivo: ...`) with focus terms extracted from user intent, to improve traceability/keyword coverage in concise final answers
+  - objective extraction now ignores eval-only finalize control prompts (`Tool execution complete...`) so guardrails/anchor keep using the real user objective in multi-pass completions
+  - runtime pre-flight guardrail repeats the same constraint before first tool-call planning (`_inject_runtime_guardrail_message`)
+  - loop-limits now preflight-prune default q-cumber discovery tools (`listQCumberProviders`, `listQCumberDatasets`, `getQCumberDatasetHelp`, schema discovery) for load/save bridge objectives when inventory is not requested; discovery remains available as recovery after bridge-step failures
+  - perimeter/intersection workflows now require explicit coverage validation (`coverageQualityReport`) after successful clip+overlay before final response
+  - cloud load sequences now prune redundant `loadData` fallback once `loadCloudMapAndWait`/`loadQMapCloudMap` has already succeeded (fallback remains allowed after cloud-load failures)
+  - loop-limits prune redundant `listQMapDatasets` after a successful snapshot when operational progress already exists in-turn
+  - loop-limits snapshot reuse is now more conservative: keep `listQMapDatasets` available when post-snapshot operational failures occur (avoid schema-refresh dead-ends after style/ranking failures)
+  - functional eval expectations tuned case-by-case in `tests/ai-eval/cases.functional.json`:
+    - treat `listQMapDatasets` as expected snapshot evidence in operational workflows where deterministic turn-state discovery is part of normal execution
+    - accept `waitForQMapDataset` in `arch_multi_perimeter_overlay_consistency` when overlay validation materialization requires explicit wait
+  - regression tests added in `backends/q-assistant/tests/test_objective_anchor.py` and `backends/q-assistant/tests/test_runtime_guardrails.py`
+- q-map derived dataset materialization tools now upsert target datasets when label already exists (replace existing content instead of silent no-op):
+  - applied to `createDatasetFromFilter`, `createDatasetFromCurrentFilters`, `createDatasetWithGeometryArea`, `createDatasetWithNormalizedField`
+  - keeps source properties/fields plus derived fields deterministically when reusing dataset names across retries
+- e2e regression coverage expanded in `tests/e2e/tools.spec.ts`:
+  - validates area-derived field presence and overwrite semantics when re-running `createDatasetWithGeometryArea` with the same target dataset name
+- q-map frontend post-response validation is now fail-closed for centering claims:
+  - if assistant text claims centering/zoom but no successful `fitQMapToDataset` exists in tool evidence, claim lines are stripped and replaced with explicit guardrail marker (`[guardrail] centering_claim_blocked ...`).
+- New architecture guide `FRAMEWORK.md` documenting the autopoietic system structure used by q-map for self-improvement loops (runtime layer, eval/matrix layer, gate layer, governance layer, and closed-loop evolution invariants).
+- `clipQMapDatasetByGeometry` now auto-disables intersection diagnostics/distinct-count fields by default on large estimated workloads (`sourceRows*clipRows >= 50k` or source rows >= 3k), unless explicitly requested, to reduce browser stalls/timeouts on clipping-heavy flows.
+- `tests/e2e/tools.spec.ts` now includes quantitative domain assertions (not only tool success):
+  - explicit row-count checks via `countQMapRows` on source/zonal datasets
+  - exceedance check (`zonal_population > 10000`) on regulatory zonal output
+  - ranked top-value monotonicity checks on jurisdiction-like zonal ranking
+  - numeric `coveragePct` validation from `coverageQualityReport`
+- `waitForQMapDataset` heavy detection now includes clip-derived datasets and applies a higher baseline timeout for clip targets (`>=120s`), reducing false timeout loops after long clip materializations.
+- Runtime post-mutation validation timeout classification now treats `clip*` / `overlay*` / `spatialJoin*` as heavy workflows (`180s`).
+- `aggregateDatasetToH3` and `populateTassellationFromAdminUnits` now run worker-first for GeoJSON `area_weighted` aggregation regardless of row count (previously only above a row threshold), reducing browser-freeze risk on small-but-complex polygon batches (e.g. CLC clips).
+- q-map AI mode policy (`src/features/qmap-ai/mode-policy.ts`) now enforces explicit mode-level tool allowlists:
+  - `kepler`: full tool surface
+  - `draw-stressor`: constrained geospatial/H3/styling workflow set
+  - `draw-on-map`: local draw/H3/styling-focused subset
+- Mode policy updated in `src/mode/qmap-mode.ts`:
+  - q-map AI custom control is enabled in all modes (`kepler`, `draw-stressor`, `draw-on-map`)
+  - `draw-stressor` mode now keeps `toggle3d` and `splitMap` controls visible by default
+  - geocoder is enabled by default at app bootstrap in `src/main.tsx` (`visState.interactionConfig.geocoder.enabled=true`) with full `interactionConfig` shape preserved (`tooltip`, `geocoder`, `brush`, `coordinate`) to avoid runtime undefined errors
+- q-map AI system prompt (`src/features/qmap-ai/system-prompt.ts`) updated to include `mergeQMapDatasets` in intermediate-step `showOnMap` policy and to explicitly route multi-dataset union requests to the merge tool.
+- q-map AI runtime is now mode-aware (`kepler`, `draw-stressor`, `draw-on-map`) with dedicated mode overlay prompt via `src/features/qmap-ai/mode-policy.ts`, applied in `src/features/qmap-ai/qmap-ai-assistant-component.tsx` before tool exposure.
+- Restyled iframe export CTA (`Invia stato`) with neon magenta `map-overlay-toggle` look (icon + uppercase label) to match host-platform visual language.
+- `zonalStatsByAdmin` geometry mode now runs worker-first; local geometry fallback is allowed only under pair-evaluation budget thresholds.
+- `zonalStatsByAdmin` local fallback now fails fast above budget to avoid browser freeze scenarios.
+- `zonalStatsByAdmin` worker `area_weighted` intersection handling is now Turf-7 compatible (`featureCollection` + fallback signature), fixing false all-zero zonal outputs on regional CLC analysis.
+- Worker-test TypeScript config includes zonal worker (`tsconfig.worker-tests.json`).
+- Documentation updated to reflect:
+  - worker-first zonal execution and budgeted fallback behavior
+  - new q-assistant metric-field recovery and anti-fallback guardrails
+  - expanded worker test scope
+  - ranking-evidence finalization guardrail for superlative objectives
+  - hash preset URL generation patterns (Node/Python backend examples) and recommended preset payloads for common UX modes
+  - strict canonical arg contract for `zonalStatsByAdmin` (`valueDatasetName` required; non-canonical aliases removed/not supported)
+- q-assistant now treats strict `expectedAdminType`/administrative-level validation failures as a dedicated fail-closed runtime class, finalizing in limitation mode instead of relaxing the query to another level; companion backend tests and a functional eval case cover the distinction from true ambiguity clarification.

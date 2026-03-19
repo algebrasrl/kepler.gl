@@ -1,0 +1,316 @@
+{
+  "id": "ispra-opas",
+  "name": "ISPRA OPAS — Qualità dell'aria",
+  "locale": "it",
+  "category": "environmental",
+  "organizationType": "agency",
+  "country": "IT",
+  "capabilities": ["query", "geometry", "postgis"],
+  "formats": ["row", "geojson"],
+  "tags": ["ispra", "aria", "qualità-aria", "inquinamento", "PM10", "PM2.5", "NO2", "O3", "SO2", "monitoraggio", "ARPA", "stazioni"],
+  "notes": "Dati sincronizzati via ETL dall'API OPAS ISPRA (https://opas.isprambiente.it). Aggiornamento periodico.",
+  "datasets": [
+    {
+      "id": "opas-stations",
+      "name": "Stazioni di monitoraggio qualità dell'aria",
+      "description": "Rete nazionale RMQA: 699 stazioni di rilevamento gestite dalle ARPA regionali. Include classificazione, tipologia, localizzazione e stato operativo.",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "opas_stations",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["stazioni", "monitoraggio", "ARPA", "RMQA", "rete"],
+      "ai": {
+        "profile": {
+          "datasetClass": "features",
+          "queryRouting": {
+            "preferredTool": "queryQCumberDatasetSpatial",
+            "requiresSpatialBbox": false
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Posizione della stazione (punto)",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"]
+          },
+          "id": {
+            "description": "ID univoco stazione OPAS",
+            "type": "number",
+            "semanticRole": "id",
+            "filterOps": ["eq", "in"]
+          },
+          "eu_code": {
+            "description": "Codice europeo della stazione",
+            "type": "string",
+            "filterOps": ["eq", "contains", "startswith"]
+          },
+          "name": {
+            "description": "Nome della stazione",
+            "type": "string",
+            "semanticRole": "name",
+            "filterOps": ["eq", "contains", "startswith", "in"],
+            "examples": ["Aosta - Plouves", "Milano - Città Studi"]
+          },
+          "area_class": {
+            "description": "Classificazione dell'area: urbana, suburbana, rurale, etc.",
+            "type": "string",
+            "semanticRole": "category_code",
+            "filterOps": ["eq", "in"],
+            "enumValues": ["urbana", "suburbana", "rurale", "rurale-vicino a città", "rurale-regionale", "rurale-remota"]
+          },
+          "active": {
+            "description": "Stazione attiva (true/false)",
+            "type": "boolean",
+            "filterOps": ["eq"]
+          },
+          "typology": {
+            "description": "Tipologia: Chimica, Meteo, Idrometrica, etc.",
+            "type": "string",
+            "filterOps": ["eq", "in"],
+            "enumValues": ["Chimica", "Meteo", "Idrometrica", "Emissioni", "Campionatori"]
+          },
+          "network": {
+            "description": "Rete di appartenenza (es. ArpaVDA RMQA)",
+            "type": "string",
+            "filterOps": ["eq", "contains", "in"]
+          },
+          "region": {
+            "description": "Nome della regione",
+            "type": "string",
+            "semanticRole": "name",
+            "filterOps": ["eq", "in", "contains"],
+            "examples": ["Lombardia", "Toscana", "Lazio"]
+          },
+          "region_istat": {
+            "description": "Codice ISTAT della regione (01-20)",
+            "type": "string",
+            "semanticRole": "admin_code",
+            "filterOps": ["eq", "in"]
+          },
+          "province": {
+            "description": "Nome della provincia",
+            "type": "string",
+            "filterOps": ["eq", "in", "contains"]
+          },
+          "municipality": {
+            "description": "Nome del comune",
+            "type": "string",
+            "filterOps": ["eq", "in", "contains"]
+          },
+          "altitude": {
+            "description": "Altitudine in metri s.l.m.",
+            "type": "number",
+            "unit": "m",
+            "filterOps": ["eq", "gt", "gte", "lt", "lte"],
+            "sortable": true,
+            "rankable": true
+          }
+        }
+      }
+    },
+    {
+      "id": "opas-measurements",
+      "name": "Misurazioni qualità dell'aria (ultime 48h)",
+      "description": "Ultimo valore misurato per i principali inquinanti (PM10, PM2.5, NO2, O3, SO2, CO, Benzene) e parametri meteo per ogni stazione attiva. Aggiornato periodicamente via ETL.",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "opas_measurements",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["misurazioni", "PM10", "PM2.5", "NO2", "O3", "SO2", "CO", "inquinanti", "aria"],
+      "ai": {
+        "profile": {
+          "datasetClass": "features",
+          "queryRouting": {
+            "preferredTool": "queryQCumberDatasetSpatial",
+            "requiresSpatialBbox": false,
+            "forbiddenAdminConstraints": ["expectedAdminType", "lv"]
+          },
+          "analysisMetrics": {
+            "metricSemantic": "environmental_measurement",
+            "numeratorFieldCandidates": ["measure_value"],
+            "denominatorFieldCandidates": [],
+            "preferredRankingFieldCandidates": ["measure_value"],
+            "recommendedDerivedMetrics": [],
+            "analysisCaveats": [
+              "I valori sono gli ultimi disponibili nelle 48h precedenti la sincronizzazione.",
+              "Il quality_code indica l'affidabilità del dato (0=valido, -1=non valido, 1=da verificare).",
+              "Filtrare per parameter_name per confrontare valori dello stesso tipo."
+            ]
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Posizione della stazione (punto)",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"]
+          },
+          "station_id": {
+            "description": "ID stazione OPAS",
+            "type": "number",
+            "semanticRole": "id",
+            "filterOps": ["eq", "in"]
+          },
+          "station_name": {
+            "description": "Nome della stazione",
+            "type": "string",
+            "semanticRole": "name",
+            "filterOps": ["eq", "contains", "in"]
+          },
+          "region": {
+            "description": "Regione della stazione",
+            "type": "string",
+            "filterOps": ["eq", "in"]
+          },
+          "region_istat": {
+            "description": "Codice ISTAT regione",
+            "type": "string",
+            "filterOps": ["eq", "in"]
+          },
+          "parameter_name": {
+            "description": "Nome del parametro misurato (es. PM10, NO2, O3)",
+            "type": "string",
+            "semanticRole": "category_code",
+            "filterOps": ["eq", "in", "contains"],
+            "examples": ["PM10", "PM2.5", "NO2", "O3", "SO2", "CO", "Benzene", "Temperatura"]
+          },
+          "parameter_unit": {
+            "description": "Unità di misura (es. µg/m³, °C)",
+            "type": "string",
+            "filterOps": ["eq"]
+          },
+          "measure_value": {
+            "description": "Valore misurato",
+            "type": "number",
+            "semanticRole": "metric",
+            "filterOps": ["eq", "gt", "gte", "lt", "lte"],
+            "sortable": true,
+            "rankable": true
+          },
+          "measure_time": {
+            "description": "Timestamp della misurazione (UTC)",
+            "type": "string",
+            "filterOps": ["eq", "gt", "gte", "lt", "lte"]
+          },
+          "quality_code": {
+            "description": "Codice qualità dato: 0=valido, -1=non valido, 1=da verificare",
+            "type": "number",
+            "filterOps": ["eq", "in"],
+            "enumValues": [0, 1, -1]
+          }
+        }
+      }
+    },
+    {
+      "id": "opas-hourly",
+      "name": "Serie orarie qualità dell'aria (da gen 2025)",
+      "description": "Dati orari storicizzati per i principali inquinanti (PM10, PM2.5, NO2, O3, SO2, CO, Benzene) per ogni stazione attiva. Tabella partizionata per mese, backfill dal 1 gennaio 2025.",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "opas_hourly",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["serie-temporali", "orario", "storico", "PM10", "PM2.5", "NO2", "O3", "SO2", "inquinanti"],
+      "ai": {
+        "profile": {
+          "datasetClass": "events",
+          "queryRouting": {
+            "preferredTool": "queryQCumberDatasetSpatial",
+            "requiresSpatialBbox": false,
+            "forbiddenAdminConstraints": ["expectedAdminType", "lv"]
+          },
+          "analysisMetrics": {
+            "metricSemantic": "environmental_timeseries",
+            "numeratorFieldCandidates": ["measure_value"],
+            "denominatorFieldCandidates": [],
+            "preferredRankingFieldCandidates": ["measure_value"],
+            "recommendedDerivedMetrics": [
+              {
+                "name": "daily_avg",
+                "description": "Media giornaliera calcolabile raggruppando per station_id, parameter_name, date(measure_time)",
+                "formulaHint": "AVG(measure_value) GROUP BY station_id, parameter_name, date(measure_time)",
+                "unit": "same as parameter_unit"
+              }
+            ],
+            "analysisCaveats": [
+              "I dati sono orari — per analisi di trend usare aggregazioni giornaliere o mensili.",
+              "validity_code: 0=validato, 1=da verificare (dati recenti), -1=non valido.",
+              "Filtrare sempre per parameter_name prima di confrontare measure_value.",
+              "Per query su grandi intervalli temporali, aggiungere filtri su measure_time per sfruttare il partizionamento."
+            ]
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Posizione della stazione (punto)",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"]
+          },
+          "station_id": {
+            "description": "ID stazione OPAS",
+            "type": "number",
+            "semanticRole": "id",
+            "filterOps": ["eq", "in"]
+          },
+          "station_name": {
+            "description": "Nome della stazione",
+            "type": "string",
+            "semanticRole": "name",
+            "filterOps": ["eq", "contains", "in"]
+          },
+          "region": {
+            "description": "Regione della stazione",
+            "type": "string",
+            "filterOps": ["eq", "in"]
+          },
+          "region_istat": {
+            "description": "Codice ISTAT regione",
+            "type": "string",
+            "filterOps": ["eq", "in"]
+          },
+          "parameter_name": {
+            "description": "Inquinante misurato",
+            "type": "string",
+            "semanticRole": "category_code",
+            "filterOps": ["eq", "in"],
+            "examples": ["PM10", "PM2.5", "NO2", "O3", "SO2", "CO", "Benzene"]
+          },
+          "parameter_unit": {
+            "description": "Unità di misura (µg/m³, mg/m³)",
+            "type": "string",
+            "filterOps": ["eq"]
+          },
+          "measure_time": {
+            "description": "Timestamp della misurazione oraria",
+            "type": "string",
+            "semanticRole": "timestamp",
+            "filterOps": ["eq", "gt", "gte", "lt", "lte"],
+            "sortable": true,
+            "examples": ["2025-06-15T14:00:00"]
+          },
+          "measure_value": {
+            "description": "Valore misurato nell'ora",
+            "type": "number",
+            "semanticRole": "metric",
+            "filterOps": ["eq", "gt", "gte", "lt", "lte"],
+            "sortable": true,
+            "rankable": true
+          },
+          "validity_code": {
+            "description": "Codice validazione: 0=validato, 1=da verificare, -1=non valido",
+            "type": "number",
+            "filterOps": ["eq", "in"],
+            "enumValues": [0, 1, -1]
+          }
+        }
+      }
+    }
+  ]
+}

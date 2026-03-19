@@ -1,0 +1,25 @@
+version: 1
+owner: q-map-platform
+last_reviewed_on: 2026-03-04
+
+risks:
+  - id: RISK-001
+    name: Unsupported analytical claim in final assistant response
+    severity: high
+    likelihood: medium
+    status: active
+    controls: [GOV-001, GOV-002, GOV-005]
+
+  - id: RISK-002
+    name: Use of forbidden tools or policy-bypassing routes
+    severity: high
+    likelihood: low
+    status: active
+    controls: [GOV-003, GOV-006]
+
+  - id: RISK-003
+    name: Missing escalation on high-impact unresolved workflow
+    severity: medium
+    likelihood: medium
+    status: active
+    controls: [GOV-004, GOV-001, GOV-005]

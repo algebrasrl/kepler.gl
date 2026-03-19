@@ -279,6 +279,7 @@ export default {
     select: 'Select',
     polygon: 'Polygon',
     rectangle: 'Rectangle',
+    radius: 'Radius',
     hide: 'Hide',
     show: 'Show',
     ...LOCALES
@@ -590,6 +591,7 @@ ${'```'}
   },
   color: {
     customPalette: 'Custom Palette',
+    opacity: 'Opacity',
     steps: 'Steps',
     type: 'Type',
     colorBlindSafe: 'Colorblind Safe',
@@ -645,6 +647,9 @@ ${'```'}
   density: 'density',
   'Bug Report': 'Bug Report',
   'User Guide': 'User Guide',
+  'Sync Zoom': 'Sync Zoom',
+  'Unlock Viewport': 'Unlock Viewport',
+  'Update color': 'Update color',
   Save: 'Save',
   Share: 'Share',
   mapLegend: {
@@ -659,6 +664,12 @@ ${'```'}
         singleColor: {
           sourceColor: 'Source',
           targetColor: 'Target'
+        }
+      },
+      wms: {
+        singleColor: {
+          color: 'Fill color',
+          strokeColor: 'Outline'
         }
       },
       default: {

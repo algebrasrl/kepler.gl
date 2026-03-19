@@ -1,0 +1,9 @@
+services:
+  q-cumber-backend:
+    ports: !reset []
+
+  q-storage-backend:
+    ports: !reset []
+
+  q-assistant:
+    ports: !reset []

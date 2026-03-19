@@ -1,0 +1,3577 @@
+[
+  {
+    "id": "arch_discovery_inventory",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "deterministic_discovery_routing",
+    "criticality": "critical",
+    "user_prompt": "Prima di iniziare, fammi un inventario di cosa posso usare: categorie strumenti, strumenti per categoria, dataset gia caricati e chart disponibili.",
+    "required_tools_any": [
+      "listQMapToolCategories",
+      "listQMapToolsByCategory",
+      "listQMapDatasets"
+    ],
+    "expected_tools_any": [
+      "listQMapChartTools",
+      "listQMapCloudMaps",
+      "openQMapPanel"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "filterDataset",
+      "queryDataset",
+      "runQuery",
+      "sqlQuery"
+    ],
+    "expected_keywords_any": [
+      "discovery",
+      "categorie",
+      "dataset"
+    ]
+  },
+  {
+    "id": "arch_provider_catalog_resolution",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Devo analizzare dati ambientali: indicami provider e dataset adatti e quale percorso di query consigli per ciascuno.",
+    "required_tools_any": [
+      "listQCumberProviders",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp"
+    ],
+    "expected_tools_any": [
+      "queryQCumberDataset",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDatasetSpatial"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "provider",
+      "routing",
+      "dataset"
+    ]
+  },
+  {
+    "id": "arch_admin_query_filters",
+    "area": "data_pipeline",
+    "kpi_id": "query_intent_alignment",
+    "criticality": "standard",
+    "min_case_score": 0.6,
+    "user_prompt": "Mostrami unita amministrative rilevanti (comuni/province), applica filtri attributo e ordinamento, senza modificare i dataset in mappa.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "countQMapRows",
+      "previewQMapDatasetRows",
+      "distinctQMapFieldValues",
+      "listQCumberProviders",
+      "listQCumberDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "territorial",
+      "amministrativa",
+      "ordering"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "queryQCumberTerritorialUnits",
+        "required_keys_all": [
+          "filters",
+          "orderBy"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_thematic_spatial_query",
+    "area": "data_pipeline",
+    "kpi_id": "query_intent_alignment",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Analizza in modo spaziale un tema ambientale in un'area di interesse delimitata e restituisci le zone prioritarie ordinate per valore dell'indicatore.",
+    "required_tools_any": [
+      "queryQCumberDatasetSpatial",
+      "queryQCumberDataset"
+    ],
+    "expected_tools_any": [
+      "rankQMapDatasetRows",
+      "searchQMapFieldValues",
+      "summarizeQMapTimeSeries",
+      "listQCumberProviders",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberTerritorialUnits"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "area delimitata",
+      "prioritarie",
+      "indicatore"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "queryQCumberDatasetSpatial",
+          "queryQCumberDataset"
+        ],
+        "required_keys_all": [
+          "providerId",
+          "datasetId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_qcumber_dataset_id_disambiguation",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 0.67,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "datasetId"
+    ],
+    "user_prompt": "Sul provider local-assets-it devo preparare una query ambientale ma non so quale datasetId usare. Mostrami i dataset disponibili e aiutami a scegliere.",
+    "required_tools_all": [
+      "listQCumberDatasets"
+    ],
+    "expected_tools_any": [
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "datasetid",
+      "disponibili",
+      "provider"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "listQCumberDatasets",
+        "required_keys_all": [
+          "providerId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_qcumber_dataset_id_disambiguation_companion",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "datasetId"
+    ],
+    "user_prompt": "Sul provider local-assets-it voglio preparare una query ambientale ma non ti do il datasetId: elenca i dataset candidati e fermati chiedendomi quale datasetId usare, senza eseguire query.",
+    "required_tools_all": [
+      "listQCumberDatasets"
+    ],
+    "expected_tools_any": [
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "datasetid",
+      "quale",
+      "usare"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "listQCumberDatasets",
+        "required_keys_all": [
+          "providerId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_qcumber_provider_id_disambiguation",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "providerId"
+    ],
+    "user_prompt": "Devo interrogare un catalogo remoto ma non ti do il providerId: prima elenca i provider disponibili e fermati chiedendomi quale providerId usare. Non passare ancora ai dataset o alla query.",
+    "required_tools_all": [
+      "listQCumberProviders"
+    ],
+    "forbidden_tools": [
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "providerid",
+      "provider",
+      "quale"
+    ]
+  },
+  {
+    "id": "arch_qcumber_provider_id_disambiguation_companion",
+    "area": "data_pipeline",
+    "kpi_id": "provider_dataset_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "providerId"
+    ],
+    "user_prompt": "Prima di continuare ho bisogno di capire quali provider sono disponibili. Aiutami a scegliere quale providerId usare.",
+    "required_tools_all": [
+      "listQCumberProviders"
+    ],
+    "forbidden_tools": [
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "providerid",
+      "disponibili",
+      "continuare"
+    ]
+  },
+  {
+    "id": "arch_qcumber_invalid_dataset_recovery",
+    "area": "data_pipeline",
+    "kpi_id": "catalog_resolution_without_silent_fallback",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "getQCumberDatasetHelp": 1,
+      "listQCumberDatasets": 2
+    },
+    "expected_response_mode": "clarification",
+    "response_mode_markers_any": [
+      "datasetId"
+    ],
+    "user_prompt": "Sul provider local-assets-it sto usando datasetId clc-2018-italia-typo. Non fare fallback silenziosi: recupera il catalogo dataset corretto e fermati chiedendomi quale datasetId usare prima di qualsiasi query.",
+    "required_tools_all": [
+      "getQCumberDatasetHelp",
+      "listQCumberDatasets"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "datasetid",
+      "provider",
+      "catalogo"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "getQCumberDatasetHelp",
+        "required_keys_all": [
+          "providerId",
+          "datasetId"
+        ]
+      },
+      {
+        "tool": "listQCumberDatasets",
+        "required_keys_all": [
+          "providerId"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "getQCumberDatasetHelp": {
+        "success": false,
+        "details": "Invalid datasetId \"clc-2018-italia-typo\". Use an exact datasetId from listQCumberDatasets(providerId). Available datasetIds: kontur-boundaries-italia, clc-2018-italia."
+      },
+      "listQCumberDatasets": {
+        "success": true,
+        "details": "Found 2 datasets for provider local-assets-it.",
+        "datasets": [
+          {
+            "id": "kontur-boundaries-italia",
+            "name": "Kontur boundaries Italia"
+          },
+          {
+            "id": "clc-2018-italia",
+            "name": "CLC 2018 Italia"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "arch_named_place_level_clarification",
+    "area": "data_pipeline",
+    "kpi_id": "admin_level_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "clarification",
+    "user_prompt": "Devo lavorare su Salerno ma non sto distinguendo bene tra comune e provincia. Aiutami a capire quale entita amministrativa sto guardando.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "rankQMapDatasetRows",
+      "fitQMapToDataset",
+      "tassellateDatasetLayer",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Salerno",
+      "livello",
+      "provincia",
+      "comune"
+    ],
+    "mock_tool_results": {
+      "queryQCumberTerritorialUnits": {
+        "success": false,
+        "clarificationRequired": true,
+        "clarificationQuestion": "Vuoi provincia, comune, regione o stato?",
+        "clarificationOptions": [
+          "province",
+          "municipality",
+          "region",
+          "country"
+        ],
+        "details": "Ambiguous administrative match for name filter (Salerno). Matched multiple levels (7, 9). Retry with expectedAdminType (province/municipality/region/country) or add explicit lv filter."
+      }
+    }
+  },
+  {
+    "id": "arch_explicit_admin_level_mismatch_fail_closed",
+    "area": "data_pipeline",
+    "kpi_id": "admin_level_resolution_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.8,
+    "min_tool_precision": 1,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non posso",
+      "non e possibile",
+      "mismatch",
+      "livello"
+    ],
+    "user_prompt": "Cerca il comune di Parma e dimmi chiaramente se con i dati disponibili non riesci a confermare il livello amministrativo corretto.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "listQCumberProviders",
+      "getQCumberDatasetHelp"
+    ],
+    "forbidden_tools": [
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "rankQMapDatasetRows",
+      "fitQMapToDataset",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Parma",
+      "comune",
+      "livello",
+      "mismatch"
+    ],
+    "mock_tool_results": {
+      "queryQCumberTerritorialUnits": {
+        "success": false,
+        "details": "Administrative level mismatch after strict filtering: expected municipality (lv=9) on field \"lv\"."
+      }
+    }
+  },
+  {
+    "id": "arch_flat_metric_coloring_limitation",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile",
+      "non e stato possibile",
+      "non applicabile"
+    ],
+    "user_prompt": "Applica un gradiente metrico sul campo flat_metric del layer Admin Boundaries. Se il campo non ha varianza reale, non inventare fallback analitici: spiega brevemente che il gradiente metrico non e possibile.",
+    "required_tools_all": [
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "setQMapLayerSolidColor",
+      "previewQMapDatasetRows",
+      "distinctQMapFieldValues",
+      "describeQMapField"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "gradiente",
+      "non possibile",
+      "piatta"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "setQMapLayerColorByField": {
+        "success": false,
+        "details": "Metric is flat (distinct=1)."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_join_metric_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Province_Pressione_Ambientale. Colora le province sulla somma dell'area pericolosa intersecata.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "spatialJoinByPredicate",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "province",
+      "somma",
+      "area"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Province_Pressione_Ambientale",
+          "fieldName": "join_sum"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_spatial_join_province_pressione_ambientale",
+            "name": "Province_Pressione_Ambientale",
+            "datasetRef": "id:qmap_spatial_join_province_pressione_ambientale",
+            "fields": [
+              "_geojson",
+              "name",
+              "join_count",
+              "join_sum"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-province-pressione-ambientale",
+            "name": "Province_Pressione_Ambientale",
+            "datasetId": "qmap_spatial_join_province_pressione_ambientale",
+            "datasetName": "Province_Pressione_Ambientale",
+            "datasetRef": "id:qmap_spatial_join_province_pressione_ambientale",
+            "type": "geojson",
+            "activeFields": [],
+            "tooltipFields": [
+              "name",
+              "join_sum"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "join_count",
+              "join_sum"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "previewQMapDatasetRows": {
+        "success": true,
+        "dataset": "Province_Pressione_Ambientale",
+        "fields": [
+          "name",
+          "join_count",
+          "join_sum"
+        ],
+        "rows": [
+          {
+            "name": "Brescia",
+            "join_count": 12,
+            "join_sum": 1234.5
+          }
+        ],
+        "details": "Previewed 1 rows from \"Province_Pressione_Ambientale\"."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Province_Pressione_Ambientale\" using field \"join_sum\". Field stats: sampled=110, numeric=110, distinct=109."
+      },
+      "showOnlyQMapLayer": {
+        "success": true,
+        "details": "Showing only \"Province_Pressione_Ambientale\" and hiding other layers."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_normalized_metric_threshold_reuse",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByStatsThresholds": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "user_prompt": "In mappa c'è già il dataset Province_Normalized con il campo population_per_100k. Applica una colorazione con soglie statistiche (quantili) sul campo population_per_100k.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "createDatasetWithNormalizedField",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "soglie",
+      "100k",
+      "province"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByStatsThresholds",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName",
+          "strategy"
+        ],
+        "required_key_values": {
+          "datasetName": "Province_Normalized",
+          "fieldName": "population_per_100k"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_normalized_province",
+            "name": "Province_Normalized",
+            "datasetRef": "id:qmap_normalized_province",
+            "fields": [
+              "_geojson",
+              "name",
+              "population",
+              "population_per_100k"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-province-normalized",
+            "name": "Province_Normalized",
+            "datasetId": "qmap_normalized_province",
+            "datasetName": "Province_Normalized",
+            "datasetRef": "id:qmap_normalized_province",
+            "type": "geojson",
+            "activeFields": [
+              "population_per_100k"
+            ],
+            "tooltipFields": [
+              "name",
+              "population_per_100k"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "population",
+              "population_per_100k"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByStatsThresholds": {
+        "success": true,
+        "details": "Applying custom-threshold color scale on layer \"Province_Normalized\" using field \"population_per_100k\". Derived thresholds (quantiles): [100, 250, 500]; sampled 107 numeric rows."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_nearest_metric_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Comuni_Nearest_POI. Colora i comuni sulla distanza dal punto piu vicino.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "nearestFeatureJoin",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "distanza",
+      "comuni",
+      "vicino"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Comuni_Nearest_POI",
+          "fieldName": "nearest_distance_km"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_nearest_comuni_poi",
+            "name": "Comuni_Nearest_POI",
+            "datasetRef": "id:qmap_nearest_comuni_poi",
+            "fields": [
+              "_geojson",
+              "name",
+              "nearest_count",
+              "nearest_distance_km"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-comuni-nearest-poi",
+            "name": "Comuni_Nearest_POI",
+            "datasetId": "qmap_nearest_comuni_poi",
+            "datasetName": "Comuni_Nearest_POI",
+            "datasetRef": "id:qmap_nearest_comuni_poi",
+            "type": "geojson",
+            "activeFields": [
+              "nearest_distance_km"
+            ],
+            "tooltipFields": [
+              "name",
+              "nearest_distance_km"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "nearest_count",
+              "nearest_distance_km"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Comuni_Nearest_POI\" using field \"nearest_distance_km\". Field stats: sampled=103, numeric=103, distinct=96."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_zonal_metric_threshold_reuse",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByStatsThresholds": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Province_Zonal_NO2. Colora le province con soglie statistiche sulla media zonale.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "zonalStatsByAdmin",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "soglie",
+      "media",
+      "province"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByStatsThresholds",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName",
+          "strategy"
+        ],
+        "required_key_values": {
+          "datasetName": "Province_Zonal_NO2",
+          "fieldName": "zonal_value"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_zonal_province_no2",
+            "name": "Province_Zonal_NO2",
+            "datasetRef": "id:qmap_zonal_province_no2",
+            "fields": [
+              "_geojson",
+              "name",
+              "zonal_value"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-province-zonal-no2",
+            "name": "Province_Zonal_NO2",
+            "datasetId": "qmap_zonal_province_no2",
+            "datasetName": "Province_Zonal_NO2",
+            "datasetRef": "id:qmap_zonal_province_no2",
+            "type": "geojson",
+            "activeFields": [
+              "zonal_value"
+            ],
+            "tooltipFields": [
+              "name",
+              "zonal_value"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "zonal_value"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByStatsThresholds": {
+        "success": true,
+        "details": "Applying custom-threshold color scale on layer \"Province_Zonal_NO2\" using field \"zonal_value\". Derived thresholds (quantiles): [12, 20, 35]; sampled 107 numeric rows."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_clip_metric_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Boschi_Clipped. Colora gli elementi sulla percentuale di intersezione col boundary.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "clipQMapDatasetByGeometry",
+      "clipDatasetByBoundary",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "intersezione",
+      "percentuale",
+      "clip"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Boschi_Clipped",
+          "fieldName": "qmap_clip_intersection_pct"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_clip_boschi",
+            "name": "Boschi_Clipped",
+            "datasetRef": "id:qmap_clip_boschi",
+            "fields": [
+              "_geojson",
+              "name",
+              "qmap_clip_match_count",
+              "qmap_clip_intersection_area_m2",
+              "qmap_clip_intersection_pct"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-boschi-clipped",
+            "name": "Boschi_Clipped",
+            "datasetId": "qmap_clip_boschi",
+            "datasetName": "Boschi_Clipped",
+            "datasetRef": "id:qmap_clip_boschi",
+            "type": "geojson",
+            "activeFields": [
+              "qmap_clip_intersection_pct"
+            ],
+            "tooltipFields": [
+              "name",
+              "qmap_clip_intersection_pct"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "qmap_clip_match_count",
+              "qmap_clip_intersection_area_m2",
+              "qmap_clip_intersection_pct"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Boschi_Clipped\" using field \"qmap_clip_intersection_pct\". Field stats: sampled=87, numeric=87, distinct=73."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_buffer_metric_threshold_reuse",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByStatsThresholds": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Comuni_Buffer_Summary. Colora i comuni con soglie statistiche sulla somma nell'intorno.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByStatsThresholds"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "bufferAndSummarize",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "soglie",
+      "intorno",
+      "comuni"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByStatsThresholds",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName",
+          "strategy"
+        ],
+        "required_key_values": {
+          "datasetName": "Comuni_Buffer_Summary",
+          "fieldName": "buffer_metric"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_buffer_summary_comuni",
+            "name": "Comuni_Buffer_Summary",
+            "datasetRef": "id:qmap_buffer_summary_comuni",
+            "fields": [
+              "_geojson",
+              "name",
+              "buffer_metric"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-comuni-buffer-summary",
+            "name": "Comuni_Buffer_Summary",
+            "datasetId": "qmap_buffer_summary_comuni",
+            "datasetName": "Comuni_Buffer_Summary",
+            "datasetRef": "id:qmap_buffer_summary_comuni",
+            "type": "geojson",
+            "activeFields": [
+              "buffer_metric"
+            ],
+            "tooltipFields": [
+              "name",
+              "buffer_metric"
+            ],
+            "availableFields": [
+              "_geojson",
+              "name",
+              "buffer_metric"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByStatsThresholds": {
+        "success": true,
+        "details": "Applying custom-threshold color scale on layer \"Comuni_Buffer_Summary\" using field \"buffer_metric\". Derived thresholds (quantiles): [5, 12, 20]; sampled 88 numeric rows."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_populated_tessellation_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Popolazione_Hex_Cells. Colora le celle sul totale di popolazione trasferita.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "populateTassellationFromAdminUnits",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "griglia",
+      "popolazione",
+      "totale"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Popolazione_Hex_Cells",
+          "fieldName": "population_2"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_populated_tessellation",
+            "name": "Popolazione_Hex_Cells",
+            "datasetRef": "id:qmap_populated_tessellation",
+            "fields": [
+              "h3_id",
+              "population_2"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-populated-tessellation",
+            "name": "Popolazione_Hex_Cells",
+            "datasetId": "qmap_populated_tessellation",
+            "datasetName": "Popolazione_Hex_Cells",
+            "datasetRef": "id:qmap_populated_tessellation",
+            "type": "geojson",
+            "activeFields": [
+              "population_2"
+            ],
+            "tooltipFields": [
+              "population_2"
+            ],
+            "availableFields": [
+              "h3_id",
+              "population_2"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Popolazione_Hex_Cells\" using field \"population_2\". Field stats: sampled=120, numeric=120, distinct=114."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_h3_aggregation_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset CLC_h3_agg_r6. Colora le celle H3 sul conteggio pesato.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "aggregateDatasetToH3",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "celle",
+      "h3",
+      "pesato"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "CLC_h3_agg_r6",
+          "fieldName": "count_weighted"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_h3_agg_clc_r6",
+            "name": "CLC_h3_agg_r6",
+            "datasetRef": "id:qmap_h3_agg_clc_r6",
+            "fields": [
+              "h3_id",
+              "h3_resolution",
+              "count",
+              "count_weighted",
+              "sum"
+            ]
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-clc-h3-agg",
+            "name": "CLC_h3_agg_r6",
+            "datasetId": "qmap_h3_agg_clc_r6",
+            "datasetName": "CLC_h3_agg_r6",
+            "datasetRef": "id:qmap_h3_agg_clc_r6",
+            "type": "geojson",
+            "activeFields": [
+              "count_weighted"
+            ],
+            "tooltipFields": [
+              "count_weighted"
+            ],
+            "availableFields": [
+              "h3_id",
+              "h3_resolution",
+              "count",
+              "count_weighted",
+              "sum"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"CLC_h3_agg_r6\" using field \"count_weighted\". Field stats: sampled=140, numeric=140, distinct=118."
+      }
+    }
+  },
+  {
+    "id": "arch_existing_h3_join_metric_reuse_coloring",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 0,
+    "max_tool_calls_by_name": {
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "user_prompt": "In mappa c'e gia il dataset Joined_H3. Colora la griglia sul campo popolazione risultante dal join.",
+    "required_tools_all": [
+      "listQMapDatasets",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "previewQMapDatasetRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "joinQMapDatasetsOnH3",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "griglia",
+      "join",
+      "popolazione"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Joined_H3",
+          "fieldName": "population_2"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_joined_h3",
+            "name": "Joined_H3",
+            "datasetRef": "id:qmap_joined_h3",
+            "fields": [
+              "h3_id",
+              "count_weighted",
+              "population_2"
+            ],
+            "fieldAliases": {
+              "population": "population_2"
+            }
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-joined-h3",
+            "name": "Joined_H3",
+            "datasetId": "qmap_joined_h3",
+            "datasetName": "Joined_H3",
+            "datasetRef": "id:qmap_joined_h3",
+            "type": "geojson",
+            "activeFields": [
+              "count_weighted"
+            ],
+            "tooltipFields": [
+              "population_2"
+            ],
+            "availableFields": [
+              "h3_id",
+              "count_weighted",
+              "population_2"
+            ]
+          }
+        ],
+        "details": "Found 1 datasets in current map."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Joined_H3\" using field \"population_2\". Field stats: sampled=120, numeric=120, distinct=110."
+      }
+    }
+  },
+  {
+    "id": "arch_fit_centering_limitation",
+    "area": "map_ux",
+    "kpi_id": "territorial_focus_centering_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile"
+    ],
+    "user_prompt": "Centra la vista sul layer Admin Boundaries e dimmi chiaramente se riesci davvero a confermare il centraggio della mappa.",
+    "required_tools_all": [
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "centr",
+      "non possibile",
+      "mappa"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "fitQMapToDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "fitQMapToDataset": {
+        "success": false,
+        "details": "Map centering could not be confirmed."
+      }
+    }
+  },
+  {
+    "id": "arch_cloud_map_load_sequence",
+    "area": "backend_reliability",
+    "kpi_id": "cloud_tool_error_handling",
+    "criticality": "critical",
+    "user_prompt": "Carica una mappa dal cloud in modo affidabile: lista mappe, apertura mappa scelta, attesa disponibilita dati e fallback in caso di errore.",
+    "required_tools_any": [
+      "listQMapCloudMaps",
+      "loadQMapCloudMap",
+      "loadCloudMapAndWait"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "cloud",
+      "load",
+      "caricamento"
+    ]
+  },
+  {
+    "id": "arch_cloud_timeout_retry_fallback",
+    "area": "backend_reliability",
+    "kpi_id": "cloud_timeout_recovery",
+    "criticality": "critical",
+    "user_prompt": "Gestisci un caricamento cloud con timeout: prova la mappa primaria, applica retry/fallback su alternativa valida e completa il caricamento in modo affidabile.",
+    "required_tools_all": [
+      "listQMapCloudMaps",
+      "loadCloudMapAndWait"
+    ],
+    "expected_tools_any": [
+      "loadQMapCloudMap",
+      "waitForQMapDataset",
+      "listQMapDatasets",
+      "loadData",
+      "saveDataToMap"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "retry",
+      "fallback",
+      "caricamento"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "loadCloudMapAndWait",
+        "required_keys_all": [
+          "mapId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_cloud_postload_validation",
+    "area": "backend_reliability",
+    "kpi_id": "cloud_recovery_validation",
+    "criticality": "critical",
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "loadCloudMapAndWait",
+      "waitForQMapDataset"
+    ],
+    "user_prompt": "Dopo un caricamento cloud con errore iniziale, valida in modo esplicito la disponibilita del dataset finale prima di confermare il risultato.",
+    "required_tools_all": [
+      "loadCloudMapAndWait",
+      "waitForQMapDataset"
+    ],
+    "expected_tools_any": [
+      "listQMapCloudMaps",
+      "listQMapDatasets",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "dataset",
+      "caricamento",
+      "disponibilita"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "waitForQMapDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_cloud_load_limitation",
+    "area": "backend_reliability",
+    "kpi_id": "retry_fallback_truthfulness",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "expected_response_mode": "limitation",
+    "response_mode_markers_any": [
+      "non e possibile",
+      "non e stato possibile"
+    ],
+    "user_prompt": "Carica la cloud map `cloud-timeout-map` e dimmi chiaramente se il caricamento cloud non puo essere completato.",
+    "required_tools_all": [
+      "loadCloudMapAndWait"
+    ],
+    "expected_tools_any": [
+      "listQMapCloudMaps",
+      "loadQMapCloudMap"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset",
+      "loadData",
+      "saveDataToMap"
+    ],
+    "expected_keywords_any": [
+      "cloud",
+      "caricamento",
+      "non possibile"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "loadCloudMapAndWait",
+        "required_keys_all": [
+          "mapId"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "loadCloudMapAndWait": {
+        "success": false,
+        "details": "Cloud map load timed out after retry; no validated fallback available."
+      }
+    }
+  },
+  {
+    "id": "arch_base_map_services",
+    "area": "map_ux",
+    "kpi_id": "map_navigation_service_reliability",
+    "criticality": "critical",
+    "min_case_score": 0.8,
+    "user_prompt": "Per una missione sul territorio imposta basemap e confini, geocodifica un punto e calcola percorso, isocrona e rete stradale coerenti.",
+    "required_tools_any": [
+      "basemap",
+      "mapBoundary",
+      "geocoding",
+      "routing",
+      "isochrone",
+      "roads"
+    ],
+    "expected_tools_any": [
+      "fitQMapToDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "basemap",
+      "routing",
+      "isochrone"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "basemap",
+        "required_keys_any": [
+          "styleType",
+          "basemap"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_dataset_materialization_filters",
+    "area": "data_pipeline",
+    "kpi_id": "derived_dataset_integrity",
+    "criticality": "standard",
+    "user_prompt": "Partendo da filtri su eventi o territori, crea dataset derivati dai filtri applicati, verifica le righe ottenute e lascia visibile solo il risultato finale.",
+    "required_tools_any": [
+      "createDatasetFromFilter",
+      "createDatasetFromCurrentFilters",
+      "setQMapFieldEqualsFilter"
+    ],
+    "expected_tools_any": [
+      "debugQMapActiveFilters",
+      "countQMapRows",
+      "waitForQMapDataset",
+      "listQMapDatasets",
+      "showOnlyQMapLayer",
+      "listQCumberDatasets",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "loadData"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "filtri",
+      "dataset",
+      "righe"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "createDatasetFromFilter",
+          "createDatasetFromCurrentFilters",
+          "setQMapFieldEqualsFilter"
+        ],
+        "required_keys_all": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_dataset_derivations_numeric",
+    "area": "data_pipeline",
+    "kpi_id": "derived_metric_accuracy",
+    "criticality": "standard",
+    "user_prompt": "Prepara indicatori per analisi territoriale: calcola area geometrica, crea una metrica normalizzata e unisci i dataset in un output unico.",
+    "required_tools_any": [
+      "createDatasetWithGeometryArea",
+      "createDatasetWithNormalizedField",
+      "mergeQMapDatasets"
+    ],
+    "expected_tools_any": [
+      "deriveQMapDatasetBbox",
+      "reprojectQMapDatasetCrs",
+      "drawQMapBoundingBox",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "normalizzazione",
+      "area",
+      "geometrica"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "createDatasetWithGeometryArea",
+          "createDatasetWithNormalizedField",
+          "mergeQMapDatasets"
+        ],
+        "required_keys_any": [
+          "datasetNames"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_data_load_save_bridge",
+    "area": "data_pipeline",
+    "kpi_id": "ingestion_export_bridge",
+    "criticality": "standard",
+    "min_tool_precision": 0.5,
+    "max_extra_tool_calls": 3,
+    "user_prompt": "Importa o salva dati sulla mappa (almeno un passaggio di caricamento/salvataggio), poi verifica che il dataset finale sia disponibile e consistente.",
+    "required_tools_any": [
+      "loadData",
+      "saveDataToMap"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "caricamento",
+      "salvataggio",
+      "dataset"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "loadData",
+          "saveDataToMap"
+        ],
+        "required_keys_any": [
+          "url",
+          "datasetName"
+        ]
+      },
+      {
+        "tool": "waitForQMapDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_record_inspection_and_ranking",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "evidence_based_analysis",
+    "criticality": "standard",
+    "user_prompt": "Per capire i dati disponibili, fai anteprima record (preview), ranking per metrica, ricerca valori e analisi dei valori distinti sui campi principali.",
+    "required_tools_any": [
+      "previewQMapDatasetRows",
+      "rankQMapDatasetRows",
+      "searchQMapFieldValues"
+    ],
+    "expected_tools_any": [
+      "distinctQMapFieldValues",
+      "countQMapRows",
+      "summarizeQMapTimeSeries",
+      "queryQCumberDataset",
+      "listQMapDatasets",
+      "loadData"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "ranking",
+      "preview",
+      "distinct"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "previewQMapDatasetRows",
+          "rankQMapDatasetRows",
+          "searchQMapFieldValues",
+          "distinctQMapFieldValues"
+        ],
+        "required_keys_all": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_chart_tooling",
+    "area": "map_ux",
+    "kpi_id": "chart_tool_selection_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Prepara una vista esplorativa completa per supportare decisioni operative: distribuzioni dei valori, relazioni tra variabili, andamento nel tempo e confronto per categorie/parole chiave.",
+    "required_tools_any": [
+      "histogramTool",
+      "boxplotTool",
+      "bubbleChartTool",
+      "pcpTool",
+      "lineChartTool",
+      "scatterplotTool"
+    ],
+    "expected_tools_any": [
+      "wordCloudTool",
+      "categoryBarsTool",
+      "grammarAnalyzeTool",
+      "listQMapChartTools",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "distribuzioni",
+      "andamento",
+      "categorie"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "histogramTool",
+          "boxplotTool",
+          "bubbleChartTool",
+          "pcpTool",
+          "lineChartTool",
+          "scatterplotTool",
+          "wordCloudTool",
+          "categoryBarsTool"
+        ],
+        "required_keys_all": [
+          "datasetId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_layer_style_sequence",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Rendi leggibile la mappa: imposta tooltip, colore per campo, soglie manuali/statistiche, colore pieno e altezza.",
+    "required_tools_any": [
+      "setQMapTooltipFields",
+      "setQMapLayerColorByField",
+      "setQMapLayerColorByThresholds"
+    ],
+    "expected_tools_any": [
+      "setQMapLayerColorByStatsThresholds",
+      "setQMapLayerSolidColor",
+      "setQMapLayerHeightByField",
+      "applyQMapStylePreset",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "tooltip",
+      "soglie",
+      "altezza"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "setQMapTooltipFields",
+        "required_keys_all": [
+          "datasetName",
+          "fieldNames"
+        ]
+      },
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_layer_visibility_and_order",
+    "area": "map_ux",
+    "kpi_id": "layer_state_consistency",
+    "criticality": "critical",
+    "user_prompt": "Organizza la mappa per presentazione: sistema ordine layer e visibilita, isola il layer finale e centra l'inquadratura.",
+    "required_tools_any": [
+      "setQMapLayerVisibility",
+      "showOnlyQMapLayer",
+      "setQMapLayerOrder"
+    ],
+    "expected_tools_any": [
+      "fitQMapToDataset",
+      "openQMapPanel",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "visibilità",
+      "ordine",
+      "finale"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "setQMapLayerVisibility",
+          "showOnlyQMapLayer",
+          "setQMapLayerOrder"
+        ],
+        "required_keys_any": [
+          "layerNameOrId"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_clip_overlay_cleanup",
+    "area": "geo_processing",
+    "kpi_id": "geometry_operation_precision",
+    "criticality": "critical",
+    "user_prompt": "Confronta due perimetri territoriali, evidenzia aree in comune e aree di differenza, poi ripulisci il risultato geometrico finale.",
+    "eval_prompt": "Dopo aver ottenuto intersezione/differenza e cleanup geometrico, fermati: non usare mergeQMapDatasets se non esplicitamente richiesto.",
+    "required_tools_any": [
+      "clipQMapDatasetByGeometry",
+      "clipDatasetByBoundary",
+      "overlayDifference",
+      "overlayUnion",
+      "overlayIntersection",
+      "overlaySymmetricDifference"
+    ],
+    "expected_tools_any": [
+      "eraseQMapDatasetByGeometry",
+      "dissolveQMapDatasetByField",
+      "simplifyQMapDatasetGeometry",
+      "splitQMapPolygonByLine",
+      "listQMapDatasets",
+      "previewQMapDatasetRows",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "queryQCumberTerritorialUnits",
+      "createDatasetFromFilter",
+      "createDatasetFromCurrentFilters"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "intersezione",
+      "differenza",
+      "ripulizia"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "overlayDifference",
+          "overlayUnion",
+          "overlayIntersection",
+          "overlaySymmetricDifference"
+        ],
+        "required_keys_all": [
+          "datasetAName",
+          "datasetBName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_geometry_topology_resilience",
+    "area": "geo_processing",
+    "kpi_id": "geometry_topology_resilience",
+    "criticality": "standard",
+    "min_case_score": 0.6,
+    "user_prompt": "Su geometrie complesse, esegui pulizia topologica, split/erase dove necessario e verifica che l'output resti coerente (aree valide, niente geometrie spurie).",
+    "required_tools_any": [
+      "simplifyQMapDatasetGeometry",
+      "splitQMapPolygonByLine",
+      "eraseQMapDatasetByGeometry",
+      "dissolveQMapDatasetByField"
+    ],
+    "expected_tools_any": [
+      "overlayUnion",
+      "overlayIntersection",
+      "clipQMapDatasetByGeometry",
+      "countQMapRows",
+      "waitForQMapDataset",
+      "listQMapDatasets",
+      "coverageQualityReport"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "topologica",
+      "pulizia",
+      "spurie"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_spatial_stats_suite",
+    "area": "geo_processing",
+    "kpi_id": "spatial_metric_consistency",
+    "criticality": "critical",
+    "user_prompt": "Sui dataset gia caricati in mappa, valuta impatto per giurisdizione, prossimita ai punti rilevanti, continuita tra aree confinanti e copertura del risultato.",
+    "required_tools_any": [
+      "spatialJoinByPredicate",
+      "zonalStatsByAdmin",
+      "bufferAndSummarize",
+      "nearestFeatureJoin"
+    ],
+    "expected_tools_any": [
+      "adjacencyGraphFromPolygons",
+      "coverageQualityReport",
+      "listQMapDatasets",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "giurisdizione",
+      "prossimita",
+      "copertura"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_h3_generation_and_join",
+    "area": "geo_processing",
+    "kpi_id": "h3_workflow_completion_rate",
+    "criticality": "standard",
+    "user_prompt": "Costruisci una pipeline H3 completa: genera tassellazione da selezione o dataset, aggrega indicatori e unisci i risultati su H3.",
+    "required_tools_any": [
+      "tassellateSelectedGeometry",
+      "tassellateDatasetLayer",
+      "aggregateDatasetToH3",
+      "joinQMapDatasetsOnH3"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "countQMapRows",
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "queryQCumberTerritorialUnits"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "H3",
+      "tessellazione",
+      "aggrega"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "tassellateSelectedGeometry",
+          "tassellateDatasetLayer"
+        ],
+        "required_keys_all": [
+          "resolution"
+        ]
+      },
+      {
+        "tool": "aggregateDatasetToH3",
+        "required_keys_any": [
+          "datasetName"
+        ],
+        "required_keys_all": [
+          "resolution"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_h3_population_flows",
+    "area": "geo_processing",
+    "kpi_id": "h3_population_transfer_accuracy",
+    "criticality": "standard",
+    "user_prompt": "Distribuisci la popolazione su griglia H3 confrontando tre criteri (standard, proporzionale alla superficie, discreto) e verifica la consistenza dell'output finale.",
+    "eval_prompt": "Per questo caso evita queryQCumberDataset generico: usa percorso territoriale/dataset gia disponibili e concentra i passaggi sui tre populate flow.",
+    "required_tools_any": [
+      "populateTassellationFromAdminUnits"
+    ],
+    "expected_tools_any": [
+      "joinQMapDatasetsOnH3",
+      "aggregateDatasetToH3",
+      "tassellateDatasetLayer",
+      "setQMapLayerColorByField",
+      "listQMapDatasets",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "showOnlyQMapLayer",
+      "listQCumberDatasets",
+      "queryQCumberTerritorialUnits"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "popolazione",
+      "proporzionale",
+      "discreto"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "populateTassellationFromAdminUnits"
+        ],
+        "required_keys_all": [
+          "tessellationDatasetName",
+          "sourceDatasetName",
+          "sourceValueField"
+        ]
+      }
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_comuni",
+            "name": "Comuni_Amministrativi",
+            "datasetRef": "id:qmap_comuni",
+            "fields": ["codice_istat", "nome", "popolazione", "_geojson"],
+            "rowCount": 7904
+          },
+          {
+            "id": "qmap_h3_grid",
+            "name": "H3_Grid_Italia",
+            "datasetRef": "id:qmap_h3_grid",
+            "fields": ["h3index", "_geojson"],
+            "rowCount": 12500
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-comuni",
+            "name": "Comuni_Amministrativi",
+            "datasetId": "qmap_comuni",
+            "datasetName": "Comuni_Amministrativi",
+            "datasetRef": "id:qmap_comuni",
+            "type": "geojson",
+            "availableFields": ["codice_istat", "nome", "popolazione", "_geojson"]
+          },
+          {
+            "id": "layer-h3",
+            "name": "H3_Grid_Italia",
+            "datasetId": "qmap_h3_grid",
+            "datasetName": "H3_Grid_Italia",
+            "datasetRef": "id:qmap_h3_grid",
+            "type": "h3",
+            "availableFields": ["h3index", "_geojson"]
+          }
+        ],
+        "details": "Found 2 datasets in current map."
+      },
+      "populateTassellationFromAdminUnits": {
+        "success": true,
+        "dataset": "H3_Grid_Popolazione",
+        "datasetName": "H3_Grid_Popolazione",
+        "datasetRef": "id:qmap_h3_pop",
+        "fieldCatalog": ["h3index", "popolazione", "_geojson"],
+        "numericFields": ["popolazione"],
+        "styleableFields": ["popolazione"],
+        "defaultStyleField": "popolazione",
+        "details": "Population distributed to H3 grid (12500 cells). Total conserved."
+      },
+      "waitForQMapDataset": {
+        "success": true,
+        "dataset": "H3_Grid_Popolazione",
+        "datasetRef": "id:qmap_h3_pop",
+        "details": "Dataset \"H3_Grid_Popolazione\" is available (12500 rows)."
+      },
+      "countQMapRows": {
+        "success": true,
+        "dataset": "H3_Grid_Popolazione",
+        "rowCount": 12500,
+        "details": "Dataset \"H3_Grid_Popolazione\" has 12500 rows."
+      }
+    }
+  },
+  {
+    "id": "arch_h3_paint_editing",
+    "area": "map_ux",
+    "kpi_id": "h3_editing_consistency",
+    "criticality": "critical",
+    "user_prompt": "Correggi manualmente la griglia H3: aggiorna una cella, poi un gruppo di celle, quindi applica una modifica ad anello intorno a un centro.",
+    "required_tools_any": [
+      "paintQMapH3Cell",
+      "paintQMapH3Cells",
+      "paintQMapH3Ring"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "correzione",
+      "cella",
+      "anello"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "paintQMapH3Cell",
+        "required_keys_all": [
+          "lat",
+          "lng"
+        ]
+      },
+      {
+        "tool": "paintQMapH3Cells",
+        "required_keys_all": [
+          "points",
+          "resolution"
+        ]
+      },
+      {
+        "tool": "paintQMapH3Ring",
+        "required_keys_all": [
+          "centerH3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_regulatory_threshold_compliance",
+    "area": "geo_processing",
+    "kpi_id": "regulatory_threshold_compliance",
+    "criticality": "standard",
+    "min_case_score": 0.6,
+    "user_prompt": "Valuta la conformita ai limiti ambientali per giurisdizione, evidenzia i superamenti soglia e ordina le aree piu critiche.",
+    "required_tools_any": [
+      "zonalStatsByAdmin",
+      "setQMapLayerColorByThresholds",
+      "rankQMapDatasetRows",
+      "listQMapDatasets"
+    ],
+    "expected_tools_any": [
+      "coverageQualityReport",
+      "setQMapTooltipFields",
+      "countQMapRows",
+      "waitForQMapDataset",
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "queryQCumberDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "conformita",
+      "limiti",
+      "superamenti"
+    ]
+  },
+  {
+    "id": "arch_multi_perimeter_overlay_consistency",
+    "area": "geo_processing",
+    "kpi_id": "multi_perimeter_overlay_consistency",
+    "criticality": "standard",
+    "min_case_score": 0.6,
+    "user_prompt": "Analizza la coerenza tra perimetri tematici e amministrativi: clipping su boundary, overlay/intersezione e verifica copertura del risultato finale.",
+    "required_tools_any": [
+      "clipDatasetByBoundary",
+      "overlayIntersection",
+      "coverageQualityReport"
+    ],
+    "expected_tools_any": [
+      "clipQMapDatasetByGeometry",
+      "dissolveQMapDatasetByField",
+      "spatialJoinByPredicate",
+      "countQMapRows",
+      "waitForQMapDataset",
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "intersezione",
+      "copertura"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_jurisdiction_exceedance_reporting",
+    "area": "data_pipeline",
+    "kpi_id": "jurisdiction_exceedance_reporting",
+    "criticality": "standard",
+    "min_case_score": 0.6,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows"
+    ],
+    "user_prompt": "Prepara un report operativo per ente: individua giurisdizioni con superamenti, ordina le priorita di intervento e produci un output dati verificabile.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows",
+      "previewQMapDatasetRows"
+    ],
+    "expected_tools_any": [
+      "countQMapRows",
+      "searchQMapFieldValues",
+      "distinctQMapFieldValues",
+      "saveDataToMap",
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "spatialJoinByPredicate",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "giurisdizione",
+      "superamenti",
+      "report"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_territorial_units_level_resolution",
+    "area": "data_pipeline",
+    "kpi_id": "admin_level_resolution_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Ricerca unita territoriali per livello amministrativo (regione, provincia, comune), gestisci eventuali omonimie e conferma il livello corretto nel risultato.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "getQCumberDatasetHelp",
+      "listQCumberProviders",
+      "listQCumberDatasets",
+      "previewQMapDatasetRows",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "livello",
+      "amministrativo",
+      "comune",
+      "omonimie"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "queryQCumberTerritorialUnits",
+        "required_keys_all": [
+          "expectedAdminType"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_territorial_tessellation_multires",
+    "area": "geo_processing",
+    "kpi_id": "territorial_tessellation_multires_consistency",
+    "criticality": "critical",
+    "user_prompt": "Su una unita territoriale amministrativa, esegui tassellazione H3 a risoluzioni diverse (r6, r7, r8) e confronta coerenza/copertura dei risultati.",
+    "required_tools_any": [
+      "tassellateDatasetLayer",
+      "aggregateDatasetToH3"
+    ],
+    "expected_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "listQMapDatasets",
+      "fitQMapToDataset",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "tassellazione",
+      "risoluzione",
+      "r6",
+      "r7",
+      "r8"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tools_any": [
+          "tassellateDatasetLayer",
+          "aggregateDatasetToH3"
+        ],
+        "required_keys_all": [
+          "resolution"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_cross_geometry_clip_stats",
+    "area": "geo_processing",
+    "kpi_id": "cross_geometry_clip_stats_consistency",
+    "criticality": "critical",
+    "user_prompt": "Esegui clip/intersezioni tra livelli diversi (shape e H3) e produci statistiche confrontabili (percentuale area, conteggio elementi, aggregazioni principali).",
+    "required_tools_any": [
+      "clipQMapDatasetByGeometry",
+      "clipDatasetByBoundary",
+      "coverageQualityReport"
+    ],
+    "expected_tools_any": [
+      "spatialJoinByPredicate",
+      "zonalStatsByAdmin",
+      "aggregateDatasetToH3",
+      "joinQMapDatasetsOnH3",
+      "tassellateDatasetLayer",
+      "listQMapDatasets",
+      "countQMapRows",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "clip",
+      "percentuale area",
+      "conteggio",
+      "shape",
+      "h3"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_ranking_direct_derived_metrics",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "ranking_direct_derived_consistency",
+    "criticality": "critical",
+    "user_prompt": "Calcola ranking per proprieta dirette e per metrica derivata/normalizzata, poi confronta i risultati e segnala eventuali differenze o ex-aequo.",
+    "required_tools_any": [
+      "rankQMapDatasetRows",
+      "createDatasetWithNormalizedField"
+    ],
+    "expected_tools_any": [
+      "createDatasetWithGeometryArea",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "previewQMapDatasetRows",
+      "listQMapDatasets"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "ranking",
+      "metrica derivata",
+      "normalizzata",
+      "confronto",
+      "ex-aequo"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "createDatasetWithNormalizedField",
+        "required_keys_all": [
+          "datasetName",
+          "numeratorFieldName",
+          "denominatorFieldName"
+        ]
+      },
+      {
+        "tool": "rankQMapDatasetRows",
+        "required_keys_all": [
+          "datasetName"
+        ],
+        "required_keys_any": [
+          "metricFieldName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_superlative_admin_unit_show_on_map",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "superlative_admin_unit_show_on_map",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows",
+      "createDatasetFromFilter",
+      "fitQMapToDataset"
+    ],
+    "user_prompt": "Mostra il comune piu piccolo della provincia di Treviso e mostrami direttamente il risultato sulla mappa.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows",
+      "createDatasetFromFilter",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "createDatasetWithGeometryArea",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "showOnlyQMapLayer",
+      "setQMapLayerSolidColor"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "comune",
+      "Treviso",
+      "piccolo",
+      "mappa"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "createDatasetFromFilter",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName",
+          "value"
+        ]
+      },
+      {
+        "tool": "fitQMapToDataset",
+        "required_keys_all": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_superlative_admin_unit_show_on_map_companion",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "superlative_admin_unit_show_on_map",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows",
+      "createDatasetFromFilter",
+      "fitQMapToDataset"
+    ],
+    "user_prompt": "Mostra il comune piu piccolo della provincia di Parma e mostrami direttamente il risultato sulla mappa.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "rankQMapDatasetRows",
+      "createDatasetFromFilter",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "createDatasetWithGeometryArea",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "showOnlyQMapLayer",
+      "setQMapLayerSolidColor"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "comune",
+      "piccolo",
+      "provincia",
+      "mappa"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "createDatasetFromFilter",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName",
+          "value"
+        ]
+      },
+      {
+        "tool": "fitQMapToDataset",
+        "required_keys_all": [
+          "datasetName"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_treviso_province_centering",
+    "area": "map_ux",
+    "kpi_id": "territorial_focus_centering_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "user_prompt": "Controlla prima audit: mostra Treviso e centra la mappa.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "showOnlyQMapLayer",
+      "countQMapRows",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Treviso",
+      "mappa"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_treviso_municipalities_population_styling",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "user_prompt": "Mostrami i comuni trevigiani colorati per popolazione da bianco a blu.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "fitQMapToDataset",
+      "showOnlyQMapLayer",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "comuni",
+      "Treviso",
+      "popolazione",
+      "bianco",
+      "blu"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_named_province_centering_companion",
+    "area": "map_ux",
+    "kpi_id": "territorial_focus_centering_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "user_prompt": "Mostra la provincia di Parma e centra la mappa.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "showOnlyQMapLayer",
+      "countQMapRows",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "provincia",
+      "centra",
+      "mappa"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_named_municipalities_population_styling_companion",
+    "area": "map_ux",
+    "kpi_id": "style_application_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "user_prompt": "Mostrami i comuni della provincia di Parma colorati per popolazione da bianco a blu.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "setQMapLayerColorByField"
+    ],
+    "expected_tools_any": [
+      "fitQMapToDataset",
+      "showOnlyQMapLayer",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "comuni",
+      "popolazione",
+      "bianco",
+      "blu"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_named_region_centering_companion",
+    "area": "map_ux",
+    "kpi_id": "territorial_focus_centering_accuracy",
+    "criticality": "critical",
+    "min_case_score": 0.75,
+    "max_extra_tool_calls": 0,
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "user_prompt": "Mostra la regione Piemonte e centra la mappa.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "fitQMapToDataset"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "showOnlyQMapLayer",
+      "countQMapRows",
+      "waitForQMapDataset"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "regione",
+      "centra",
+      "mappa"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_territorial_units_level_resolution_companion",
+    "area": "data_pipeline",
+    "kpi_id": "admin_level_resolution_accuracy",
+    "criticality": "critical",
+    "user_prompt": "Cerca l'entita amministrativa chiamata Salerno, disambigua tra comune e provincia e conferma il livello usato.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "getQCumberDatasetHelp",
+      "listQCumberProviders",
+      "listQCumberDatasets",
+      "previewQMapDatasetRows",
+      "countQMapRows"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Salerno",
+      "livello",
+      "amministrativa",
+      "entita"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "queryQCumberTerritorialUnits",
+        "required_keys_all": [
+          "expectedAdminType"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arch_territorial_tessellation_multires_companion",
+    "area": "geo_processing",
+    "kpi_id": "territorial_tessellation_multires_consistency",
+    "criticality": "critical",
+    "user_prompt": "Sulla provincia di Bari esegui tassellazione H3 a risoluzioni diverse (r6, r7, r8) e confronta coerenza e copertura dei risultati.",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits",
+      "tassellateDatasetLayer",
+      "aggregateDatasetToH3"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "countQMapRows",
+      "listQMapDatasets",
+      "fitQMapToDataset",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Bari",
+      "tassellazione",
+      "r6",
+      "r7",
+      "r8"
+    ],
+    "expected_tool_arguments": []
+  },
+  {
+    "id": "arch_brescia_population_tessellation_no_count_loop",
+    "area": "geo_processing",
+    "kpi_id": "post_create_validation_discipline",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 2,
+    "max_tool_calls_by_name": {
+      "tassellateDatasetLayer": 1,
+      "populateTassellationFromAdminUnits": 1,
+      "waitForQMapDataset": 4,
+      "countQMapRows": 3
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "tassellateDatasetLayer",
+      "populateTassellationFromAdminUnits",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "user_prompt": "Sulla provincia di Brescia crea una tassellazione H3 a risoluzione 7 e colora le celle per popolazione.",
+    "required_tools_all": [
+      "queryQCumberTerritorialUnits",
+      "tassellateDatasetLayer",
+      "populateTassellationFromAdminUnits",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "expected_tools_any": [
+      "setQMapLayerColorByField",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "Brescia",
+      "tassellazione",
+      "popolazione",
+      "celle"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "queryQCumberTerritorialUnits",
+        "required_keys_all": [
+          "expectedAdminType"
+        ]
+      },
+      {
+        "tool": "tassellateDatasetLayer",
+        "required_keys_all": [
+          "resolution"
+        ],
+        "required_key_values": {
+          "resolution": 7
+        }
+      }
+    ]
+  },
+  {
+    "id": "arch_normalized_metric_post_create_validation_no_retry_loop",
+    "area": "geo_processing",
+    "kpi_id": "post_create_validation_discipline",
+    "criticality": "critical",
+    "min_case_score": 0.85,
+    "max_extra_tool_calls": 3,
+    "max_tool_calls_by_name": {
+      "createDatasetWithNormalizedField": 1,
+      "addComputedField": 1,
+      "waitForQMapDataset": 3,
+      "countQMapRows": 2,
+      "setQMapLayerColorByField": 1
+    },
+    "require_grounded_final_answer": true,
+    "grounded_required_tools_all": [
+      "createDatasetWithNormalizedField",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "user_prompt": "Il dataset Comuni_con_Area e gia in mappa. Crea il campo area_per_abitante_m2 e colora i comuni italiani, evitando loop di retry.",
+    "required_tools_all": [
+      "createDatasetWithNormalizedField",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "expected_tools_any": [
+      "setQMapLayerColorByField",
+      "showOnlyQMapLayer"
+    ],
+    "forbidden_tools": [
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial",
+      "genericQuery",
+      "queryDataset"
+    ],
+    "expected_keywords_any": [
+      "comuni",
+      "area_per_abitante_m2",
+      "colora",
+      "italiani"
+    ],
+    "expected_tool_arguments": [
+      {
+        "tool": "createDatasetWithNormalizedField",
+        "required_keys_all": [
+          "datasetName",
+          "numeratorFieldName",
+          "denominatorFieldName",
+          "outputFieldName"
+        ],
+        "required_key_values": {
+          "datasetName": "Comuni_con_Area",
+          "numeratorFieldName": "area_m2",
+          "denominatorFieldName": "population",
+          "outputFieldName": "area_per_abitante_m2"
+        }
+      },
+      {
+        "tool": "waitForQMapDataset",
+        "required_keys_any": [
+          "datasetName"
+        ]
+      },
+      {
+        "tool": "setQMapLayerColorByField",
+        "required_keys_all": [
+          "datasetName",
+          "fieldName"
+        ],
+        "required_key_values": {
+          "fieldName": "area_per_abitante_m2"
+        }
+      }
+    ],
+    "mock_tool_results": {
+      "createDatasetWithNormalizedField": {
+        "success": true,
+        "dataset": "Comuni_Rapporto_Area_Popolazione",
+        "datasetName": "Comuni_Rapporto_Area_Popolazione",
+        "datasetRef": "id:qmap_norm_comuni_rapporto_area_popolazione",
+        "outputFieldName": "area_per_abitante_m2",
+        "fieldCatalog": [
+          "_geojson",
+          "name",
+          "population",
+          "area_m2",
+          "area_per_abitante_m2"
+        ],
+        "numericFields": [
+          "area_per_abitante_m2"
+        ],
+        "styleableFields": [
+          "area_per_abitante_m2"
+        ],
+        "defaultStyleField": "area_per_abitante_m2",
+        "details": "Creating dataset \"Comuni_Rapporto_Area_Popolazione\" with normalized field \"area_per_abitante_m2\"."
+      },
+      "waitForQMapDataset": {
+        "success": true,
+        "dataset": "Comuni_Rapporto_Area_Popolazione",
+        "datasetRef": "id:qmap_norm_comuni_rapporto_area_popolazione",
+        "details": "Dataset \"Comuni_Rapporto_Area_Popolazione\" is available (7901 rows)."
+      },
+      "countQMapRows": {
+        "success": true,
+        "dataset": "Comuni_Rapporto_Area_Popolazione",
+        "details": "Dataset \"Comuni_Rapporto_Area_Popolazione\" has 7901 rows."
+      },
+      "setQMapLayerColorByField": {
+        "success": true,
+        "details": "Applying quantile color scale on layer \"Comuni_Rapporto_Area_Popolazione\" using field \"area_per_abitante_m2\"."
+      }
+    }
+  },
+  {
+    "id": "arch_spatial_autocorrelation_lisa",
+    "area": "geo_processing",
+    "kpi_id": "spatial_autocorrelation_analysis",
+    "criticality": "standard",
+    "user_prompt": "Calcola l'autocorrelazione spaziale sulla popolazione del dataset comuni caricato: voglio vedere l'indice di Moran globale e i cluster locali LISA (HH, LL, HL, LH) sulla mappa.",
+    "required_tools_all": [
+      "computeQMapSpatialAutocorrelation"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "fitQMapToDataset"
+    ],
+    "expected_keywords_any": [
+      "Moran",
+      "autocorrelazione",
+      "cluster",
+      "LISA",
+      "HH",
+      "LL",
+      "spaziale"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_equity_segregation_gini",
+    "area": "geo_processing",
+    "kpi_id": "equity_segregation_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Analizza la disuguaglianza nella distribuzione della popolazione tra i comuni: calcola il coefficiente di Gini, il Theil index e il location quotient per ogni comune.",
+    "required_tools_all": [
+      "computeQMapEquityIndices"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "queryQCumberTerritorialUnits",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "fitQMapToDataset"
+    ],
+    "expected_keywords_any": [
+      "Gini",
+      "Theil",
+      "location quotient",
+      "disuguaglianza",
+      "equità",
+      "concentrazione"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_temporal_trend_analysis",
+    "area": "data_pipeline",
+    "kpi_id": "temporal_trend_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Aggrega i dati di qualità dell'aria per mese e dimmi se c'è un trend crescente o decrescente nel tempo per il campo pm25.",
+    "required_tools_all": [
+      "aggregateQMapTimeSeries"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDatasetSpatial",
+      "queryQCumberDataset",
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_keywords_any": [
+      "trend",
+      "increasing",
+      "decreasing",
+      "stable",
+      "bucket",
+      "mensile",
+      "decrescente",
+      "crescente",
+      "mese"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ],
+    "mock_tool_results": {
+      "listQMapDatasets": {
+        "success": true,
+        "datasets": [
+          {
+            "id": "qmap_qualita_aria",
+            "name": "QualitaAria_Stazioni",
+            "datasetRef": "id:qmap_qualita_aria",
+            "fields": ["stazione_id", "timestamp", "pm25", "pm10", "no2"],
+            "rowCount": 8760
+          }
+        ],
+        "layers": [
+          {
+            "id": "layer-qualita-aria",
+            "name": "QualitaAria_Stazioni",
+            "datasetId": "qmap_qualita_aria",
+            "datasetName": "QualitaAria_Stazioni",
+            "datasetRef": "id:qmap_qualita_aria",
+            "type": "point",
+            "availableFields": ["stazione_id", "timestamp", "pm25", "pm10", "no2"]
+          }
+        ],
+        "details": "Found 1 dataset in current map."
+      },
+      "aggregateQMapTimeSeries": {
+        "success": true,
+        "trend": "decreasing",
+        "buckets": [
+          {"window_start_iso": "2023-01-01T00:00:00Z", "window_end_iso": "2023-01-31T23:59:59Z", "n_observations": 744, "aggregated_value": 28.4},
+          {"window_start_iso": "2023-02-01T00:00:00Z", "window_end_iso": "2023-02-28T23:59:59Z", "n_observations": 672, "aggregated_value": 24.1},
+          {"window_start_iso": "2023-03-01T00:00:00Z", "window_end_iso": "2023-03-31T23:59:59Z", "n_observations": 744, "aggregated_value": 19.7},
+          {"window_start_iso": "2023-04-01T00:00:00Z", "window_end_iso": "2023-04-30T23:59:59Z", "n_observations": 720, "aggregated_value": 17.3},
+          {"window_start_iso": "2023-05-01T00:00:00Z", "window_end_iso": "2023-05-31T23:59:59Z", "n_observations": 744, "aggregated_value": 15.8}
+        ],
+        "details": "Aggregated pm25 by month. Mann-Kendall trend: decreasing (Z=-2.14, p=0.032)."
+      }
+    }
+  },
+  {
+    "id": "arch_bivariate_correlation_lisa",
+    "area": "geo_processing",
+    "kpi_id": "bivariate_correlation_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Calcola la correlazione spaziale bivariata tra reddito medio e tasso di disoccupazione per i comuni: voglio vedere i cluster locali e il Moran bivariato globale.",
+    "required_tools_all": [
+      "computeQMapBivariateCorrelation"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "queryQCumberTerritorialUnits",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "fitQMapToDataset"
+    ],
+    "expected_keywords_any": [
+      "Moran",
+      "bivariata",
+      "bivariate",
+      "cluster",
+      "HH",
+      "LL",
+      "correlazione",
+      "LISA"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_change_detection_delta",
+    "area": "data_pipeline",
+    "kpi_id": "change_detection_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Confronta il dataset dei comuni del 2020 con quello del 2023: mostrami quali comuni hanno avuto un aumento o diminuzione della popolazione e di quanto.",
+    "required_tools_all": [
+      "computeQMapDatasetDelta"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "queryQCumberDatasetSpatial"
+    ],
+    "expected_keywords_any": [
+      "delta",
+      "increased",
+      "decreased",
+      "change_class",
+      "variazione",
+      "aumento",
+      "diminuzione"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_field_statistics",
+    "area": "data_pipeline",
+    "kpi_id": "field_statistics",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Dammi le statistiche descrittive del campo 'population' nel dataset dei comuni: media, mediana, deviazione standard e percentili 5, 25, 75, 95.",
+    "required_tools_any": [
+      "describeQMapField"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets"
+    ],
+    "expected_keywords_any": [
+      "mean",
+      "median",
+      "std",
+      "percentile",
+      "media",
+      "mediana",
+      "deviazione"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_computed_field_ratio",
+    "area": "data_pipeline",
+    "kpi_id": "computed_field",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Crea un campo 'density' che calcola la densità di popolazione come population / area * 1000 per ogni comune e aggiungilo al dataset.",
+    "required_tools_any": [
+      "addComputedField"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "waitForQMapDataset",
+      "countQMapRows"
+    ],
+    "expected_keywords_any": [
+      "density",
+      "densità",
+      "computed",
+      "calcolato",
+      "campo"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_hotspot_analysis",
+    "area": "geo_processing",
+    "kpi_id": "hotspot_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Esegui un'analisi hotspot (Getis-Ord Gi*) sul campo reddito_medio per identificare i comuni con concentrazioni significativamente alte o basse.",
+    "required_tools_any": [
+      "computeQMapHotspotAnalysis"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberTerritorialUnits",
+      "queryQCumberDataset",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "fitQMapToDataset"
+    ],
+    "expected_keywords_any": [
+      "hotspot",
+      "Getis",
+      "Gi*",
+      "HH",
+      "LL",
+      "cluster",
+      "significativo"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_composite_index",
+    "area": "geo_processing",
+    "kpi_id": "composite_index_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Crea un indice composito di vulnerabilità ambientale combinando tre campi: pm10 (peso 0.5, più alto = peggio), verde_pro_capite (peso 0.3, più basso = peggio) e reddito_medio (peso 0.2, più basso = peggio). Normalizza il risultato tra 0 e 1 e mostralo sulla mappa.",
+    "required_tools_all": [
+      "computeQMapCompositeIndex"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDataset",
+      "queryQCumberTerritorialUnits",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "setQMapLayerColorByField",
+      "fitQMapToDataset"
+    ],
+    "expected_keywords_any": [
+      "composite",
+      "composito",
+      "vulnerabilità",
+      "ponderato",
+      "normalizzato",
+      "score"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_data_quality_report",
+    "area": "geo_processing",
+    "kpi_id": "data_quality_audit",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Prima di eseguire l'analisi LISA sul dataset comuni, verifica la qualità dei dati: dammi la percentuale di valori nulli e il numero di outlier per i campi numerici principali.",
+    "required_tools_any": [
+      "computeQMapDataQualityReport"
+    ],
+    "expected_keywords_any": [
+      "qualità",
+      "null",
+      "outlier",
+      "report",
+      "mancanti",
+      "quality",
+      "nulli"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_linear_regression",
+    "area": "data_pipeline",
+    "kpi_id": "linear_regression_analysis",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Esegui una regressione lineare tra popolazione (X) e altitudine (Y) per le stazioni di monitoraggio e dimmi se c'è una relazione significativa.",
+    "required_tools_any": [
+      "regressQMapFields"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDatasetSpatial"
+    ],
+    "expected_keywords_any": [
+      "slope",
+      "intercept",
+      "R²",
+      "r2",
+      "regressione",
+      "pendenza",
+      "equazione"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_natural_break_classification",
+    "area": "data_pipeline",
+    "kpi_id": "natural_break_classification",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Classifica i comuni del Veneto per popolazione in 5 gruppi naturali e mostra il risultato sulla mappa.",
+    "required_tools_any": [
+      "classifyQMapFieldBreaks"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "queryQCumberTerritorialUnits",
+      "waitForQMapDataset",
+      "countQMapRows",
+      "setQMapLayerColorByField"
+    ],
+    "expected_keywords_any": [
+      "classe",
+      "class",
+      "break",
+      "gruppo",
+      "classificazione",
+      "naturali",
+      "Ckmeans",
+      "Jenks"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_field_correlation_matrix",
+    "area": "data_pipeline",
+    "kpi_id": "field_correlation_matrix",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Calcola la correlazione tra i campi numerici population e lv nel dataset dei confini amministrativi. Dimmi quali coppie sono fortemente correlate.",
+    "required_tools_any": [
+      "correlateQMapFields"
+    ],
+    "expected_tools_any": [
+      "listQMapDatasets",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp"
+    ],
+    "expected_keywords_any": [
+      "correlazione",
+      "correlation",
+      "Pearson",
+      "forte",
+      "strong",
+      "moderate",
+      "debole",
+      "r ="
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_population_exposure_assessment",
+    "area": "data_pipeline",
+    "kpi_id": "population_exposure_assessment",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Stima quante persone sono esposte all'inquinamento da PM10 nelle vicinanze delle stazioni di monitoraggio. Usa un raggio di 10 km e verifica anche la conformità normativa.",
+    "required_tools_any": [
+      "assessPopulationExposure"
+    ],
+    "expected_tools_any": [
+      "queryQCumberDatasetSpatial",
+      "queryQCumberTerritorialUnits",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp"
+    ],
+    "expected_keywords_any": [
+      "esposizione",
+      "exposure",
+      "popolazione",
+      "population",
+      "raggio",
+      "km",
+      "stazioni"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_spatial_interpolation_idw",
+    "area": "data_pipeline",
+    "kpi_id": "spatial_interpolation_idw",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Interpola spazialmente i valori di PM10 dalle stazioni di monitoraggio su una griglia H3 a risoluzione 5 per ottenere una superficie continua di stima dell'inquinamento.",
+    "required_tools_any": [
+      "interpolateIDW"
+    ],
+    "expected_tools_any": [
+      "queryQCumberDatasetSpatial",
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "waitForQMapDataset"
+    ],
+    "expected_keywords_any": [
+      "interpolazione",
+      "interpolat",
+      "IDW",
+      "superficie",
+      "griglia",
+      "H3",
+      "continua"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_regulatory_compliance_check",
+    "area": "data_pipeline",
+    "kpi_id": "regulatory_compliance_check",
+    "criticality": "standard",
+    "min_tool_precision": 0.25,
+    "user_prompt": "Carica le misurazioni PM10 e verifica quali stazioni superano i limiti di legge del D.Lgs. 155/2010.",
+    "required_tools_any": [
+      "checkRegulatoryCompliance"
+    ],
+    "expected_tools_any": [
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
+      "queryQCumberDatasetSpatial",
+      "listRegulatoryThresholds"
+    ],
+    "expected_keywords_any": [
+      "superamento",
+      "exceedance",
+      "limite",
+      "conforme",
+      "compliant",
+      "155/2010",
+      "µg/m³",
+      "50"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_regulatory_thresholds_listing",
+    "area": "data_pipeline",
+    "kpi_id": "regulatory_compliance_check",
+    "criticality": "standard",
+    "min_tool_precision": 0.5,
+    "user_prompt": "Quali sono i limiti di legge per la qualità dell'aria in Italia? Elenca le soglie normative per tutti gli inquinanti.",
+    "required_tools_any": [
+      "listRegulatoryThresholds"
+    ],
+    "expected_keywords_any": [
+      "PM10",
+      "NO2",
+      "155/2010",
+      "annuale",
+      "giornaliero",
+      "µg/m³",
+      "limite"
+    ],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset"
+    ]
+  },
+  {
+    "id": "arch_comuni_provincia_population_coloring",
+    "area": "ai_tool_orchestration",
+    "kpi_id": "deterministic_discovery_routing",
+    "criticality": "standard",
+    "user_prompt": "Mostrami i comuni della provincia di Mantova e colorali per popolazione",
+    "required_tools_any": [
+      "queryQCumberTerritorialUnits"
+    ],
+    "expected_tools_any": [
+      "waitForQMapDataset",
+      "setQMapLayerColorByField",
+      "fitQMapToDataset",
+      "showOnlyQMapLayer",
+      "countQMapRows"
+    ],
+    "forbidden_tools": ["genericQuery", "queryDataset", "filterDataset"],
+    "expected_keywords_any": ["comuni", "Mantova", "popolazione"],
+    "expected_tool_arguments": [
+      {
+        "tool": "queryQCumberTerritorialUnits",
+        "required_keys_all": ["expectedAdminType"]
+      }
+    ]
+  }
+]

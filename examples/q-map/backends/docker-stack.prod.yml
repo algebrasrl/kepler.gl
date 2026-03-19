@@ -1,0 +1,262 @@
+x-deploy-defaults: &deploy_defaults
+  restart_policy:
+    condition: on-failure
+    delay: 5s
+    max_attempts: 10
+    window: 120s
+  update_config:
+    parallelism: 1
+    delay: 10s
+    order: start-first
+    failure_action: rollback
+  rollback_config:
+    parallelism: 1
+    delay: 5s
+    order: stop-first
+
+networks:
+  qmap_backend:
+    driver: overlay
+    attachable: true
+
+volumes:
+  qmap_postgis_data:
+  qmap_qstorage_data:
+  qmap_assistant_audit:
+
+configs:
+  kong_config:
+    file: ./kong/kong.yml
+
+secrets:
+  q_assistant_api_key:
+    external: true
+    name: ${QMAP_SECRET_Q_ASSISTANT_API_KEY:-qmap_q_assistant_api_key}
+  openrouter_api_key:
+    external: true
+    name: ${QMAP_SECRET_OPENROUTER_API_KEY:-qmap_openrouter_api_key}
+  openai_api_key:
+    external: true
+    name: ${QMAP_SECRET_OPENAI_API_KEY:-qmap_openai_api_key}
+  qcumber_backend_token:
+    external: true
+    name: ${QMAP_SECRET_QCUMBER_BACKEND_TOKEN:-qmap_qcumber_backend_token}
+  qstorage_api_token:
+    external: true
+    name: ${QMAP_SECRET_QSTORAGE_API_TOKEN:-qmap_qstorage_api_token}
+
+services:
+  q-cumber-postgis:
+    image: ${QMAP_IMAGE_QCUMBER_POSTGIS:-qmap/q-cumber-postgis:latest}
+    environment:
+      POSTGRES_DB: ${QCUMBER_POSTGIS_DB:-qvt}
+      POSTGRES_USER: ${QCUMBER_POSTGIS_USER:-qvt}
+      POSTGRES_PASSWORD: ${QCUMBER_POSTGIS_PASSWORD:-qvt}
+    volumes:
+      - qmap_postgis_data:/var/lib/postgresql/data
+      - type: bind
+        source: ./q-cumber-postgis/dumps
+        target: /dumps
+        read_only: true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${QCUMBER_POSTGIS_USER:-qvt} -d ${QCUMBER_POSTGIS_DB:-qvt}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - qmap_backend
+    deploy:
+      <<: *deploy_defaults
+      replicas: ${QMAP_REPLICAS_QCUMBER_POSTGIS:-1}
+      placement:
+        constraints:
+          - ${QMAP_SWARM_DATA_CONSTRAINT:-node.role == manager}
+
+  q-cumber-backend:
+    image: ${QMAP_IMAGE_QCUMBER_BACKEND:-qmap/q-cumber-backend:latest}
+    user: "${QMAP_DOCKER_UID:-1000}:${QMAP_DOCKER_GID:-1000}"
+    command:
+      - /bin/sh
+      - -lc
+      - |
+        export QCUMBER_BACKEND_TOKEN="$${QCUMBER_BACKEND_TOKEN:-$$(cat /run/secrets/qcumber_backend_token 2>/dev/null || true)}";
+        exec qmap-qcumber-cloud
+    environment:
+      QCUMBER_JWT_AUTH_ENABLED: ${QCUMBER_JWT_AUTH_ENABLED:-false}
+      QCUMBER_JWT_HS256_SECRETS: ${QCUMBER_JWT_HS256_SECRETS:-}
+      QCUMBER_JWT_ALLOWED_ISSUERS: ${QCUMBER_JWT_ALLOWED_ISSUERS:-}
+      QCUMBER_JWT_ALLOWED_AUDIENCES: ${QCUMBER_JWT_ALLOWED_AUDIENCES:-}
+      QCUMBER_JWT_REQUIRE_AUDIENCE: ${QCUMBER_JWT_REQUIRE_AUDIENCE:-false}
+      QCUMBER_JWT_ROLES_CLAIM_PATHS: ${QCUMBER_JWT_ROLES_CLAIM_PATHS:-roles,realm_access.roles,resource_access.q-map.roles}
+      QCUMBER_JWT_ALLOWED_SUBJECTS: ${QCUMBER_JWT_ALLOWED_SUBJECTS:-}
+      QCUMBER_JWT_READ_ROLES: ${QCUMBER_JWT_READ_ROLES:-}
+      QCUMBER_USER_NAME: ${QCUMBER_USER_NAME:-Q-cumber User}
+      QCUMBER_USER_EMAIL: ${QCUMBER_USER_EMAIL:-qcumber@example.com}
+      QCUMBER_DATA_DIR: /data
+      QCUMBER_PROVIDERS_DIR: /app/provider-descriptors
+      QCUMBER_CORS_ORIGINS: ${QMAP_UI_ORIGINS:-https://map.example.com}
+      QCUMBER_POSTGIS_DSN: ${QCUMBER_POSTGIS_DSN:-}
+      QCUMBER_POSTGIS_HOST: ${QCUMBER_POSTGIS_HOST:-q-cumber-postgis}
+      QCUMBER_POSTGIS_PORT: ${QCUMBER_POSTGIS_PORT:-5432}
+      QCUMBER_POSTGIS_DB: ${QCUMBER_POSTGIS_DB:-qvt}
+      QCUMBER_POSTGIS_USER: ${QCUMBER_POSTGIS_USER:-qvt}
+      QCUMBER_POSTGIS_PASSWORD: ${QCUMBER_POSTGIS_PASSWORD:-qvt}
+      QCUMBER_UPSTREAM_TOKEN: ${QCUMBER_UPSTREAM_TOKEN:-}
+      QCUMBER_GEOAPI_KEY: ${QCUMBER_GEOAPI_KEY:-}
+    secrets:
+      - qcumber_backend_token
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3001/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - qmap_backend
+    deploy:
+      <<: *deploy_defaults
+      replicas: ${QMAP_REPLICAS_QCUMBER_BACKEND:-1}
+
+  q-storage-backend:
+    image: ${QMAP_IMAGE_QSTORAGE_BACKEND:-qmap/q-storage-backend:latest}
+    user: "${QMAP_DOCKER_UID:-1000}:${QMAP_DOCKER_GID:-1000}"
+    command:
+      - /bin/sh
+      - -lc
+      - |
+        export QSTORAGE_API_TOKEN="$${QSTORAGE_API_TOKEN:-$$(cat /run/secrets/qstorage_api_token 2>/dev/null || true)}";
+        exec qmap-qstorage-cloud
+    environment:
+      QSTORAGE_JWT_AUTH_ENABLED: ${QSTORAGE_JWT_AUTH_ENABLED:-false}
+      QSTORAGE_JWT_HS256_SECRETS: ${QSTORAGE_JWT_HS256_SECRETS:-}
+      QSTORAGE_JWT_ALLOWED_ISSUERS: ${QSTORAGE_JWT_ALLOWED_ISSUERS:-}
+      QSTORAGE_JWT_ALLOWED_AUDIENCES: ${QSTORAGE_JWT_ALLOWED_AUDIENCES:-}
+      QSTORAGE_JWT_REQUIRE_AUDIENCE: ${QSTORAGE_JWT_REQUIRE_AUDIENCE:-false}
+      QSTORAGE_JWT_ROLES_CLAIM_PATHS: ${QSTORAGE_JWT_ROLES_CLAIM_PATHS:-roles,realm_access.roles,resource_access.q-map.roles}
+      QSTORAGE_JWT_ALLOWED_SUBJECTS: ${QSTORAGE_JWT_ALLOWED_SUBJECTS:-}
+      QSTORAGE_JWT_READ_ROLES: ${QSTORAGE_JWT_READ_ROLES:-}
+      QSTORAGE_JWT_WRITE_ROLES: ${QSTORAGE_JWT_WRITE_ROLES:-qmap-editor,qmap-admin}
+      QSTORAGE_TOKEN_USERS_JSON: ${QSTORAGE_TOKEN_USERS_JSON:-}
+      QSTORAGE_USER_ID: ${QSTORAGE_USER_ID:-local-user}
+      QSTORAGE_USER_NAME: ${QSTORAGE_USER_NAME:-Q-storage User}
+      QSTORAGE_USER_EMAIL: ${QSTORAGE_USER_EMAIL:-qstorage@example.com}
+      QSTORAGE_USER_REGISTERED_AT: ${QSTORAGE_USER_REGISTERED_AT:-2026-01-01}
+      QSTORAGE_USER_COUNTRY: ${QSTORAGE_USER_COUNTRY:-IT}
+      QSTORAGE_DATA_DIR: /data
+      QSTORAGE_PORT: 3005
+      QSTORAGE_CORS_ORIGINS: ${QMAP_UI_ORIGINS:-https://map.example.com}
+    volumes:
+      - qmap_qstorage_data:/data
+    secrets:
+      - qstorage_api_token
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3005/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - qmap_backend
+    deploy:
+      <<: *deploy_defaults
+      replicas: ${QMAP_REPLICAS_QSTORAGE_BACKEND:-1}
+      placement:
+        constraints:
+          - ${QMAP_SWARM_DATA_CONSTRAINT:-node.role == manager}
+
+  q-assistant:
+    image: ${QMAP_IMAGE_QASSISTANT:-qmap/q-assistant:latest}
+    user: "${QMAP_DOCKER_UID:-1000}:${QMAP_DOCKER_GID:-1000}"
+    command:
+      - /bin/sh
+      - -lc
+      - |
+        export Q_ASSISTANT_API_KEY="$${Q_ASSISTANT_API_KEY:-$$(cat /run/secrets/q_assistant_api_key 2>/dev/null || true)}";
+        export OPENROUTER_API_KEY="$${OPENROUTER_API_KEY:-$$(cat /run/secrets/openrouter_api_key 2>/dev/null || true)}";
+        export OPENAI_API_KEY="$${OPENAI_API_KEY:-$$(cat /run/secrets/openai_api_key 2>/dev/null || true)}";
+        exec q-assistant
+    environment:
+      Q_ASSISTANT_HOST: 0.0.0.0
+      Q_ASSISTANT_PORT: 3004
+      Q_ASSISTANT_CORS_ORIGINS: ${QMAP_UI_ORIGINS:-https://map.example.com}
+      Q_ASSISTANT_PROVIDER: ${Q_ASSISTANT_PROVIDER:-openrouter}
+      Q_ASSISTANT_MODEL: ${Q_ASSISTANT_MODEL:-google/gemini-3-flash-preview}
+      Q_ASSISTANT_BASE_URL: ${Q_ASSISTANT_BASE_URL:-https://openrouter.ai/api/v1}
+      Q_ASSISTANT_AGENT_CHAIN: ${Q_ASSISTANT_AGENT_CHAIN:-}
+      OPENROUTER_HTTP_REFERER: ${OPENROUTER_HTTP_REFERER:-}
+      OPENROUTER_X_TITLE: ${OPENROUTER_X_TITLE:-}
+      Q_ASSISTANT_TIMEOUT: ${Q_ASSISTANT_TIMEOUT:-45}
+      Q_ASSISTANT_UPSTREAM_RETRY_ATTEMPTS: ${Q_ASSISTANT_UPSTREAM_RETRY_ATTEMPTS:-2}
+      Q_ASSISTANT_UPSTREAM_RETRY_BASE_DELAY: ${Q_ASSISTANT_UPSTREAM_RETRY_BASE_DELAY:-1.0}
+      Q_ASSISTANT_UPSTREAM_RETRY_MAX_DELAY: ${Q_ASSISTANT_UPSTREAM_RETRY_MAX_DELAY:-8}
+      Q_ASSISTANT_UPSTREAM_RETRY_JITTER_RATIO: ${Q_ASSISTANT_UPSTREAM_RETRY_JITTER_RATIO:-0.2}
+      Q_ASSISTANT_UPSTREAM_RETRY_TIMEOUT_INCREMENT: ${Q_ASSISTANT_UPSTREAM_RETRY_TIMEOUT_INCREMENT:-5}
+      Q_ASSISTANT_QCUMBER_CLOUD_API_BASE: ${Q_ASSISTANT_QCUMBER_CLOUD_API_BASE:-http://q-cumber-backend:3001}
+      Q_ASSISTANT_QCUMBER_CLOUD_TOKEN: ${Q_ASSISTANT_QCUMBER_CLOUD_TOKEN:-}
+      Q_ASSISTANT_QCUMBER_CLOUD_TIMEOUT: ${Q_ASSISTANT_QCUMBER_CLOUD_TIMEOUT:-20}
+      Q_ASSISTANT_QSTORAGE_CLOUD_API_BASE: ${Q_ASSISTANT_QSTORAGE_CLOUD_API_BASE:-http://q-storage-backend:3005}
+      Q_ASSISTANT_QSTORAGE_CLOUD_TOKEN: ${Q_ASSISTANT_QSTORAGE_CLOUD_TOKEN:-}
+      Q_ASSISTANT_QSTORAGE_CLOUD_TIMEOUT: ${Q_ASSISTANT_QSTORAGE_CLOUD_TIMEOUT:-20}
+      Q_ASSISTANT_PROFILE_NAME: ${Q_ASSISTANT_PROFILE_NAME:-Q-hive User}
+      Q_ASSISTANT_PROFILE_EMAIL: ${Q_ASSISTANT_PROFILE_EMAIL:-user@q-hive.local}
+      Q_ASSISTANT_PROFILE_REGISTERED_AT: ${Q_ASSISTANT_PROFILE_REGISTERED_AT:-2025-01-01}
+      Q_ASSISTANT_PROFILE_COUNTRY: ${Q_ASSISTANT_PROFILE_COUNTRY:-IT}
+      Q_ASSISTANT_CHAT_AUDIT_ENABLED: ${Q_ASSISTANT_CHAT_AUDIT_ENABLED:-true}
+      Q_ASSISTANT_CHAT_AUDIT_LOG_PATH: /var/log/q-assistant/chat-audit
+      Q_ASSISTANT_CHAT_AUDIT_MAX_CHARS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_CHARS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_MAX_LIST_ITEMS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_LIST_ITEMS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_MAX_STRING_CHARS: ${Q_ASSISTANT_CHAT_AUDIT_MAX_STRING_CHARS:-0}
+      Q_ASSISTANT_CHAT_AUDIT_INCLUDE_PAYLOADS: ${Q_ASSISTANT_CHAT_AUDIT_INCLUDE_PAYLOADS:-true}
+      Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT: ${Q_ASSISTANT_CHAT_AUDIT_INCLUDE_CONTEXT:-false}
+      Q_ASSISTANT_CHAT_AUDIT_STDOUT_ENABLED: ${Q_ASSISTANT_CHAT_AUDIT_STDOUT_ENABLED:-false}
+    volumes:
+      - qmap_assistant_audit:/var/log/q-assistant
+    secrets:
+      - q_assistant_api_key
+      - openrouter_api_key
+      - openai_api_key
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3004/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - qmap_backend
+    deploy:
+      <<: *deploy_defaults
+      replicas: ${QMAP_REPLICAS_QASSISTANT:-1}
+
+  kong:
+    image: ${QMAP_IMAGE_KONG:-kong:3.9}
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_LOG_LEVEL: ${KONG_LOG_LEVEL:-notice}
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    configs:
+      - source: kong_config
+        target: /kong/declarative/kong.yml
+        mode: 0444
+    ports:
+      - target: 8000
+        published: ${KONG_PROXY_PORT:-8000}
+        protocol: tcp
+        mode: ingress
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks:
+      - qmap_backend
+    deploy:
+      <<: *deploy_defaults
+      replicas: ${QMAP_REPLICAS_KONG:-1}

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import styled from 'styled-components';
 import classnames from 'classnames';
 import geocoderService from '@mapbox/mapbox-sdk/services/geocoding';
 import {injectIntl, IntlShape} from 'react-intl';
 import {WebMercatorViewport} from 'viewport-mercator-project';
 import {KeyEvent} from '@kepler.gl/constants';
-import {Input} from '../common/styled-components';
+import {Input, MapControlButton} from '../common/styled-components';
 import {Search, Delete} from '../common/icons';
 import {Viewport} from '@kepler.gl/types';
 import {isTest} from '@kepler.gl/utils';
@@ -51,23 +51,28 @@ export const testForCoordinates = (query: string): [true, number, number] | [fal
 const StyledContainer = styled.div<StyledContainerProps>`
   position: relative;
   color: ${props => props.theme.textColor};
+  display: flex;
+  justify-content: flex-end;
+
+  .geocoder-shell {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .geocoder-input-panel {
+    position: relative;
+    width: ${props => (Number.isFinite(props.width) ? props.width : props.theme.geocoderWidth)}px;
+  }
 
   .geocoder-input {
+    position: relative;
     box-shadow: ${props => props.theme.boxShadow};
 
-    .geocoder-input__search {
-      position: absolute;
-      height: ${props => props.theme.geocoderInputHeight}px;
-      width: 30px;
-      padding-left: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${props => props.theme.subtextColor};
-    }
-
     input {
-      padding: 4px 36px;
+      width: 100%;
+      padding: 4px 36px 4px 10px;
       height: ${props => props.theme.geocoderInputHeight}px;
       caret-color: unset;
     }
@@ -77,7 +82,8 @@ const StyledContainer = styled.div<StyledContainerProps>`
     box-shadow: ${props => props.theme.boxShadow};
     background-color: ${props => props.theme.panelBackground};
     position: absolute;
-    width: ${props => (Number.isFinite(props.width) ? props.width : props.theme.geocoderWidth)}px;
+    width: 100%;
+    right: 0;
     margin-top: ${props => props.theme.dropdownWapperMargin}px;
   }
 
@@ -92,7 +98,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
 
   .remove-result {
     position: absolute;
-    right: 16px;
+    right: 12px;
     top: 0px;
     height: ${props => props.theme.geocoderInputHeight}px;
     display: flex;
@@ -152,6 +158,9 @@ const GeoCoder: React.FC<GeocoderProps & IntlProps> = ({
   const initialResults: Result[] = [];
   const [results, setResults] = useState(initialResults);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const client = useMemo(
     () => (isTest() ? null : geocoderService({accessToken: mapboxApiAccessToken})),
@@ -226,6 +235,7 @@ const GeoCoder: React.FC<GeocoderProps & IntlProps> = ({
       setShowResults(false);
       setInputValue(formatItem(item));
       setShowDelete(true);
+      setIsOpen(false);
     },
     [viewport, onSelected, transitionDuration, pointZoom, formatItem]
   );
@@ -233,6 +243,8 @@ const GeoCoder: React.FC<GeocoderProps & IntlProps> = ({
   const onMarkDeleted = useCallback(() => {
     setShowDelete(false);
     setInputValue('');
+    setShowResults(false);
+    setIsOpen(false);
     onDeleteMarker?.();
   }, [onDeleteMarker]);
 
@@ -254,6 +266,10 @@ const GeoCoder: React.FC<GeocoderProps & IntlProps> = ({
             onItemSelected(results[selectedIndex]);
           }
           break;
+        case KeyEvent.DOM_VK_ESCAPE:
+          setShowResults(false);
+          setIsOpen(false);
+          break;
         default:
           break;
       }
@@ -261,45 +277,94 @@ const GeoCoder: React.FC<GeocoderProps & IntlProps> = ({
     [results, selectedIndex, setSelectedIndex, onItemSelected]
   );
 
+  const onToggle = useCallback(() => {
+    setIsOpen(previous => !previous);
+    setShowResults(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    inputRef.current?.focus();
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const onPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) {
+        return;
+      }
+      if (containerRef.current?.contains(target)) {
+        return;
+      }
+      setShowResults(false);
+      setIsOpen(false);
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+    };
+  }, [isOpen]);
+
   return (
-    <StyledContainer className={className} width={width}>
-      <div className="geocoder-input">
-        <div className="geocoder-input__search">
-          <Search height="20px" />
-        </div>
-        <Input
-          type="text"
-          onChange={onChange}
-          onBlur={onBlur}
-          onFocus={onFocus}
-          onKeyDown={onKeyDown}
-          value={inputValue}
-          placeholder={
-            intl
-              ? intl.formatMessage({id: 'geocoder.title', defaultMessage: PLACEHOLDER})
-              : PLACEHOLDER
-          }
-        />
-        {showDelete ? (
-          <div className="remove-result">
-            <Delete height="16px" onClick={onMarkDeleted} />
+    <StyledContainer className={className} width={width} ref={containerRef}>
+      <div className="geocoder-shell">
+        {isOpen ? (
+          <div className="geocoder-input-panel">
+            <div className="geocoder-input">
+              <Input
+                ref={inputRef}
+                type="text"
+                onChange={onChange}
+                onBlur={onBlur}
+                onFocus={onFocus}
+                onKeyDown={onKeyDown}
+                value={inputValue}
+                placeholder={
+                  intl
+                    ? intl.formatMessage({id: 'geocoder.title', defaultMessage: PLACEHOLDER})
+                    : PLACEHOLDER
+                }
+              />
+              {showDelete ? (
+                <div className="remove-result">
+                  <Delete height="16px" onClick={onMarkDeleted} />
+                </div>
+              ) : null}
+            </div>
+
+            {showResults ? (
+              <div className="geocoder-results">
+                {results.map((item, index) => (
+                  <div
+                    key={index}
+                    className={classnames('geocoder-item', {active: selectedIndex === index})}
+                    onClick={() => onItemSelected(item)}
+                  >
+                    {formatItem(item)}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
         ) : null}
-      </div>
 
-      {showResults ? (
-        <div className="geocoder-results">
-          {results.map((item, index) => (
-            <div
-              key={index}
-              className={classnames('geocoder-item', {active: selectedIndex === index})}
-              onClick={() => onItemSelected(item)}
-            >
-              {formatItem(item)}
-            </div>
-          ))}
-        </div>
-      ) : null}
+        <MapControlButton
+          className={classnames('geocoder-toggle', {active: isOpen})}
+          active={isOpen}
+          onClick={onToggle}
+          title={intl ? intl.formatMessage({id: 'geocoder.title', defaultMessage: PLACEHOLDER}) : PLACEHOLDER}
+          aria-label={intl ? intl.formatMessage({id: 'geocoder.title', defaultMessage: PLACEHOLDER}) : PLACEHOLDER}
+        >
+          <Search height="18px" />
+        </MapControlButton>
+      </div>
     </StyledContainer>
   );
 };

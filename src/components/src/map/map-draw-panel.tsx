@@ -5,7 +5,15 @@ import React, {useCallback} from 'react';
 import classnames from 'classnames';
 
 import {EDITOR_MODES} from '@kepler.gl/constants';
-import {CursorClick, DrawPolygon, EyeSeen, EyeUnseen, Polygon, Rectangle} from '../common/icons';
+import {
+  CursorClick,
+  DrawPolygon,
+  EyeSeen,
+  EyeUnseen,
+  Polygon,
+  Rectangle,
+  Crosshairs
+} from '../common/icons';
 import {MapControlButton} from '../common/styled-components';
 import ToolbarItem from '../common/toolbar-item';
 import MapControlTooltipFactory from './map-control-tooltip';
@@ -34,7 +42,8 @@ function MapDrawPanelFactory(
     polygon: DrawPolygon,
     cursor: CursorClick,
     innerPolygon: Polygon,
-    rectangle: Rectangle
+    rectangle: Rectangle,
+    circle: Crosshairs
   };
 
   const MapDrawPanel: React.FC<MapDrawPanelProps> = React.memo(
@@ -77,6 +86,13 @@ function MapDrawPanelFactory(
                 label="toolbar.rectangle"
                 icon={actionIcons.rectangle}
                 active={editor.mode === EDITOR_MODES.DRAW_RECTANGLE}
+              />
+              <ToolbarItem
+                className="draw-circle"
+                onClick={() => onSetEditorMode(EDITOR_MODES.DRAW_CIRCLE)}
+                label="toolbar.radius"
+                icon={actionIcons.circle}
+                active={editor.mode === EDITOR_MODES.DRAW_CIRCLE}
               />
             </MapControlToolbar>
           ) : null}

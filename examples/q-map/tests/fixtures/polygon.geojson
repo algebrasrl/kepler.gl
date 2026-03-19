@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "test_polygon"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [5.0, 35.0],
+            [20.0, 35.0],
+            [20.0, 48.5],
+            [5.0, 48.5],
+            [5.0, 35.0]
+          ]
+        ]
+      }
+    }
+  ]
+}

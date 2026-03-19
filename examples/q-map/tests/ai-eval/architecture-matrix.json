@@ -1,0 +1,461 @@
+{
+  "version": 2,
+  "generatedAt": "2026-03-05",
+  "evaluationPolicy": {
+    "runGates": {
+      "min_pass_rate": 0.9,
+      "min_avg_case_score": 0.85,
+      "min_p25_case_score": 0.8,
+      "min_min_case_score": 0.65
+    },
+    "areaDefaults": {
+      "min_pass_rate": 0.8,
+      "min_avg_case_score": 0.75,
+      "min_p25_case_score": 0.65,
+      "min_min_case_score": 0.5
+    },
+    "criticalityDefaults": {
+      "critical": {
+        "min_case_score": 0.75,
+        "min_tool_precision": 0.67,
+        "max_extra_tool_calls": 2
+      },
+      "standard": {
+        "min_case_score": 0.6,
+        "min_tool_precision": 0.33,
+        "max_extra_tool_calls": 4
+      }
+    }
+  },
+  "areas": [
+    {
+      "id": "ai_tool_orchestration",
+      "label": "AI Tool Orchestration",
+      "gates": {
+        "min_pass_rate": 0.85,
+        "min_avg_case_score": 0.8
+      },
+      "kpis": [
+        {
+          "id": "deterministic_discovery_routing",
+          "metric": "Tool routing correctness on discovery/planning turns",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "evidence_based_analysis",
+          "metric": "Use of inspection/ranking tools before analytical claims",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "ranking_direct_derived_consistency",
+          "metric": "Consistency of ranking evidence across direct and derived/calculated metrics",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "superlative_admin_unit_show_on_map",
+          "metric": "Reliable superlative entity identification and direct map focus/highlight completion",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "final_claim_groundedness",
+          "metric": "Final analytical claims stay grounded in successful tool evidence from the same turn",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "ambiguity_escalation_discipline",
+          "metric": "Ambiguous or under-specified requests trigger one concise clarification or limitation instead of speculative routing",
+          "target": ">= 0.85 pass on area cases"
+        }
+      ],
+      "caseIds": [
+        "sample_discovery_catalog",
+        "arch_discovery_inventory",
+        "arch_record_inspection_and_ranking",
+        "arch_ranking_direct_derived_metrics",
+        "arch_superlative_admin_unit_show_on_map",
+        "arch_superlative_admin_unit_show_on_map_companion",
+        "adv_superlative_show_on_map_heldout",
+        "arch_comuni_provincia_population_coloring"
+      ]
+    },
+    {
+      "id": "geo_processing",
+      "label": "Geo Processing",
+      "gates": {
+        "min_pass_rate": 0.85,
+        "min_avg_case_score": 0.78
+      },
+      "kpis": [
+        {
+          "id": "geometry_operation_precision",
+          "metric": "Correct selection of geometry transform tools (clip/overlay/clean)",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "geometry_topology_resilience",
+          "metric": "Resilience of topology-preserving geometry cleanup/split/erase chains on edge-case inputs",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "h3_workflow_completion_rate",
+          "metric": "Completion rate of H3 tessellation/aggregate/join chains",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "h3_population_transfer_accuracy",
+          "metric": "Correct use of populate flows (standard/area-weighted/discrete)",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "spatial_metric_consistency",
+          "metric": "Consistency of spatial stats/coverage diagnostic tool usage",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "regulatory_threshold_compliance",
+          "metric": "Consistency of zonal/regulatory threshold analysis and exceedance evidence",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "multi_perimeter_overlay_consistency",
+          "metric": "Consistency of thematic-jurisdictional perimeter overlay and coverage checks",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "territorial_tessellation_multires_consistency",
+          "metric": "Consistency of territorial H3 tessellation workflows across multiple resolutions",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "cross_geometry_clip_stats_consistency",
+          "metric": "Consistency of clip/intersection statistics across geometry levels (shape/H3)",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "post_create_validation_discipline",
+          "metric": "Dataset-creating workflows validate materialization and non-zero outputs before success claims",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "spatial_autocorrelation_analysis",
+          "metric": "Correct computation of Global Moran's I and Local LISA cluster classification (HH/LL/HL/LH/NS) with 5-color categorical styling",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapSpatialAutocorrelation"]
+        },
+        {
+          "id": "equity_segregation_analysis",
+          "metric": "Correct computation of equity/segregation indices (Gini, Theil T, CR-k, Location Quotient) and optional segregation indices (Dissimilarity D, Isolation xPx, Exposure xPy) with diverging LQ styling",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapEquityIndices"]
+        },
+        {
+          "id": "bivariate_correlation_analysis",
+          "metric": "Correct computation of Pearson r, global bivariate Moran's I, and local bivariate LISA clusters (HH/HL/LH/LL/NS) with 5-color categorical styling on bivariate_cluster field",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapBivariateCorrelation"]
+        },
+        {
+          "id": "hotspot_analysis",
+          "metric": "Correct computation of Getis-Ord Gi* z-scores and p-values with HH/LL/NS cluster classification and LISA 5-color styling on hotspot_class field",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapHotspotAnalysis"]
+        },
+        {
+          "id": "composite_index_analysis",
+          "metric": "Correct multi-field composite score computation with per-component min-max normalization, direction inversion, and weighted sum; output field written to derived dataset",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapCompositeIndex"]
+        },
+        {
+          "id": "data_quality_audit",
+          "metric": "Correct null%, outlier detection (IQR/z-score), and qualityFlag assignment per field; no dataset mutation; used proactively before spatial statistics on unknown datasets",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapDataQualityReport"]
+        }
+      ],
+      "caseIds": [
+        "sample_geo_transform_chain",
+        "sample_h3_pipeline",
+        "arch_clip_overlay_cleanup",
+        "arch_geometry_topology_resilience",
+        "arch_spatial_stats_suite",
+        "arch_h3_generation_and_join",
+        "arch_h3_population_flows",
+        "arch_regulatory_threshold_compliance",
+        "arch_multi_perimeter_overlay_consistency",
+        "arch_territorial_tessellation_multires",
+        "arch_cross_geometry_clip_stats",
+        "arch_territorial_tessellation_multires_companion",
+        "arch_brescia_population_tessellation_no_count_loop",
+        "arch_normalized_metric_post_create_validation_no_retry_loop",
+        "adv_area_weighted_tessellation_validation",
+        "adv_post_create_validation_normalized_no_retry_loop_heldout",
+        "arch_spatial_autocorrelation_lisa",
+        "arch_equity_segregation_gini",
+        "arch_bivariate_correlation_lisa",
+        "arch_hotspot_analysis",
+        "adv_lisa_high_null_field_limitation",
+        "adv_lisa_too_few_features_limitation",
+        "adv_hotspot_invalid_weight_type_fallback",
+        "adv_equity_constant_field_limitation",
+        "arch_composite_index",
+        "arch_data_quality_report"
+      ]
+    },
+    {
+      "id": "data_pipeline",
+      "label": "Data Pipeline",
+      "gates": {
+        "min_pass_rate": 0.85,
+        "min_avg_case_score": 0.78
+      },
+      "kpis": [
+        {
+          "id": "provider_dataset_resolution_accuracy",
+          "metric": "Correct provider/dataset resolution and help routing usage",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "query_intent_alignment",
+          "metric": "Administrative vs thematic query tool alignment",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "derived_dataset_integrity",
+          "metric": "Correct materialization of derived datasets from filters",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "derived_metric_accuracy",
+          "metric": "Correct derivation of normalized and area-based fields",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "ingestion_export_bridge",
+          "metric": "Correct use of load/save bridge tools",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "jurisdiction_exceedance_reporting",
+          "metric": "Traceable exceedance reporting by jurisdiction with verifiable ranked evidence",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "admin_level_resolution_accuracy",
+          "metric": "Accurate territorial-unit retrieval by explicit administrative level with disambiguation",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "catalog_resolution_without_silent_fallback",
+          "metric": "Provider and dataset resolution stays explicit, traceable, and fail-closed when metadata is missing or conflicting",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "temporal_trend_analysis",
+          "metric": "Correct temporal bucketing (hour/day/week/month/year) and Mann-Kendall trend detection (increasing/decreasing/stable) on time-series data",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["aggregateQMapTimeSeries"]
+        },
+        {
+          "id": "change_detection_analysis",
+          "metric": "Correct delta computation (absolute and relative) between two dataset snapshots with change_class classification (new/removed/increased/decreased/stable)",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["computeQMapDatasetDelta"]
+        },
+        {
+          "id": "field_statistics",
+          "metric": "Correct descriptive statistics (count, nullCount, min, max, mean, median, std, skewness, configurable percentiles) for a numeric field",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["describeQMapField"]
+        },
+        {
+          "id": "computed_field",
+          "metric": "Correct per-row expression evaluation (ratio, per-capita, log-transform, normalization) with safe expression validation and derived dataset output",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["addComputedField"]
+        },
+        {
+          "id": "linear_regression_analysis",
+          "metric": "Correct linear regression computation (slope, intercept, R², equation) between two numeric fields with optional derived dataset (predicted + residual columns)",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["regressQMapFields"]
+        },
+        {
+          "id": "natural_break_classification",
+          "metric": "Correct Ckmeans natural-break classification into k classes with break points, class counts, and optional derived dataset with classification field",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["classifyQMapFieldBreaks"]
+        },
+        {
+          "id": "field_correlation_matrix",
+          "metric": "Correct pairwise Pearson correlation computation between 2-10 numeric fields with strength classification (strong/moderate/weak/negligible)",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["correlateQMapFields"]
+        },
+        {
+          "id": "population_exposure_assessment",
+          "metric": "Correct population exposure estimation by joining measurement stations with nearby admin boundaries within configurable radius, with optional regulatory compliance per station",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["assessPopulationExposure"]
+        },
+        {
+          "id": "spatial_interpolation_idw",
+          "metric": "Correct IDW interpolation from point measurements to H3 grid with configurable power, neighbors, and search radius",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["interpolateIDW"]
+        },
+        {
+          "id": "regulatory_compliance_check",
+          "metric": "Correct per-station compliance check against D.Lgs. 155/2010 thresholds with exceedance counts, compliance rate, and applicable limit references",
+          "target": ">= 0.85 pass on area cases",
+          "tools": ["checkRegulatoryCompliance", "listRegulatoryThresholds"]
+        }
+      ],
+      "caseIds": [
+        "sample_qcumber_admin_query",
+        "arch_provider_catalog_resolution",
+        "arch_admin_query_filters",
+        "arch_thematic_spatial_query",
+        "arch_qcumber_dataset_id_disambiguation",
+        "arch_qcumber_dataset_id_disambiguation_companion",
+        "arch_qcumber_provider_id_disambiguation",
+        "arch_qcumber_provider_id_disambiguation_companion",
+        "arch_qcumber_invalid_dataset_recovery",
+        "arch_dataset_materialization_filters",
+        "arch_dataset_derivations_numeric",
+        "arch_data_load_save_bridge",
+        "arch_jurisdiction_exceedance_reporting",
+        "arch_territorial_units_level_resolution",
+        "arch_territorial_units_level_resolution_companion",
+        "arch_named_place_level_clarification",
+        "arch_explicit_admin_level_mismatch_fail_closed",
+        "adv_dataset_id_clarification_heldout",
+        "adv_dataset_id_clarification_companion",
+        "adv_provider_id_clarification_heldout",
+        "adv_named_place_level_clarification_heldout",
+        "arch_temporal_trend_analysis",
+        "arch_change_detection_delta",
+        "arch_field_statistics",
+        "arch_computed_field_ratio",
+        "arch_linear_regression",
+        "arch_natural_break_classification",
+        "arch_field_correlation_matrix",
+        "arch_regulatory_compliance_check",
+        "arch_regulatory_thresholds_listing",
+        "arch_population_exposure_assessment",
+        "arch_spatial_interpolation_idw"
+      ]
+    },
+    {
+      "id": "map_ux",
+      "label": "Map UX",
+      "gates": {
+        "min_pass_rate": 0.8,
+        "min_avg_case_score": 0.75
+      },
+      "kpis": [
+        {
+          "id": "style_application_accuracy",
+          "metric": "Correct styling tool sequence and field usage",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "layer_state_consistency",
+          "metric": "Consistent layer visibility/order operations",
+          "target": ">= 0.90 pass on area cases"
+        },
+        {
+          "id": "chart_tool_selection_accuracy",
+          "metric": "Correct chart tool selection by intent",
+          "target": ">= 0.80 pass on area cases"
+        },
+        {
+          "id": "h3_editing_consistency",
+          "metric": "Consistency of H3 paint/edit commands",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "map_navigation_service_reliability",
+          "metric": "Reliability of basemap/geocoding/routing/isochrone/roads",
+          "target": ">= 0.80 pass on area cases"
+        },
+        {
+          "id": "territorial_focus_centering_accuracy",
+          "metric": "Reliable territorial-unit retrieval with explicit map centering/focus completion for named administrative targets",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "focus_completion_without_false_success",
+          "metric": "Map focus, styling, and visibility confirmations are issued only after the requested visible outcome is actually completed",
+          "target": ">= 0.85 pass on area cases"
+        }
+      ],
+      "caseIds": [
+        "sample_layer_styling",
+        "arch_base_map_services",
+        "arch_chart_tooling",
+        "arch_layer_style_sequence",
+        "arch_layer_visibility_and_order",
+        "arch_h3_paint_editing",
+        "arch_treviso_province_centering",
+        "arch_treviso_municipalities_population_styling",
+        "arch_flat_metric_coloring_limitation",
+        "arch_existing_join_metric_reuse_coloring",
+        "arch_existing_normalized_metric_threshold_reuse",
+        "arch_existing_nearest_metric_reuse_coloring",
+        "arch_existing_zonal_metric_threshold_reuse",
+        "arch_existing_clip_metric_reuse_coloring",
+        "arch_existing_buffer_metric_threshold_reuse",
+        "arch_existing_populated_tessellation_reuse_coloring",
+        "arch_existing_h3_aggregation_reuse_coloring",
+        "arch_existing_h3_join_metric_reuse_coloring",
+        "arch_fit_centering_limitation",
+        "arch_named_province_centering_companion",
+        "arch_named_municipalities_population_styling_companion",
+        "arch_named_region_centering_companion",
+        "adv_population_style_focus_heldout",
+        "adv_flat_metric_coloring_limitation",
+        "adv_fit_centering_limitation"
+      ]
+    },
+    {
+      "id": "backend_reliability",
+      "label": "Backend Reliability",
+      "gates": {
+        "min_pass_rate": 0.85,
+        "min_avg_case_score": 0.78
+      },
+      "kpis": [
+        {
+          "id": "cloud_tool_error_handling",
+          "metric": "Graceful handling of cloud load/list errors with valid routing",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "cloud_timeout_recovery",
+          "metric": "Reliable timeout retry/fallback orchestration for cloud map loading",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "cloud_recovery_validation",
+          "metric": "Post-recovery dataset availability validation after cloud load errors",
+          "target": ">= 0.85 pass on area cases"
+        },
+        {
+          "id": "retry_fallback_truthfulness",
+          "metric": "Retry and fallback narratives accurately reflect what succeeded, what failed, and what remains unresolved",
+          "target": ">= 0.90 pass on area cases"
+        }
+      ],
+      "caseIds": [
+        "sample_cloud_map_handling",
+        "arch_cloud_map_load_sequence",
+        "arch_cloud_timeout_retry_fallback",
+        "arch_cloud_postload_validation",
+        "arch_cloud_load_limitation",
+        "adv_cloud_validation_before_success_claim",
+        "adv_cloud_load_limitation"
+      ]
+    }
+  ]
+}

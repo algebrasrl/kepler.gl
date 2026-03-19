@@ -87,7 +87,12 @@ export function AiAssistantPanel() {
 
   // combine keplerGlMessages and messages
   const combinedMessages = useMemo(() => {
-    return Object.keys(messages).reduce(
+    const allLanguages = new Set([
+      ...Object.keys(messages || {}),
+      ...Object.keys(keplerGlMessages || {})
+    ]);
+
+    return Array.from(allLanguages).reduce(
       (acc, language) => ({
         ...acc,
         [language]: {
@@ -99,8 +104,10 @@ export function AiAssistantPanel() {
     );
   }, []);
 
+  const localeMessages = combinedMessages[locale] || combinedMessages.en || {};
+
   return (
-    <IntlProvider locale={locale} messages={flattenMessages(combinedMessages[locale])}>
+    <IntlProvider locale={locale} messages={flattenMessages(localeMessages)}>
       <StyledAiAssistantPanelContainer className="ai-assistant-manager">
         <StyledAiAssistantPanel>
           <StyledAiAssistantPanelHeader>

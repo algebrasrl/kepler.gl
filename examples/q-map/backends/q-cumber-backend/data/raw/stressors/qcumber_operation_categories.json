@@ -1,0 +1,4754 @@
+[
+  {
+    "cod": 10000,
+    "name": "Quarrying (composite emission factor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10000/"
+  },
+  {
+    "cod": 10001,
+    "name": "Secondary crushing 25-100mm",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10001/"
+  },
+  {
+    "cod": 10002,
+    "name": "Tertiary crushing 5-25mm uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10002/"
+  },
+  {
+    "cod": 10003,
+    "name": "Tertiary crushing 5-25mm controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10003/"
+  },
+  {
+    "cod": 10004,
+    "name": "Fines crushing < 5mm uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10004/"
+  },
+  {
+    "cod": 10005,
+    "name": "Fines crushing < 5mm controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10005/"
+  },
+  {
+    "cod": 10006,
+    "name": "Screening uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10006/"
+  },
+  {
+    "cod": 10007,
+    "name": "Screening controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10007/"
+  },
+  {
+    "cod": 10008,
+    "name": "Fine screening uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10008/"
+  },
+  {
+    "cod": 10009,
+    "name": "Fine screening controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10009/"
+  },
+  {
+    "cod": 10010,
+    "name": "Transport on conveyor, transfer point uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10010/"
+  },
+  {
+    "cod": 10011,
+    "name": "Transport on conveyor, transfer point controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10011/"
+  },
+  {
+    "cod": 10012,
+    "name": "Wet drilling - Unfragmented stone",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10012/"
+  },
+  {
+    "cod": 10013,
+    "name": "Truck unloading-fragmented stone",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10013/"
+  },
+  {
+    "cod": 10014,
+    "name": "Truck unloading and grizzly feeder",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10014/"
+  },
+  {
+    "cod": 10015,
+    "name": "Truck loading-conveyor, crushed stone",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10015/"
+  },
+  {
+    "cod": 10016,
+    "name": "Grinding, dry mode controlled (filter efficency=0,995)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10016/"
+  },
+  {
+    "cod": 10017,
+    "name": "Grinding, dry mode uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10017/"
+  },
+  {
+    "cod": 10018,
+    "name": "Classifiers, dry mode with Fabric Filter Control (filter efficency=0,995)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10018/"
+  },
+  {
+    "cod": 10019,
+    "name": "Classifiers, dry mode uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10019/"
+  },
+  {
+    "cod": 10020,
+    "name": "Flash drying with Fabric Filter Control (filter efficency=0,995)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10020/"
+  },
+  {
+    "cod": 10021,
+    "name": "Flash drying uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10021/"
+  },
+  {
+    "cod": 10022,
+    "name": "Product Storage with Fabric Filter Control (filter efficency=0,995)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10022/"
+  },
+  {
+    "cod": 10023,
+    "name": "Product Storage uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10023/"
+  },
+  {
+    "cod": 10024,
+    "name": "Drilling Overburden",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10024/"
+  },
+  {
+    "cod": 10025,
+    "name": "Drilling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10025/"
+  },
+  {
+    "cod": 10026,
+    "name": "Truck unloading: bottom dump -Overburden",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10026/"
+  },
+  {
+    "cod": 10027,
+    "name": "Truck Loading, overburden",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10027/"
+  },
+  {
+    "cod": 10028,
+    "name": "Dragline Overburden Removal",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10028/"
+  },
+  {
+    "cod": 10029,
+    "name": "Dragline Overburden",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10029/"
+  },
+  {
+    "cod": 10030,
+    "name": "Bulldozing overburden",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10030/"
+  },
+  {
+    "cod": 10031,
+    "name": "Buldozing on coal",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10031/"
+  },
+  {
+    "cod": 10032,
+    "name": "Buldozing on material other than coal",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10032/"
+  },
+  {
+    "cod": 10033,
+    "name": "Overburden replacement",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10033/"
+  },
+  {
+    "cod": 10034,
+    "name": "Adding/removing material from storage pile",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10034/"
+  },
+  {
+    "cod": 10035,
+    "name": "Transit on unpaved roads",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10035/"
+  },
+  {
+    "cod": 10036,
+    "name": "Transit on unpaved roads - wet suppression systems",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10036/"
+  },
+  {
+    "cod": 10037,
+    "name": "Blasting",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10037/"
+  },
+  {
+    "cod": 10038,
+    "name": "Wind erosion from piles, H/D>0,2 subject to movement",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10038/"
+  },
+  {
+    "cod": 10039,
+    "name": "Wind erosion from piles, H/D<0,2 subject to movement",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10039/"
+  },
+  {
+    "cod": 10040,
+    "name": "Scrapers remopving top soil",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10040/"
+  },
+  {
+    "cod": 10041,
+    "name": "Sand dryer in action",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10041/"
+  },
+  {
+    "cod": 10042,
+    "name": "Sand dryer with wet scrubber",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10042/"
+  },
+  {
+    "cod": 10043,
+    "name": "Sand dryer with fabric filter",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10043/"
+  },
+  {
+    "cod": 10044,
+    "name": "Sand handling, transfer, and storage with wet scrubber",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10044/"
+  },
+  {
+    "cod": 10045,
+    "name": "Sand screening with Venturi scrubber",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10045/"
+  },
+  {
+    "cod": 10046,
+    "name": "Bucket wheel excavator in action",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10046/"
+  },
+  {
+    "cod": 10047,
+    "name": "Wheel generated dust, unpaved roads heavy vehicles in industrial sites",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10047/"
+  },
+  {
+    "cod": 10048,
+    "name": "Wheel generated dust, unpaved roads light duty vehicles",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10048/"
+  },
+  {
+    "cod": 10049,
+    "name": "Graders in action",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10049/"
+  },
+  {
+    "cod": 10050,
+    "name": "Scrapers removing top soil",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10050/"
+  },
+  {
+    "cod": 10051,
+    "name": "Excavators, Shovels, Front-end loaders in action",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10051/"
+  },
+  {
+    "cod": 10052,
+    "name": "Chimney Emission",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10052/"
+  },
+  {
+    "cod": 10053,
+    "name": "Transit on paved roads (urban roads) - INEMAR 2014",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10053/"
+  },
+  {
+    "cod": 10056,
+    "name": "Transit on paved roads (interurban roads) - INEMAR 2014",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10056/"
+  },
+  {
+    "cod": 10059,
+    "name": "Transit on paved roads (highways) - INEMAR 2014",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10059/"
+  },
+  {
+    "cod": 10062,
+    "name": "Scrap-metal handling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10062/"
+  },
+  {
+    "cod": 10063,
+    "name": "Biofilter emission",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10063/"
+  },
+  {
+    "cod": 10065,
+    "name": "Diffuse emission in the air",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10065/"
+  },
+  {
+    "cod": 10066,
+    "name": "Industrial discharge into a surface water body",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10066/"
+  },
+  {
+    "cod": 10067,
+    "name": "Industrial discharge to sewer",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10067/"
+  },
+  {
+    "cod": 10068,
+    "name": "Industrial discharge on surface soil",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10068/"
+  },
+  {
+    "cod": 10069,
+    "name": "Torch biogas combustion",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10069/"
+  },
+  {
+    "cod": 10070,
+    "name": "Building activities (constuction and demolition)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10070/"
+  },
+  {
+    "cod": 10071,
+    "name": "Combustion - CH4 - residential plant",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10071/"
+  },
+  {
+    "cod": 10072,
+    "name": "Combustion - Diesel fuel - residential plant",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10072/"
+  },
+  {
+    "cod": 10073,
+    "name": "Civil discharge to sewer",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10073/"
+  },
+  {
+    "cod": 10074,
+    "name": "Civil discharge on surface soil",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10074/"
+  },
+  {
+    "cod": 10075,
+    "name": "Tilling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10075/"
+  },
+  {
+    "cod": 10076,
+    "name": "Discing/Chiseling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10076/"
+  },
+  {
+    "cod": 10077,
+    "name": "Wheat harvesting",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10077/"
+  },
+  {
+    "cod": 10078,
+    "name": "Odour emission from digestate",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10078/"
+  },
+  {
+    "cod": 10079,
+    "name": "Water uptake from well",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10079/"
+  },
+  {
+    "cod": 10080,
+    "name": "Directional release",
+    "geometry_type": "Jet",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10080/"
+  },
+  {
+    "cod": 10081,
+    "name": "Municipal Solid Waste receving",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10081/"
+  },
+  {
+    "cod": 10082,
+    "name": "Green Waste receiving",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10082/"
+  },
+  {
+    "cod": 10083,
+    "name": "Aerobic Biological treatmet (MSW)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10083/"
+  },
+  {
+    "cod": 10084,
+    "name": "Aerobic Biological treatmet (Green waste)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10084/"
+  },
+  {
+    "cod": 10085,
+    "name": "Compost Curing",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10085/"
+  },
+  {
+    "cod": 10086,
+    "name": "Overscreen storage (composting plants)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10086/"
+  },
+  {
+    "cod": 10087,
+    "name": "Compost storage",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10087/"
+  },
+  {
+    "cod": 10088,
+    "name": "Scrap metal shredding",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10088/"
+  },
+  {
+    "cod": 10089,
+    "name": "Combustion - CH4 - commercial plant",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10089/"
+  },
+  {
+    "cod": 10090,
+    "name": "Livestock activity - Pigs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10090/"
+  },
+  {
+    "cod": 10091,
+    "name": "Livestock activity - Calf",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10091/"
+  },
+  {
+    "cod": 10092,
+    "name": "Livestock activity - Sheep",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10092/"
+  },
+  {
+    "cod": 10093,
+    "name": "Livestock activity - Goats",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10093/"
+  },
+  {
+    "cod": 10094,
+    "name": "Livestock activity - Broiler chicken",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10094/"
+  },
+  {
+    "cod": 10095,
+    "name": "Livestock activity - Laying hen",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10095/"
+  },
+  {
+    "cod": 10096,
+    "name": "Livestock activity - Broiler duck",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10096/"
+  },
+  {
+    "cod": 10097,
+    "name": "Livestock activity - Broiler turkey",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10097/"
+  },
+  {
+    "cod": 10098,
+    "name": "Wastewater treatment - Pretreatment",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10098/"
+  },
+  {
+    "cod": 10099,
+    "name": "Wastewater treatment - primary sedimentation",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10099/"
+  },
+  {
+    "cod": 10100,
+    "name": "Wastewater treatment - denitrification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10100/"
+  },
+  {
+    "cod": 10101,
+    "name": "Wastewater treatment - nitrification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10101/"
+  },
+  {
+    "cod": 10102,
+    "name": "Wastewater treatment - biological oxidation",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10102/"
+  },
+  {
+    "cod": 10103,
+    "name": "Wastewater treatment - secondary sedimentation",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10103/"
+  },
+  {
+    "cod": 10104,
+    "name": "Wastewater treatment - sludge thickening",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10104/"
+  },
+  {
+    "cod": 10105,
+    "name": "Wastewater treatment - sludge storage",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10105/"
+  },
+  {
+    "cod": 10106,
+    "name": "Road Paving with Asphalt",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10106/"
+  },
+  {
+    "cod": 10107,
+    "name": "Adding/removing material from storage pile - Dust suppression, spraying of water with additives",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10107/"
+  },
+  {
+    "cod": 10108,
+    "name": "Adding/removing material from storage pile - Dust suppression, 3-sided enclosure",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10108/"
+  },
+  {
+    "cod": 10109,
+    "name": "Scrap-metal handling - wet suppression",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10109/"
+  },
+  {
+    "cod": 10110,
+    "name": "Secondary crushing 25-100mm controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10110/"
+  },
+  {
+    "cod": 10111,
+    "name": "Livestock activity - Mean Odor Emission",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10111/"
+  },
+  {
+    "cod": 10112,
+    "name": "Navigation - Manouvering phase (Medium-speed diesel engine, Marine Gas Oil fuel)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10112/"
+  },
+  {
+    "cod": 10113,
+    "name": "Dredging - Hydraulic cutterhead - Sediment classification: Sand",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10113/"
+  },
+  {
+    "cod": 10114,
+    "name": "Dredging - Hydraulic cutterhead - Sediment classification: Silty clay",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10114/"
+  },
+  {
+    "cod": 10115,
+    "name": "Dredging - Hydraulic cutterhead - Sediment classification: Sandy loam",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10115/"
+  },
+  {
+    "cod": 10116,
+    "name": "Dredging - Mechanical bucket - Sediment classification: Sand",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10116/"
+  },
+  {
+    "cod": 10117,
+    "name": "Dredging - Mechanical bucket - Sediment classification: Sandy loam",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10117/"
+  },
+  {
+    "cod": 10118,
+    "name": "Dredging - Mechanical bucket - Sediment classification: Silty loam",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10118/"
+  },
+  {
+    "cod": 10119,
+    "name": "Dredging - Mechanical bucket - Sediment classification: Silty clay",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10119/"
+  },
+  {
+    "cod": 10120,
+    "name": "Transit of diesel industrial vehicle",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10120/"
+  },
+  {
+    "cod": 10121,
+    "name": "Primary crushing 75-300mm uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10121/"
+  },
+  {
+    "cod": 10122,
+    "name": "Primary crushing 75-300mm controlled (wet suppression systems)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10122/"
+  },
+  {
+    "cod": 10123,
+    "name": "Supply from water distribution network",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10123/"
+  },
+  {
+    "cod": 10124,
+    "name": "Municipal solid waste production (average data)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10124/"
+  },
+  {
+    "cod": 10125,
+    "name": "Wood chipping - uncontrolled",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10125/"
+  },
+  {
+    "cod": 10126,
+    "name": "Wood chipping - controlled ",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10126/"
+  },
+  {
+    "cod": 10127,
+    "name": "Residential Construction",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10127/"
+  },
+  {
+    "cod": 10128,
+    "name": "R1",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10128/"
+  },
+  {
+    "cod": 10129,
+    "name": "R2",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10129/"
+  },
+  {
+    "cod": 10130,
+    "name": "R3",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10130/"
+  },
+  {
+    "cod": 10131,
+    "name": "R4",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10131/"
+  },
+  {
+    "cod": 10132,
+    "name": "R5",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10132/"
+  },
+  {
+    "cod": 10133,
+    "name": "R6",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10133/"
+  },
+  {
+    "cod": 10134,
+    "name": "R7",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10134/"
+  },
+  {
+    "cod": 10135,
+    "name": "R8",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10135/"
+  },
+  {
+    "cod": 10136,
+    "name": "R9",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10136/"
+  },
+  {
+    "cod": 10137,
+    "name": "R10",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10137/"
+  },
+  {
+    "cod": 10138,
+    "name": "R11",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10138/"
+  },
+  {
+    "cod": 10139,
+    "name": "R12",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10139/"
+  },
+  {
+    "cod": 10140,
+    "name": "R13",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10140/"
+  },
+  {
+    "cod": 10141,
+    "name": "R13 Activity result waste",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10141/"
+  },
+  {
+    "cod": 10142,
+    "name": "D1",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10142/"
+  },
+  {
+    "cod": 10143,
+    "name": "D2",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10143/"
+  },
+  {
+    "cod": 10144,
+    "name": "D3",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10144/"
+  },
+  {
+    "cod": 10145,
+    "name": "D4",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10145/"
+  },
+  {
+    "cod": 10146,
+    "name": "D5",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10146/"
+  },
+  {
+    "cod": 10147,
+    "name": "D6",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10147/"
+  },
+  {
+    "cod": 10148,
+    "name": "D7",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10148/"
+  },
+  {
+    "cod": 10149,
+    "name": "D8",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10149/"
+  },
+  {
+    "cod": 10150,
+    "name": "D9",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10150/"
+  },
+  {
+    "cod": 10151,
+    "name": "D10",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10151/"
+  },
+  {
+    "cod": 10152,
+    "name": "D11",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10152/"
+  },
+  {
+    "cod": 10153,
+    "name": "D12",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10153/"
+  },
+  {
+    "cod": 10154,
+    "name": "D13",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10154/"
+  },
+  {
+    "cod": 10155,
+    "name": "D14",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10155/"
+  },
+  {
+    "cod": 10156,
+    "name": "D15",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10156/"
+  },
+  {
+    "cod": 10157,
+    "name": "D15 Activity result waste",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10157/"
+  },
+  {
+    "cod": 10158,
+    "name": "AD",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10158/"
+  },
+  {
+    "cod": 10159,
+    "name": "CRS",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10159/"
+  },
+  {
+    "cod": 10160,
+    "name": "R3* - Composting",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10160/"
+  },
+  {
+    "cod": 10161,
+    "name": "R4*",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10161/"
+  },
+  {
+    "cod": 10162,
+    "name": "R5*",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10162/"
+  },
+  {
+    "cod": 10163,
+    "name": "Rainwater discharge into a surface water body",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10163/"
+  },
+  {
+    "cod": 10164,
+    "name": "Rainwater discharge to sewer",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10164/"
+  },
+  {
+    "cod": 10165,
+    "name": "Rainwater discharge on surface soil",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10165/"
+  },
+  {
+    "cod": 10166,
+    "name": "Manure spreading",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10166/"
+  },
+  {
+    "cod": 10167,
+    "name": "Electricity consumption",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10167/"
+  },
+  {
+    "cod": 10168,
+    "name": "Heat consumption",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10168/"
+  },
+  {
+    "cod": 10169,
+    "name": "Aggregate wash water discharge into groundwater",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10169/"
+  },
+  {
+    "cod": 10170,
+    "name": "Commercial and Institutional plants - Boilers with thermal power <50 MW - Diesel fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10170/"
+  },
+  {
+    "cod": 10171,
+    "name": "Commercial and Institutional plants - Boilers with thermal power <50 MW - Natural gas",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10171/"
+  },
+  {
+    "cod": 10172,
+    "name": "Commercial and Institutional plants - Boilers with thermal power <50 MW - Fuel Oil",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10172/"
+  },
+  {
+    "cod": 10173,
+    "name": "Commercial and Institutional plants - Wood Oven Pizzeria",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10173/"
+  },
+  {
+    "cod": 10174,
+    "name": "Residential Plant - Boilers with thermal power <50 MW - LPG",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10174/"
+  },
+  {
+    "cod": 10175,
+    "name": "Residential Plant - Boilers with thermal power <50 MW - Diesel fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10175/"
+  },
+  {
+    "cod": 10176,
+    "name": "Residential Plant - Boilers with thermal power <50 MW - Kerosene fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10176/"
+  },
+  {
+    "cod": 10177,
+    "name": "Residential Plant - Boilers with thermal power <50 MW - Natural gas fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10177/"
+  },
+  {
+    "cod": 10178,
+    "name": "Residential Plant - Boilers with thermal power <50 MW - Fuel Oil",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10178/"
+  },
+  {
+    "cod": 10179,
+    "name": "Residential Plant - Other systems - Stoves, fireplaces, kitchens, wood and similar fuels",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10179/"
+  },
+  {
+    "cod": 10180,
+    "name": "Residential Plant - Traditional open fireplace",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10180/"
+  },
+  {
+    "cod": 10181,
+    "name": "Residential Plant - Traditional Wood Stove - Wood and similar fuels",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10181/"
+  },
+  {
+    "cod": 10182,
+    "name": "Residential Plant - Closed Wood Fireplace",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10182/"
+  },
+  {
+    "cod": 10183,
+    "name": "Residential Plant - Innovative Stove or Boiler - Wood and similar fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10183/"
+  },
+  {
+    "cod": 10184,
+    "name": "Residential Plant - Automatic pellet stove - Wood and similar fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10184/"
+  },
+  {
+    "cod": 10185,
+    "name": "Plants in agriculture, forestry and aquaculture - Boilers with thermal power <50 MW - LPG",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10185/"
+  },
+  {
+    "cod": 10186,
+    "name": "Plants in agriculture, forestry and aquaculture - Boilers with thermal power <50 MW - diesel fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10186/"
+  },
+  {
+    "cod": 10187,
+    "name": "Plants in agriculture, forestry and aquaculture - Boilers with thermal power <50 MW - wood and similar",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10187/"
+  },
+  {
+    "cod": 10188,
+    "name": "Plants in agriculture, forestry and aquaculture - Boilers with thermal power <50 MW - natural gas fuel",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10188/"
+  },
+  {
+    "cod": 10189,
+    "name": "Plants in agriculture, forestry and aquaculture - Internal combustion engines - Biogas from manure",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10189/"
+  },
+  {
+    "cod": 10190,
+    "name": "Municipal solid waste production (pro-capite waste production)",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10190/"
+  },
+  {
+    "cod": 10191,
+    "name": "Site preparation - Construction of houses (single family, detached two family and single family terraced) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10191/"
+  },
+  {
+    "cod": 10192,
+    "name": "Site preparation - Construction of apartment buildings - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10192/"
+  },
+  {
+    "cod": 10193,
+    "name": "Site preparation - Non residential construction (except road construction) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10193/"
+  },
+  {
+    "cod": 10194,
+    "name": "Site preparation - Road construction - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10194/"
+  },
+  {
+    "cod": 10195,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 0-20 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10195/"
+  },
+  {
+    "cod": 10196,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 20-37 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10196/"
+  },
+  {
+    "cod": 10197,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 37-75 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10197/"
+  },
+  {
+    "cod": 10198,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 75-130 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10198/"
+  },
+  {
+    "cod": 10199,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 130-300 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10199/"
+  },
+  {
+    "cod": 10200,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 300-560 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10200/"
+  },
+  {
+    "cod": 10201,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine 560-1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10201/"
+  },
+  {
+    "cod": 10202,
+    "name": "NRMM stage I - controlled diesel engines (2006) - Power engine > 1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10202/"
+  },
+  {
+    "cod": 10203,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 0-20 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10203/"
+  },
+  {
+    "cod": 10204,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 20-37 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10204/"
+  },
+  {
+    "cod": 10205,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 37-75 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10205/"
+  },
+  {
+    "cod": 10206,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 75-130 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10206/"
+  },
+  {
+    "cod": 10207,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 130-300 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10207/"
+  },
+  {
+    "cod": 10208,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 300-560 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10208/"
+  },
+  {
+    "cod": 10209,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine 560-1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10209/"
+  },
+  {
+    "cod": 10210,
+    "name": "NRMM Stage II - controlled diesel engines (2006) - Power engine > 1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10210/"
+  },
+  {
+    "cod": 10211,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 0-20 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10211/"
+  },
+  {
+    "cod": 10212,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 20-37 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10212/"
+  },
+  {
+    "cod": 10213,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 37-75 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10213/"
+  },
+  {
+    "cod": 10214,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 75-130 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10214/"
+  },
+  {
+    "cod": 10215,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 130-300 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10215/"
+  },
+  {
+    "cod": 10216,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 300-560 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10216/"
+  },
+  {
+    "cod": 10217,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine 560-1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10217/"
+  },
+  {
+    "cod": 10218,
+    "name": "NRMM Stage III - controlled diesel engines (2006) - Power engine > 1000 kw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10218/"
+  },
+  {
+    "cod": 10219,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Mating and gestating sows",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10219/"
+  },
+  {
+    "cod": 10220,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Mating and gestating sows -  deep pit in combination with nutritional management techniques",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10220/"
+  },
+  {
+    "cod": 10221,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Mating and gestating sows - Plants using BAT 30.a6, 30.a7 or 30.a11",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10221/"
+  },
+  {
+    "cod": 10222,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Mating and gestating sows - Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10222/"
+  },
+  {
+    "cod": 10223,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Farrowing sows (including piglets) in crates ",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10223/"
+  },
+  {
+    "cod": 10224,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Farrowing sows (including piglets) in crates - Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10224/"
+  },
+  {
+    "cod": 10225,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Farrowing sows (including piglets) in crates - Plant using BAT 30.a0 in combination with nutritional management techniques",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10225/"
+  },
+  {
+    "cod": 10226,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Weaners",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10226/"
+  },
+  {
+    "cod": 10227,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Weaners - Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10227/"
+  },
+  {
+    "cod": 10228,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Weaners - deep pit in combination with nutritional management techniques",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10228/"
+  },
+  {
+    "cod": 10229,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Weaners  - Plants using BAT 30.a6, 30.a7 or 30.a8",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10229/"
+  },
+  {
+    "cod": 10230,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Fattening pigs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10230/"
+  },
+  {
+    "cod": 10231,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Fattening pigs - Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10231/"
+  },
+  {
+    "cod": 10232,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Fattening pigs - deep pit in combination with nutritional management techniques ",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10232/"
+  },
+  {
+    "cod": 10233,
+    "name": "BAT-AEL for ammonia emissions to air from each pig house - Fattening pigs - Plants using BAT 30.a6, 30.a7, 30.a8, or 30.a16",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10233/"
+  },
+  {
+    "cod": 10234,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10234/"
+  },
+  {
+    "cod": 10235,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens - Non-cage system ",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10235/"
+  },
+  {
+    "cod": 10236,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens - Non-cage system - Plant with deep litter with a manure pit",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10236/"
+  },
+  {
+    "cod": 10237,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - Broilers",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10237/"
+  },
+  {
+    "cod": 10238,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - Broilers - Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10238/"
+  },
+  {
+    "cod": 10239,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.0 Deep pit (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10239/"
+  },
+  {
+    "cod": 10240,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Farrowing sows - BAT 30.a.0 Deep pit (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10240/"
+  },
+  {
+    "cod": 10241,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.0 Deep pit (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10241/"
+  },
+  {
+    "cod": 10242,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.0 Deep pit (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10242/"
+  },
+  {
+    "cod": 10243,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.1 Vacuum system for frequent slurry removal (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10243/"
+  },
+  {
+    "cod": 10244,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Farrowing sows - BAT 30.a.1 Vacuum system for frequent slurry removal (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10244/"
+  },
+  {
+    "cod": 10245,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.1 Vacuum system for frequent slurry removal (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10245/"
+  },
+  {
+    "cod": 10246,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.1 Vacuum system for frequent slurry removal (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10246/"
+  },
+  {
+    "cod": 10247,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.2 Sloping walls of the channel to remove slurry (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10247/"
+  },
+  {
+    "cod": 10248,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Farrowing sows - BAT 30.a.2 Sloping walls of the channel to remove slurry (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10248/"
+  },
+  {
+    "cod": 10249,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.2 Sloping walls of the channel to remove slurry (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10249/"
+  },
+  {
+    "cod": 10250,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening Pigs - BAT 30.a.2 Sloping walls of the channel to remove slurry (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10250/"
+  },
+  {
+    "cod": 10251,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.3 Scraper for frequent slurry removal (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10251/"
+  },
+  {
+    "cod": 10252,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Farrowing sows - BAT 30.a.3 Scraper for frequent slurry removal (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10252/"
+  },
+  {
+    "cod": 10253,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.3 Scraper for frequent slurry removal (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10253/"
+  },
+  {
+    "cod": 10254,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.3 Scraper for frequent slurry removal (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10254/"
+  },
+  {
+    "cod": 10255,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.4 Frequent slurry removal by recirculation (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10255/"
+  },
+  {
+    "cod": 10256,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Farrowing sows - BAT 30.a.4 Frequent slurry removal by recirculation (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10256/"
+  },
+  {
+    "cod": 10257,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.4 Frequent slurry removal by recirculation (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10257/"
+  },
+  {
+    "cod": 10258,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.4 Frequent slurry removal by recirculation (totally o partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10258/"
+  },
+  {
+    "cod": 10259,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.5 Small pit for slurry (partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10259/"
+  },
+  {
+    "cod": 10260,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.5 Small pit for slurry (partially slatted floor))",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10260/"
+  },
+  {
+    "cod": 10261,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.6 Full cover litter system (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10261/"
+  },
+  {
+    "cod": 10262,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.6 Full cover litter system (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10262/"
+  },
+  {
+    "cod": 10263,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.6 Full cover litter system (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10263/"
+  },
+  {
+    "cod": 10264,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Mating and gestating sows - BAT 30.a.7 Bunk shelter (partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10264/"
+  },
+  {
+    "cod": 10265,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.7 Bunk shelter (partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10265/"
+  },
+  {
+    "cod": 10266,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.7 Bunk shelter (partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10266/"
+  },
+  {
+    "cod": 10267,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.8  Straw flow systems (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10267/"
+  },
+  {
+    "cod": 10268,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.a.8  Straw flow systems (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10268/"
+  },
+  {
+    "cod": 10269,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.a.9  Convex floor and distinct channels for livestock and water effluents (partially cracked fences)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10269/"
+  },
+  {
+    "cod": 10270,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.a.9  Convex floor and distinct channels for livestock and water effluents (partially cracked fences)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10270/"
+  },
+  {
+    "cod": 10271,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.a.10  Fences with litter, combined generation of farm effluents (slurry and manure)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10271/"
+  },
+  {
+    "cod": 10272,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Mating and gestating sows - BAT 30.a.11  Feeding and resting box, on full floor (fences with litter)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10272/"
+  },
+  {
+    "cod": 10273,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.a.12  Farm slurry catchment area  (totally o partially slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10273/"
+  },
+  {
+    "cod": 10274,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Weaners - BAT 30.a.13  Slurry catchment area in water",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10274/"
+  },
+  {
+    "cod": 10275,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.a.13  Slurry catchment area in water",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10275/"
+  },
+  {
+    "cod": 10276,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.a.14  V-shaped conveyor belt for slurry (partially slattered floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10276/"
+  },
+  {
+    "cod": 10277,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.a.15  Channel combination for slurry and water  (totally slatted floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10277/"
+  },
+  {
+    "cod": 10278,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.a.16  External path covered with litter  (full concrete floor)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10278/"
+  },
+  {
+    "cod": 10279,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Mating and gestating sows - BAT 30.b  Slurry cooling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10279/"
+  },
+  {
+    "cod": 10280,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.b  Slurry cooling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10280/"
+  },
+  {
+    "cod": 10281,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Weaners - BAT 30.b  Slurry cooling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10281/"
+  },
+  {
+    "cod": 10282,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.b  Slurry cooling",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10282/"
+  },
+  {
+    "cod": 10283,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Mating and gestating sows - BAT 30.c  Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10283/"
+  },
+  {
+    "cod": 10284,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.c  Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10284/"
+  },
+  {
+    "cod": 10285,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Weaners - BAT 30.c  Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10285/"
+  },
+  {
+    "cod": 10286,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Fattening pigs - BAT 30.c  Plant with air cleaning system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10286/"
+  },
+  {
+    "cod": 10287,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Mating and gestating sows - BAT 30.d  Slurry acidification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10287/"
+  },
+  {
+    "cod": 10288,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Farrowing sows - BAT 30.d  Slurry acidification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10288/"
+  },
+  {
+    "cod": 10289,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs -Weaners - BAT 30.d  Slurry acidification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10289/"
+  },
+  {
+    "cod": 10290,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.d  Slurry acidification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10290/"
+  },
+  {
+    "cod": 10291,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Weaners - BAT 30.e  Plant with floating spheres in the effluents channel",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10291/"
+  },
+  {
+    "cod": 10292,
+    "name": "BAT-AEL for ammonia emissions to air from each house for pigs - Fattening pigs - BAT 30.e  Plant with floating spheres in the effluents channel",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10292/"
+  },
+  {
+    "cod": 10293,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens in a cage - BAT 31.a  Manure removal with conveyor belts 1 time per week, with drying process",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10293/"
+  },
+  {
+    "cod": 10294,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens in a cage - BAT 31.a  Manure removal with conveyor belts 2 times per week, without drying process",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10294/"
+  },
+  {
+    "cod": 10295,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.0  Deep litter, forced ventilation, infrequent removal in combination with: manure drying or air treatment.",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10295/"
+  },
+  {
+    "cod": 10296,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.1  Conveyor belt or scraper (deep litter with pit).",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10296/"
+  },
+  {
+    "cod": 10297,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.2  Drying process with forced air by pipes (deep litter with pit).",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10297/"
+  },
+  {
+    "cod": 10298,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.3  Drying process with forced air by perforated floor (deep litter with pit).",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10298/"
+  },
+  {
+    "cod": 10299,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.4  Plant with effluents conveyor belts  (aviaries).",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10299/"
+  },
+  {
+    "cod": 10300,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.b.5  Litter forced drying process by internal air (deep litter).",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10300/"
+  },
+  {
+    "cod": 10301,
+    "name": "BAT-AEL for ammonia emissions to air from each house for laying hens - Laying hens not in a cage - BAT 31.c  Plant with air treatment system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10301/"
+  },
+  {
+    "cod": 10302,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.a  Plant with ventilation system + anti waste troughs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10302/"
+  },
+  {
+    "cod": 10303,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.b  Litter forced drying process by internal air",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10303/"
+  },
+  {
+    "cod": 10304,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.c  Plant with ventilation system + anti waste troughs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10304/"
+  },
+  {
+    "cod": 10305,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.d  Plant with litter conveyor belt system and forced air (floor with overlaying levels)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10305/"
+  },
+  {
+    "cod": 10306,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.e  Plant with heated and cooled floor sprinkled with litter (combideck system)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10306/"
+  },
+  {
+    "cod": 10307,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT 32.f  Plant with air treatment system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10307/"
+  },
+  {
+    "cod": 10308,
+    "name": "BAT-AEL for ammonia emissions to air from each house for caged hens - BAT-AELs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10308/"
+  },
+  {
+    "cod": 10309,
+    "name": "BAT-AEL for ammonia emissions to air from each house for non-caged hens - BAT-AELs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10309/"
+  },
+  {
+    "cod": 10310,
+    "name": "BAT-AEL for ammonia emissions to air from each house for broilers - BAT-AELs",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10310/"
+  },
+  {
+    "cod": 10311,
+    "name": "BAT-AEL for ammonia emissions to air from each house for caged hens - BAT-AELs for existing plants + manure drying system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10311/"
+  },
+  {
+    "cod": 10312,
+    "name": "BAT-AEL for ammonia emissions to air from each house for non-caged hens - BAT-AELs for existing plants + manure drying system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10312/"
+  },
+  {
+    "cod": 10313,
+    "name": "BREF emissions to air from housing system for sows - Mating and gestating sows (slurry system)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10313/"
+  },
+  {
+    "cod": 10314,
+    "name": "BREF emissions to air from housing system for sows - Mating and gestating sows (manure system)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10314/"
+  },
+  {
+    "cod": 10315,
+    "name": "BREF emissions to air from housing system for sows - Farrowing sows (slurry and combined slurry/solid manure system)",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10315/"
+  },
+  {
+    "cod": 10316,
+    "name": "BREF emissions to air from housing system for weaners - Slurry system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10316/"
+  },
+  {
+    "cod": 10317,
+    "name": "BREF emissions to air from housing system for weaners - Solid manure system and combined slurry/solid manure system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10317/"
+  },
+  {
+    "cod": 10318,
+    "name": "BREF emissions to air from housing system for fattening pigs - Slurry system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10318/"
+  },
+  {
+    "cod": 10319,
+    "name": "BREF emissions to air from housing system for fattening pigs - Solid manure system and combined slurry/solid manure system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10319/"
+  },
+  {
+    "cod": 10320,
+    "name": "Broilers - Odor (per broiler) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10320/"
+  },
+  {
+    "cod": 10321,
+    "name": "Broilers - Odor (per broiler) - Housing system: litter-wood shavings",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10321/"
+  },
+  {
+    "cod": 10322,
+    "name": "Laying hens - Odor (per laying hens) - Housing system: litter-straw floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10322/"
+  },
+  {
+    "cod": 10323,
+    "name": "Laying hens - Odor (per laying hens) - Housing system: battery cages, manure belt",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10323/"
+  },
+  {
+    "cod": 10324,
+    "name": "Laying hens - Odor (per laying hens) - Housing system: litter-slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10324/"
+  },
+  {
+    "cod": 10325,
+    "name": "Laying hens - Odor (per laying hens) - Housing system: enriched cages",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10325/"
+  },
+  {
+    "cod": 10326,
+    "name": "Laying hens - Odor (per laying hens) - Housing system: non-cage systems",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10326/"
+  },
+  {
+    "cod": 10327,
+    "name": "Dry sows - Odor (per dry sow) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10327/"
+  },
+  {
+    "cod": 10328,
+    "name": "Dry sows - Odor (per dry sow, by number of animal) - Housing system: partially-slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10328/"
+  },
+  {
+    "cod": 10329,
+    "name": "Gestating and farrowing sows - Odor (per sow, by number of animal) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10329/"
+  },
+  {
+    "cod": 10330,
+    "name": "Gestating and farrowing sows - Odor (per sow, by number of animal) - Housing system: partially slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10330/"
+  },
+  {
+    "cod": 10331,
+    "name": "Gestating and farrowing sows - Odor (per sow) - Housing system: fully slatted floor with vacuum system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10331/"
+  },
+  {
+    "cod": 10332,
+    "name": "Gestating and farrowing sows - Odor (per sow) - Housing system: fully slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10332/"
+  },
+  {
+    "cod": 10333,
+    "name": "Weaners - Odor (per weaner) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10333/"
+  },
+  {
+    "cod": 10334,
+    "name": "Weaners - Odor (per weaner, by number of animal) - Housing system: fully-slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10334/"
+  },
+  {
+    "cod": 10335,
+    "name": "Weaners - Odor (per weaner) - Housing system: fully-slatted floor with vacuum system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10335/"
+  },
+  {
+    "cod": 10336,
+    "name": "Finishers - Odor (per finisher, by number of animal) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10336/"
+  },
+  {
+    "cod": 10337,
+    "name": "Finishers - Odor (per finisher, by number of animal) - Housing system: fully slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10337/"
+  },
+  {
+    "cod": 10338,
+    "name": "Finishers - Odor (per finisher) - Housing system: fully slatted floor with vacuum system",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10338/"
+  },
+  {
+    "cod": 10339,
+    "name": "Finishers - Odor (per finisher) - Housing system: partially slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10339/"
+  },
+  {
+    "cod": 10340,
+    "name": "Dairy cattle - Odor (per cow) - Housing system: deep litter",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10340/"
+  },
+  {
+    "cod": 10341,
+    "name": "Dairy cattle - Odor (per cow) - Housing system: cubicles",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10341/"
+  },
+  {
+    "cod": 10342,
+    "name": "BREF emissions to air from poultry houses - Laying hens - Enriched cage systems",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10342/"
+  },
+  {
+    "cod": 10343,
+    "name": "BREF emissions to air from poultry houses - Laying hens - Non cage systems",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10343/"
+  },
+  {
+    "cod": 10344,
+    "name": "BREF emissions to air from poultry houses - Pullets - Cage and not cage systems",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10344/"
+  },
+  {
+    "cod": 10345,
+    "name": "BREF emissions to air from poultry houses - Broilers",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10345/"
+  },
+  {
+    "cod": 10346,
+    "name": "BREF emissions to air from poultry houses - Broiler breeders",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10346/"
+  },
+  {
+    "cod": 10347,
+    "name": "BREF emissions to air from poultry houses - Turkeys (female) Whole period",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10347/"
+  },
+  {
+    "cod": 10348,
+    "name": "BREF emissions to air from poultry houses - Turkeys (male) Whole period",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10348/"
+  },
+  {
+    "cod": 10349,
+    "name": "BREF emissions to air from poultry houses - Ducks",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10349/"
+  },
+  {
+    "cod": 10350,
+    "name": "BREF emissions to air from poultry houses - Guinea Fowl",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10350/"
+  },
+  {
+    "cod": 10351,
+    "name": "Dairy cattle - Odor (per cow) - Housing system: shallow litter",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10351/"
+  },
+  {
+    "cod": 10352,
+    "name": "Dairy cattle - Odor (per cow) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10352/"
+  },
+  {
+    "cod": 10353,
+    "name": "Dairy cattle - Odor (per square meter) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10353/"
+  },
+  {
+    "cod": 10354,
+    "name": "Dairy cattle - Odor (per square meter) - Housing system: cubicles partially slatted",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10354/"
+  },
+  {
+    "cod": 10355,
+    "name": "Dairy cattle - Odor (per square meter) - Housing system: cubicles",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10355/"
+  },
+  {
+    "cod": 10356,
+    "name": "Dairy cattle - Odor (per square meter) - Housing system: deep litter",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10356/"
+  },
+  {
+    "cod": 10357,
+    "name": "Dairy cattle - Odor (per square meter) - Housing system: shallow litter",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10357/"
+  },
+  {
+    "cod": 10358,
+    "name": "Dry sows - Odor (per dry sow, by area) - Housing system: partially slatted floor ",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10358/"
+  },
+  {
+    "cod": 10359,
+    "name": "Gestating and farrowing sows - Odor (per sow, by area) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10359/"
+  },
+  {
+    "cod": 10360,
+    "name": "Gestating and farrowing sows - Odor (per sow, by area) - Housing system: partially slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10360/"
+  },
+  {
+    "cod": 10361,
+    "name": "Weaners - Odor (per weaner) - Housing system: partially slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10361/"
+  },
+  {
+    "cod": 10362,
+    "name": "Weaners - Odor (per weaner, by area) - Housing system: fully slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10362/"
+  },
+  {
+    "cod": 10363,
+    "name": "Finishers - Odor (per finisher, by area) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10363/"
+  },
+  {
+    "cod": 10364,
+    "name": "Finishers - Odor (per finisher, by area) - Housing system: fully slatted floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10364/"
+  },
+  {
+    "cod": 10365,
+    "name": "Broilers - Odor (per square meter) - Housing system: generic",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10365/"
+  },
+  {
+    "cod": 10366,
+    "name": "Broilers - Odor (per square meter) - Housing system: litter-straw",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10366/"
+  },
+  {
+    "cod": 10367,
+    "name": "Laying hens - Odor (per square meter) - Housing system: battery cages deep liquid manure pit",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10367/"
+  },
+  {
+    "cod": 10368,
+    "name": "Laying hens - Odor (per square meter) - Housing system: litter-straw floor",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10368/"
+  },
+  {
+    "cod": 10369,
+    "name": "Nitrous Oxide emissions to air from enteric fermentation and manure management - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10369/"
+  },
+  {
+    "cod": 10370,
+    "name": "Nitrous Oxide emissions to air from enteric fermentation and manure management - Sows - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10370/"
+  },
+  {
+    "cod": 10371,
+    "name": "Nitrous Oxide emissions to air from enteric fermentation and manure management - Laying hens - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10371/"
+  },
+  {
+    "cod": 10372,
+    "name": "Nitrous Oxide emissions to air from enteric fermentation and manure management - Broilers - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10372/"
+  },
+  {
+    "cod": 10373,
+    "name": "Nitrous Oxide emissions to air from enteric fermentation and manure management - Other poultry - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10373/"
+  },
+  {
+    "cod": 10376,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B1a - Dairy cows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10376/"
+  },
+  {
+    "cod": 10377,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B1a - Dairy cows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10377/"
+  },
+  {
+    "cod": 10378,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B1b - Other cattle (including young cattle, beef cattle and suckling cows), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10378/"
+  },
+  {
+    "cod": 10379,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B1b - Other cattle, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10379/"
+  },
+  {
+    "cod": 10380,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B2 - Sheep, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10380/"
+  },
+  {
+    "cod": 10381,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B3 - Fattening pigs, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10381/"
+  },
+  {
+    "cod": 10382,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B3 - Fattening pigs, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10382/"
+  },
+  {
+    "cod": 10383,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B3 - Sows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10383/"
+  },
+  {
+    "cod": 10384,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B3 - Sows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10384/"
+  },
+  {
+    "cod": 10385,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4a - Buffalo, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10385/"
+  },
+  {
+    "cod": 10386,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4d - Goats, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10386/"
+  },
+  {
+    "cod": 10387,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4e - Horses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10387/"
+  },
+  {
+    "cod": 10388,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4f - Mules and asses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10388/"
+  },
+  {
+    "cod": 10389,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4gi - Laying hens (laying hens and parents), solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10389/"
+  },
+  {
+    "cod": 10390,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4gi - Laying hens (laying hens and parents), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10390/"
+  },
+  {
+    "cod": 10391,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4gii - Broilers (broilers and parents), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10391/"
+  },
+  {
+    "cod": 10392,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4giii - Turkeys, litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10392/"
+  },
+  {
+    "cod": 10393,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4giv - Other poultry (ducks), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10393/"
+  },
+  {
+    "cod": 10394,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4giv - Other poultry (geese), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10394/"
+  },
+  {
+    "cod": 10395,
+    "name": "Ammonia emissions to air from housing, storage and yards - 3B4h - Other livestock (fur animals) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10395/"
+  },
+  {
+    "cod": 10396,
+    "name": "Ammonia emissions to air - 3B4h - Other livestock (camels), solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10396/"
+  },
+  {
+    "cod": 10397,
+    "name": "Ammonia emissions to air following manure application - 3B1a - Dairy cows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10397/"
+  },
+  {
+    "cod": 10398,
+    "name": "Ammonia emissions to air following manure application - 3B1a - Dairy cows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10398/"
+  },
+  {
+    "cod": 10399,
+    "name": "Ammonia emissions to air following manure application - 3B1b - Other cattle (including young cattle, beef cattle and suckling cows), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10399/"
+  },
+  {
+    "cod": 10400,
+    "name": "Ammonia emissions to air following manure application - 3B1b - Other cattle, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10400/"
+  },
+  {
+    "cod": 10401,
+    "name": "Ammonia emissions to air following manure application - 3B2 - Sheep, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10401/"
+  },
+  {
+    "cod": 10402,
+    "name": "Ammonia emissions to air following manure application - 3B3 - Fattening pigs, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10402/"
+  },
+  {
+    "cod": 10403,
+    "name": "Ammonia emissions to air following manure application - 3B3 - Fattening pigs, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10403/"
+  },
+  {
+    "cod": 10404,
+    "name": "Ammonia emissions to air following manure application - 3B3 - Sows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10404/"
+  },
+  {
+    "cod": 10405,
+    "name": "Ammonia emissions to air following manure application - 3B3 - Sows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10405/"
+  },
+  {
+    "cod": 10406,
+    "name": "Ammonia emissions to air following manure application - 3B4a - Buffalo, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10406/"
+  },
+  {
+    "cod": 10407,
+    "name": "Ammonia emissions to air following manure application - 3B4d - Goats, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10407/"
+  },
+  {
+    "cod": 10408,
+    "name": "Ammonia emissions to air following manure application - 3B4e - Horses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10408/"
+  },
+  {
+    "cod": 10409,
+    "name": "Ammonia emissions to air following manure application - 3B4f - Mules and asses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10409/"
+  },
+  {
+    "cod": 10410,
+    "name": "Ammonia emissions to air following manure application - 3B4gi - Laying hens (laying hens and parents), solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10410/"
+  },
+  {
+    "cod": 10411,
+    "name": "Ammonia emissions to air following manure application - 3B4gi - Laying hens (laying hens and parents), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10411/"
+  },
+  {
+    "cod": 10412,
+    "name": "Ammonia emissions to air following manure application - 3B4gii - Broilers (broilers and parents), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10412/"
+  },
+  {
+    "cod": 10413,
+    "name": "Ammonia emissions to air following manure application - 3B4giii - Turkeys, litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10413/"
+  },
+  {
+    "cod": 10414,
+    "name": "Ammonia emissions to air following manure application - 3B4giv - Other poultry (ducks), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10414/"
+  },
+  {
+    "cod": 10415,
+    "name": "Ammonia emissions to air following manure application - 3B4giv - Other poultry (geese), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10415/"
+  },
+  {
+    "cod": 10416,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B1a - Dairy cows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10416/"
+  },
+  {
+    "cod": 10417,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B1a - Dairy cows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10417/"
+  },
+  {
+    "cod": 10418,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B1b - Other cattle (including young cattle, beef cattle and suckling cows), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10418/"
+  },
+  {
+    "cod": 10419,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B1b - Other cattle, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10419/"
+  },
+  {
+    "cod": 10420,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B2 - Sheep, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10420/"
+  },
+  {
+    "cod": 10421,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B4a - Buffalo, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10421/"
+  },
+  {
+    "cod": 10422,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B4d - Goats, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10422/"
+  },
+  {
+    "cod": 10423,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B4e - Horses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10423/"
+  },
+  {
+    "cod": 10424,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B4f - Mules and asses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10424/"
+  },
+  {
+    "cod": 10425,
+    "name": "Ammonia emissions to air from excreta deposited by grazing livestock - 3B3 - Sows, outdoor - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10425/"
+  },
+  {
+    "cod": 10426,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B1a - Dairy cattle, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10426/"
+  },
+  {
+    "cod": 10427,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B1a - Dairy cattle, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10427/"
+  },
+  {
+    "cod": 10428,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B1b - Non dairy cattle (including young cattle, beef cattle and suckling cows), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10428/"
+  },
+  {
+    "cod": 10429,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B1b - Non dairy cattle, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10429/"
+  },
+  {
+    "cod": 10430,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B2 - Sheep, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10430/"
+  },
+  {
+    "cod": 10431,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B3 - Fattening pigs, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10431/"
+  },
+  {
+    "cod": 10432,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B3 - Fattening pigs, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10432/"
+  },
+  {
+    "cod": 10433,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B3 - Sows, slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10433/"
+  },
+  {
+    "cod": 10434,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B3 - Sows, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10434/"
+  },
+  {
+    "cod": 10435,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4a - Buffalo, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10435/"
+  },
+  {
+    "cod": 10436,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4d - Goats, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10436/"
+  },
+  {
+    "cod": 10437,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4e - Horses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10437/"
+  },
+  {
+    "cod": 10438,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4f - Mules and asses, solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10438/"
+  },
+  {
+    "cod": 10439,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4gi - Laying hens (laying hens and parents), solid manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10439/"
+  },
+  {
+    "cod": 10440,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4gi - Laying hens (laying hens and parents), slurry manure - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10440/"
+  },
+  {
+    "cod": 10441,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4gii - Broilers (broilers and parents), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10441/"
+  },
+  {
+    "cod": 10442,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4giii - Turkeys, litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10442/"
+  },
+  {
+    "cod": 10443,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4giv - Other poultry (ducks), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10443/"
+  },
+  {
+    "cod": 10444,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4giv - Other poultry (geese), litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10444/"
+  },
+  {
+    "cod": 10445,
+    "name": "Nitrous dioxide emissions to air from stored manure - 3B4h - Other animals, litter - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10445/"
+  },
+  {
+    "cod": 10446,
+    "name": "NMVOCs emissions to air from livestock - 3B1a - Dairy cattle, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10446/"
+  },
+  {
+    "cod": 10447,
+    "name": "NMVOCs emissions to air from livestock - 3B1a - Dairy cattle, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10447/"
+  },
+  {
+    "cod": 10448,
+    "name": "NMVOCs emissions to air from livestock - 3B1b - Non dairy cattle (includes young cattle, beef cattle and suckling cows), with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10448/"
+  },
+  {
+    "cod": 10449,
+    "name": "NMVOCs emissions to air from livestock - 3B1b - Non dairy cattle (includes young cattle, beef cattle and suckling cows), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10449/"
+  },
+  {
+    "cod": 10450,
+    "name": "NMVOCs emissions to air from livestock - 3B2 - Sheep, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10450/"
+  },
+  {
+    "cod": 10451,
+    "name": "NMVOCs emissions to air from livestock - 3B2 - Sheep, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10451/"
+  },
+  {
+    "cod": 10452,
+    "name": "NMVOCs emissions to air from livestock - 3B3 - Fattening pigs (Include piglets from 8 8 kg to slaughtering), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10452/"
+  },
+  {
+    "cod": 10453,
+    "name": "NMVOCs emissions to air from livestock - 3B3 - Sows, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10453/"
+  },
+  {
+    "cod": 10454,
+    "name": "NMVOCs emissions to air from livestock - 3B4a - Buffalo, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10454/"
+  },
+  {
+    "cod": 10455,
+    "name": "NMVOCs emissions to air from livestock - 3B4a - Buffalo, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10455/"
+  },
+  {
+    "cod": 10456,
+    "name": "NMVOCs emissions to air from livestock - 3B4d - Goats, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10456/"
+  },
+  {
+    "cod": 10457,
+    "name": "NMVOCs emissions to air from livestock - 3B4d - Goats, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10457/"
+  },
+  {
+    "cod": 10458,
+    "name": "NMVOCs emissions to air from livestock - 3B4e - Horses, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10458/"
+  },
+  {
+    "cod": 10459,
+    "name": "NMVOCs emissions to air from livestock - 3B4e - Horses, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10459/"
+  },
+  {
+    "cod": 10460,
+    "name": "NMVOCs emissions to air from livestock - 3B4f - Mules and asses, with silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10460/"
+  },
+  {
+    "cod": 10461,
+    "name": "NMVOCs emissions to air from livestock - 3B4f - Mules and asses, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10461/"
+  },
+  {
+    "cod": 10462,
+    "name": "NMVOCs emissions to air from livestock - 3B4gi - Laying hens (laying hens and parents), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10462/"
+  },
+  {
+    "cod": 10463,
+    "name": "NMVOCs emissions to air from livestock - 3B4gii - Broilers (broilers and parents), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10463/"
+  },
+  {
+    "cod": 10464,
+    "name": "NMVOCs emissions to air from livestock - 3B4giii - Turkeys, without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10464/"
+  },
+  {
+    "cod": 10465,
+    "name": "NMVOCs emissions to air from livestock - 3B4giv - Other (ducks, geese), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10465/"
+  },
+  {
+    "cod": 10466,
+    "name": "NMVOCs emissions to air from livestock - 3B4h - Other animals (fur animals), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10466/"
+  },
+  {
+    "cod": 10467,
+    "name": "NMVOCs emissions to air from livestock - 3B4h - Other animals (rabbits), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10467/"
+  },
+  {
+    "cod": 10468,
+    "name": "NMVOCs emissions to air from livestock - 3B4h - Other animals (reindeer, assumed 100% grazing), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10468/"
+  },
+  {
+    "cod": 10469,
+    "name": "NMVOCs emissions to air from livestock - 3B4h - Other animals (camels), without silage feeding - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10469/"
+  },
+  {
+    "cod": 10470,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B1a - Dairy cattle - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10470/"
+  },
+  {
+    "cod": 10471,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (including young cattle, beef cattle and suckling cows) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10471/"
+  },
+  {
+    "cod": 10472,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (calves) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10472/"
+  },
+  {
+    "cod": 10473,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B2 - Sheep - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10473/"
+  },
+  {
+    "cod": 10474,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B3 - Fattening pigs - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10474/"
+  },
+  {
+    "cod": 10475,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B3 - Weaners - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10475/"
+  },
+  {
+    "cod": 10476,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B3 - Sows - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10476/"
+  },
+  {
+    "cod": 10477,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B4a - Buffalo - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10477/"
+  },
+  {
+    "cod": 10478,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B4d - Goats - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10478/"
+  },
+  {
+    "cod": 10479,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B4e - Horses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10479/"
+  },
+  {
+    "cod": 10480,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B4f - Mules and asses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10480/"
+  },
+  {
+    "cod": 10481,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3Bgi - Laying hens (laying hens and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10481/"
+  },
+  {
+    "cod": 10482,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3Bgii - Broilers (broilers and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10482/"
+  },
+  {
+    "cod": 10483,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3Bgiii - Turkeys - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10483/"
+  },
+  {
+    "cod": 10484,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (ducks) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10484/"
+  },
+  {
+    "cod": 10485,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (Geese) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10485/"
+  },
+  {
+    "cod": 10486,
+    "name": "TSP emissions to air from livestock husbandry (housing) - 3B4h - Other animals (Fur animals) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10486/"
+  },
+  {
+    "cod": 10487,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B1a - Dairy cattle - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10487/"
+  },
+  {
+    "cod": 10488,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (including young cattle, beef cattle and suckling cows) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10488/"
+  },
+  {
+    "cod": 10489,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (calves) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10489/"
+  },
+  {
+    "cod": 10490,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B2 - Sheep - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10490/"
+  },
+  {
+    "cod": 10491,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B3 - Fattening pigs - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10491/"
+  },
+  {
+    "cod": 10492,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B3 - Weaners - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10492/"
+  },
+  {
+    "cod": 10493,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B3 - Sows - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10493/"
+  },
+  {
+    "cod": 10494,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B4a - Buffalo - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10494/"
+  },
+  {
+    "cod": 10495,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B4d - Goats - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10495/"
+  },
+  {
+    "cod": 10496,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B4e - Horses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10496/"
+  },
+  {
+    "cod": 10497,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B4f - Mules and asses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10497/"
+  },
+  {
+    "cod": 10498,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3Bgi - Laying hens (laying hens and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10498/"
+  },
+  {
+    "cod": 10499,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3Bgii - Broilers (broilers and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10499/"
+  },
+  {
+    "cod": 10500,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3Bgiii - Turkeys - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10500/"
+  },
+  {
+    "cod": 10501,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (ducks) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10501/"
+  },
+  {
+    "cod": 10502,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (Geese) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10502/"
+  },
+  {
+    "cod": 10503,
+    "name": "PM10 emissions to air from livestock husbandry (housing) - 3B4h - Other animals (Fur animals) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10503/"
+  },
+  {
+    "cod": 10504,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B1a - Dairy cattle - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10504/"
+  },
+  {
+    "cod": 10505,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (including young cattle, beef cattle and suckling cows) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10505/"
+  },
+  {
+    "cod": 10506,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B1b - Non dairy cattle (calves) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10506/"
+  },
+  {
+    "cod": 10507,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B2 - Sheep - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10507/"
+  },
+  {
+    "cod": 10508,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B3 - Fattening pigs - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10508/"
+  },
+  {
+    "cod": 10509,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B3 - Weaners - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10509/"
+  },
+  {
+    "cod": 10510,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B3 - Sows - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10510/"
+  },
+  {
+    "cod": 10511,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B4a - Buffalo - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10511/"
+  },
+  {
+    "cod": 10512,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B4d - Goats - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10512/"
+  },
+  {
+    "cod": 10513,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B4e - Horses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10513/"
+  },
+  {
+    "cod": 10514,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B4f - Mules and asses - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10514/"
+  },
+  {
+    "cod": 10515,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3Bgi - Laying hens (laying hens and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10515/"
+  },
+  {
+    "cod": 10516,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3Bgii - Broilers (broilers and parents) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10516/"
+  },
+  {
+    "cod": 10517,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3Bgiii - Turkeys - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10517/"
+  },
+  {
+    "cod": 10518,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (ducks) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10518/"
+  },
+  {
+    "cod": 10519,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3Bgiv - Other poultry (Geese) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10519/"
+  },
+  {
+    "cod": 10520,
+    "name": "PM2.5 emissions to air from livestock husbandry (housing) - 3B4h - Other animals (Fur animals) - EMEP/EEA 2016",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10520/"
+  },
+  {
+    "cod": 10521,
+    "name": "Ammonia emissions to air from housing - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10521/"
+  },
+  {
+    "cod": 10522,
+    "name": "Ammonia emissions to air from housing - Sows - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10522/"
+  },
+  {
+    "cod": 10523,
+    "name": "Ammonia emissions to air from housing - Laying hens - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10523/"
+  },
+  {
+    "cod": 10524,
+    "name": "Ammonia emissions to air from housing - Broilers - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10524/"
+  },
+  {
+    "cod": 10525,
+    "name": "Ammonia emissions to air from housing - Other poultry - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10525/"
+  },
+  {
+    "cod": 10526,
+    "name": "Ammonia emissions to air from storage - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10526/"
+  },
+  {
+    "cod": 10527,
+    "name": "Ammonia emissions to air from storage - Sows - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10527/"
+  },
+  {
+    "cod": 10528,
+    "name": "Ammonia emissions to air from storage - Laying hens - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10528/"
+  },
+  {
+    "cod": 10529,
+    "name": "Ammonia emissions to air from storage - Broilers - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10529/"
+  },
+  {
+    "cod": 10530,
+    "name": "Ammonia emissions to air from storage - Other poultry - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10530/"
+  },
+  {
+    "cod": 10531,
+    "name": "Ammonia emissions to air from landspreading - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10531/"
+  },
+  {
+    "cod": 10532,
+    "name": "Ammonia emissions to air from landspreading - Sows - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10532/"
+  },
+  {
+    "cod": 10533,
+    "name": "Ammonia emissions to air from landspreading - Laying hens - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10533/"
+  },
+  {
+    "cod": 10534,
+    "name": "Ammonia emissions to air from landspreading - Broilers - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10534/"
+  },
+  {
+    "cod": 10535,
+    "name": "Ammonia emissions to air from landspreading - Other poultry - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10535/"
+  },
+  {
+    "cod": 10536,
+    "name": "Methane emissions to air from enteric fermentation - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10536/"
+  },
+  {
+    "cod": 10537,
+    "name": "Methane emissions to air from enteric fermentation - Sows - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10537/"
+  },
+  {
+    "cod": 10538,
+    "name": "Methane emissions to air from manure management - Other swines - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10538/"
+  },
+  {
+    "cod": 10539,
+    "name": "Methane emissions to air from manure management - Laying hens - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10539/"
+  },
+  {
+    "cod": 10540,
+    "name": "Methane emissions to air from manure management - Broilers - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10540/"
+  },
+  {
+    "cod": 10541,
+    "name": "Methane emissions to air from manure management - Other poultry - ISPRA 2008",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10541/"
+  },
+  {
+    "cod": 10542,
+    "name": "CO2 reduction with tree planting - Norway maple",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10542/"
+  },
+  {
+    "cod": 10543,
+    "name": "CO2 reduction with tree planting - Warty birch",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10543/"
+  },
+  {
+    "cod": 10544,
+    "name": "CO2 reduction with tree planting \u2013 Turkey oak",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10544/"
+  },
+  {
+    "cod": 10545,
+    "name": "CO2 reduction with tree planting \u2013 Ginkgo",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10545/"
+  },
+  {
+    "cod": 10546,
+    "name": "CO2 reduction with tree planting \u2013 Large leaved lime",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10546/"
+  },
+  {
+    "cod": 10547,
+    "name": "CO2 reduction with tree planting \u2013 European nettle tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10547/"
+  },
+  {
+    "cod": 10548,
+    "name": "CO2 reduction with tree planting \u2013 Small leaved lime",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10548/"
+  },
+  {
+    "cod": 10549,
+    "name": "CO2 reduction with tree planting \u2013 Field elm",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10549/"
+  },
+  {
+    "cod": 10550,
+    "name": "CO2 reduction with tree planting \u2013 European ash",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10550/"
+  },
+  {
+    "cod": 10551,
+    "name": "CO2 reduction with tree planting \u2013 Common alder",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10551/"
+  },
+  {
+    "cod": 10552,
+    "name": "Healthcare waste generation (based on kg/bed of waste production)",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10552/"
+  },
+  {
+    "cod": 10553,
+    "name": "Transit on paved roads (urban roads) - INEMAR 2017",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10553/"
+  },
+  {
+    "cod": 10554,
+    "name": "Transit on paved roads (interurban roads) - INEMAR 2017",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10554/"
+  },
+  {
+    "cod": 10555,
+    "name": "Transit on paved roads (highways) - INEMAR 2017",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10555/"
+  },
+  {
+    "cod": 10556,
+    "name": "Land consumption",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10556/"
+  },
+  {
+    "cod": 10557,
+    "name": "Tree planting - Acacia Dealbata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10557/"
+  },
+  {
+    "cod": 10558,
+    "name": "Tree planting - Acacia Dealbata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10558/"
+  },
+  {
+    "cod": 10559,
+    "name": "Tree planting - Acer Campestre - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10559/"
+  },
+  {
+    "cod": 10560,
+    "name": "Tree planting - Acer Campestre - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10560/"
+  },
+  {
+    "cod": 10561,
+    "name": "Tree planting - Acer Negundo - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10561/"
+  },
+  {
+    "cod": 10562,
+    "name": "Tree planting - Acer Negundo - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10562/"
+  },
+  {
+    "cod": 10563,
+    "name": "Tree planting - Acer Platanoides - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10563/"
+  },
+  {
+    "cod": 10564,
+    "name": "Tree planting - Acer Platanoides - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10564/"
+  },
+  {
+    "cod": 10565,
+    "name": "Tree planting - Acer Pseudoplatanus - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10565/"
+  },
+  {
+    "cod": 10566,
+    "name": "Tree planting - Acer Pseudoplatanus - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10566/"
+  },
+  {
+    "cod": 10567,
+    "name": "Tree planting - Acer Rubrum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10567/"
+  },
+  {
+    "cod": 10568,
+    "name": "Tree planting - Acer Rubrum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10568/"
+  },
+  {
+    "cod": 10569,
+    "name": "Tree planting - Acer Saccharinum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10569/"
+  },
+  {
+    "cod": 10570,
+    "name": "Tree planting - Acer Saccharinum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10570/"
+  },
+  {
+    "cod": 10571,
+    "name": "Tree planting - Aesculus Hippocastanum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10571/"
+  },
+  {
+    "cod": 10572,
+    "name": "Tree planting - Aesculus Hippocastanum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10572/"
+  },
+  {
+    "cod": 10573,
+    "name": "Tree planting - Aesculus x Carnea - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10573/"
+  },
+  {
+    "cod": 10574,
+    "name": "Tree planting - Aesculus x Carnea - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10574/"
+  },
+  {
+    "cod": 10575,
+    "name": "Tree planting - Ailanthus Altissima - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10575/"
+  },
+  {
+    "cod": 10576,
+    "name": "Tree planting - Ailanthus Altissima - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10576/"
+  },
+  {
+    "cod": 10577,
+    "name": "Tree planting - Albizzia Julibrissin - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10577/"
+  },
+  {
+    "cod": 10578,
+    "name": "Tree planting - Albizzia Julibrissin - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10578/"
+  },
+  {
+    "cod": 10579,
+    "name": "Tree planting - Araucaria Araucana - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10579/"
+  },
+  {
+    "cod": 10580,
+    "name": "Tree planting - Araucaria Araucana - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10580/"
+  },
+  {
+    "cod": 10581,
+    "name": "Tree planting - Bauhinia Purpurea - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10581/"
+  },
+  {
+    "cod": 10582,
+    "name": "Tree planting - Bauhinia Purpurea - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10582/"
+  },
+  {
+    "cod": 10583,
+    "name": "Tree planting - Betula Nigra - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10583/"
+  },
+  {
+    "cod": 10584,
+    "name": "Tree planting - Betula Nigra - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10584/"
+  },
+  {
+    "cod": 10585,
+    "name": "Tree planting - Betula Papyrifera - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10585/"
+  },
+  {
+    "cod": 10586,
+    "name": "Tree planting - Betula Papyrifera - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10586/"
+  },
+  {
+    "cod": 10587,
+    "name": "Tree planting - Betula Pendula - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10587/"
+  },
+  {
+    "cod": 10588,
+    "name": "Tree planting - Betula Pendula - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10588/"
+  },
+  {
+    "cod": 10589,
+    "name": "Tree planting - Brachychiton Populneus - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10589/"
+  },
+  {
+    "cod": 10590,
+    "name": "Tree planting - Brachychiton Populneus - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10590/"
+  },
+  {
+    "cod": 10591,
+    "name": "Tree planting - Carpinus Betulus - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10591/"
+  },
+  {
+    "cod": 10592,
+    "name": "Tree planting - Carpinus Betulus - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10592/"
+  },
+  {
+    "cod": 10593,
+    "name": "Tree planting - Carya Illinoensis - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10593/"
+  },
+  {
+    "cod": 10594,
+    "name": "Tree planting - Carya Illinoensis - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10594/"
+  },
+  {
+    "cod": 10595,
+    "name": "Tree planting - Catalpa Bignonioides - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10595/"
+  },
+  {
+    "cod": 10596,
+    "name": "Tree planting - Catalpa Bignonioides - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10596/"
+  },
+  {
+    "cod": 10597,
+    "name": "Tree planting - Celtis Australis - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10597/"
+  },
+  {
+    "cod": 10598,
+    "name": "Tree planting - Celtis Australis - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10598/"
+  },
+  {
+    "cod": 10599,
+    "name": "Tree planting - Ceratonia Siliqua - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10599/"
+  },
+  {
+    "cod": 10600,
+    "name": "Tree planting - Ceratonia Siliqua - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10600/"
+  },
+  {
+    "cod": 10601,
+    "name": "Tree planting - Cercidiphyllum Japonicum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10601/"
+  },
+  {
+    "cod": 10602,
+    "name": "Tree planting - Cercidiphyllum Japonicum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10602/"
+  },
+  {
+    "cod": 10603,
+    "name": "Tree planting - Cercis Siliquastrum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10603/"
+  },
+  {
+    "cod": 10604,
+    "name": "Tree planting - Cercis Siliquastrum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10604/"
+  },
+  {
+    "cod": 10605,
+    "name": "Tree planting - Chamaecyparis Lawsoniana - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10605/"
+  },
+  {
+    "cod": 10606,
+    "name": "Tree planting - Chamaecyparis Lawsoniana - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10606/"
+  },
+  {
+    "cod": 10607,
+    "name": "Tree planting - Chorisia speciosa - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10607/"
+  },
+  {
+    "cod": 10608,
+    "name": "Tree planting - Chorisia speciosa - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10608/"
+  },
+  {
+    "cod": 10609,
+    "name": "Tree planting - Cinnamomum Camphora - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10609/"
+  },
+  {
+    "cod": 10610,
+    "name": "Tree planting - Cinnamomum Camphora - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10610/"
+  },
+  {
+    "cod": 10611,
+    "name": "Tree planting - Citrus Aurantium - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10611/"
+  },
+  {
+    "cod": 10612,
+    "name": "Tree planting - Citrus Aurantium - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10612/"
+  },
+  {
+    "cod": 10613,
+    "name": "Tree planting - Citrus Reticulata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10613/"
+  },
+  {
+    "cod": 10614,
+    "name": "Tree planting - Citrus Reticulata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10614/"
+  },
+  {
+    "cod": 10615,
+    "name": "Tree planting - Corylus Avellana - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10615/"
+  },
+  {
+    "cod": 10616,
+    "name": "Tree planting - Corylus Avellana - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10616/"
+  },
+  {
+    "cod": 10617,
+    "name": "Tree planting - Corylus Colurna - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10617/"
+  },
+  {
+    "cod": 10618,
+    "name": "Tree planting - Corylus Colurna - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10618/"
+  },
+  {
+    "cod": 10619,
+    "name": "Tree planting - Cryptomeria Japonica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10619/"
+  },
+  {
+    "cod": 10620,
+    "name": "Tree planting - Cryptomeria Japonica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10620/"
+  },
+  {
+    "cod": 10621,
+    "name": "Tree planting - Cupressus Sempervirens - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10621/"
+  },
+  {
+    "cod": 10622,
+    "name": "Tree planting - Cupressus Sempervirens - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10622/"
+  },
+  {
+    "cod": 10623,
+    "name": "Tree planting - Diospyros Virginiana - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10623/"
+  },
+  {
+    "cod": 10624,
+    "name": "Tree planting - Diospyros Virginiana - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10624/"
+  },
+  {
+    "cod": 10625,
+    "name": "Tree planting - Eriobotrya Japonica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10625/"
+  },
+  {
+    "cod": 10626,
+    "name": "Tree planting - Eriobotrya Japonica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10626/"
+  },
+  {
+    "cod": 10627,
+    "name": "Tree planting - Erythrina Christa-Galli - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10627/"
+  },
+  {
+    "cod": 10628,
+    "name": "Tree planting - Erythrina Christa-Galli - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10628/"
+  },
+  {
+    "cod": 10629,
+    "name": "Tree planting - Eucalyptus Ficifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10629/"
+  },
+  {
+    "cod": 10630,
+    "name": "Tree planting - Eucalyptus Ficifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10630/"
+  },
+  {
+    "cod": 10631,
+    "name": "Tree planting - Eucalyptus Gunnii - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10631/"
+  },
+  {
+    "cod": 10632,
+    "name": "Tree planting - Eucalyptus Gunnii - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10632/"
+  },
+  {
+    "cod": 10633,
+    "name": "Tree planting - Fagus Sylvatica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10633/"
+  },
+  {
+    "cod": 10634,
+    "name": "Tree planting - Fagus Sylvatica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10634/"
+  },
+  {
+    "cod": 10635,
+    "name": "Tree planting - Ficus Macrophylla - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10635/"
+  },
+  {
+    "cod": 10636,
+    "name": "Tree planting - Ficus Macrophylla - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10636/"
+  },
+  {
+    "cod": 10637,
+    "name": "Tree planting - Ficus Microcarpa - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10637/"
+  },
+  {
+    "cod": 10638,
+    "name": "Tree planting - Ficus Microcarpa - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10638/"
+  },
+  {
+    "cod": 10639,
+    "name": "Tree planting - Firmiana Simplex - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10639/"
+  },
+  {
+    "cod": 10640,
+    "name": "Tree planting - Firmiana Simplex - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10640/"
+  },
+  {
+    "cod": 10641,
+    "name": "Tree planting - Fraxinus Excelsior - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10641/"
+  },
+  {
+    "cod": 10642,
+    "name": "Tree planting - Fraxinus Excelsior - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10642/"
+  },
+  {
+    "cod": 10643,
+    "name": "Tree planting - Fraxinus Oxycarpa - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10643/"
+  },
+  {
+    "cod": 10644,
+    "name": "Tree planting - Fraxinus Oxycarpa - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10644/"
+  },
+  {
+    "cod": 10645,
+    "name": "Tree planting - Fraxinus Ornus - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10645/"
+  },
+  {
+    "cod": 10646,
+    "name": "Tree planting - Fraxinus Ornus - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10646/"
+  },
+  {
+    "cod": 10647,
+    "name": "Tree planting - Ginkgo Biloba - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10647/"
+  },
+  {
+    "cod": 10648,
+    "name": "Tree planting - Ginkgo Biloba - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10648/"
+  },
+  {
+    "cod": 10649,
+    "name": "Tree planting - Gleditsia Triacanthos - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10649/"
+  },
+  {
+    "cod": 10650,
+    "name": "Tree planting - Gleditsia Triacanthos - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10650/"
+  },
+  {
+    "cod": 10651,
+    "name": "Tree planting - Grevillea Robusta - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10651/"
+  },
+  {
+    "cod": 10652,
+    "name": "Tree planting - Grevillea Robusta - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10652/"
+  },
+  {
+    "cod": 10653,
+    "name": "Tree planting - Jacaranda Mimosifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10653/"
+  },
+  {
+    "cod": 10654,
+    "name": "Tree planting - Jacaranda Mimosifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10654/"
+  },
+  {
+    "cod": 10655,
+    "name": "Tree planting - Juglans Nigra - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10655/"
+  },
+  {
+    "cod": 10656,
+    "name": "Tree planting - Juglans Nigra - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10656/"
+  },
+  {
+    "cod": 10657,
+    "name": "Tree planting - Juglans Regia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10657/"
+  },
+  {
+    "cod": 10658,
+    "name": "Tree planting - Juglans Regia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10658/"
+  },
+  {
+    "cod": 10659,
+    "name": "Tree planting - Koelreuteria Paniculata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10659/"
+  },
+  {
+    "cod": 10660,
+    "name": "Tree planting - Koelreuteria Paniculata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10660/"
+  },
+  {
+    "cod": 10661,
+    "name": "Tree planting - Laburnum Anagyroides - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10661/"
+  },
+  {
+    "cod": 10662,
+    "name": "Tree planting - Laburnum Anagyroides - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10662/"
+  },
+  {
+    "cod": 10663,
+    "name": "Tree planting - Lagunaria Patersonii - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10663/"
+  },
+  {
+    "cod": 10664,
+    "name": "Tree planting - Lagunaria Patersonii - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10664/"
+  },
+  {
+    "cod": 10665,
+    "name": "Tree planting - Liquidambar Styraciflua - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10665/"
+  },
+  {
+    "cod": 10666,
+    "name": "Tree planting - Liquidambar Styraciflua - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10666/"
+  },
+  {
+    "cod": 10667,
+    "name": "Tree planting - Liriodendron Tulipifera - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10667/"
+  },
+  {
+    "cod": 10668,
+    "name": "Tree planting - Liriodendron Tulipifera - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10668/"
+  },
+  {
+    "cod": 10669,
+    "name": "Tree planting - Maclura Pomifera - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10669/"
+  },
+  {
+    "cod": 10670,
+    "name": "Tree planting - Maclura Pomifera - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10670/"
+  },
+  {
+    "cod": 10671,
+    "name": "Tree planting - Magnolia Grandiflora - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10671/"
+  },
+  {
+    "cod": 10672,
+    "name": "Tree planting - Magnolia Grandiflora - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10672/"
+  },
+  {
+    "cod": 10673,
+    "name": "Tree planting - Malus Spp - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10673/"
+  },
+  {
+    "cod": 10674,
+    "name": "Tree planting - Malus Spp - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10674/"
+  },
+  {
+    "cod": 10675,
+    "name": "Tree planting - Melia Azedarach - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10675/"
+  },
+  {
+    "cod": 10676,
+    "name": "Tree planting - Melia Azedarach - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10676/"
+  },
+  {
+    "cod": 10677,
+    "name": "Tree planting - Metasequoia Glyptostroboides - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10677/"
+  },
+  {
+    "cod": 10678,
+    "name": "Tree planting - Metasequoia Glyptostroboides - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10678/"
+  },
+  {
+    "cod": 10679,
+    "name": "Tree planting - Morus Spp - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10679/"
+  },
+  {
+    "cod": 10680,
+    "name": "Tree planting - Morus Spp - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10680/"
+  },
+  {
+    "cod": 10681,
+    "name": "Tree planting - Nerium Oleander - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10681/"
+  },
+  {
+    "cod": 10682,
+    "name": "Tree planting - Nerium Oleander - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10682/"
+  },
+  {
+    "cod": 10683,
+    "name": "Tree planting - Nyssa Sylvatica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10683/"
+  },
+  {
+    "cod": 10684,
+    "name": "Tree planting - Nyssa Sylvatica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10684/"
+  },
+  {
+    "cod": 10685,
+    "name": "Tree planting - Olea Europaea - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10685/"
+  },
+  {
+    "cod": 10686,
+    "name": "Tree planting - Olea Europaea - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10686/"
+  },
+  {
+    "cod": 10687,
+    "name": "Tree planting - Ostrya Carpinifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10687/"
+  },
+  {
+    "cod": 10688,
+    "name": "Tree planting - Ostrya Carpinifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10688/"
+  },
+  {
+    "cod": 10689,
+    "name": "Tree planting - Parrotia Persica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10689/"
+  },
+  {
+    "cod": 10690,
+    "name": "Tree planting - Parrotia Persica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10690/"
+  },
+  {
+    "cod": 10691,
+    "name": "Tree planting - Paulownia Tomentosa - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10691/"
+  },
+  {
+    "cod": 10692,
+    "name": "Tree planting - Paulownia Tomentosa - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10692/"
+  },
+  {
+    "cod": 10693,
+    "name": "Tree planting - Phellodendron Amurense - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10693/"
+  },
+  {
+    "cod": 10694,
+    "name": "Tree planting - Phellodendron Amurense - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10694/"
+  },
+  {
+    "cod": 10695,
+    "name": "Tree planting - Picea Pungens Glauca - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10695/"
+  },
+  {
+    "cod": 10696,
+    "name": "Tree planting - Picea Pungens Glauca - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10696/"
+  },
+  {
+    "cod": 10697,
+    "name": "Tree planting - Platanus x Acerifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10697/"
+  },
+  {
+    "cod": 10698,
+    "name": "Tree planting - Platanus x Acerifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10698/"
+  },
+  {
+    "cod": 10699,
+    "name": "Tree planting - Platycladus Orientalis - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10699/"
+  },
+  {
+    "cod": 10700,
+    "name": "Tree planting - Platycladus Orientalis - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10700/"
+  },
+  {
+    "cod": 10701,
+    "name": "Tree planting - Populus Alba - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10701/"
+  },
+  {
+    "cod": 10702,
+    "name": "Tree planting - Populus Alba - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10702/"
+  },
+  {
+    "cod": 10703,
+    "name": "Tree planting - Populus Nigra - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10703/"
+  },
+  {
+    "cod": 10704,
+    "name": "Tree planting - Populus Nigra - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10704/"
+  },
+  {
+    "cod": 10705,
+    "name": "Tree planting - Populus Tremuloides - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10705/"
+  },
+  {
+    "cod": 10706,
+    "name": "Tree planting - Populus Tremuloides - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10706/"
+  },
+  {
+    "cod": 10707,
+    "name": "Tree planting - Prunus Cerasifera Pissardii - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10707/"
+  },
+  {
+    "cod": 10708,
+    "name": "Tree planting - Prunus Cerasifera Pissardii - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10708/"
+  },
+  {
+    "cod": 10709,
+    "name": "Tree planting - Prunus Serrulata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10709/"
+  },
+  {
+    "cod": 10710,
+    "name": "Tree planting - Prunus Serrulata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10710/"
+  },
+  {
+    "cod": 10711,
+    "name": "Tree planting - Prunus Subhirtella - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10711/"
+  },
+  {
+    "cod": 10712,
+    "name": "Tree planting - Prunus Subhirtella - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10712/"
+  },
+  {
+    "cod": 10713,
+    "name": "Tree planting - Pseudotsuga Menziesii - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10713/"
+  },
+  {
+    "cod": 10714,
+    "name": "Tree planting - Pseudotsuga Menziesii - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10714/"
+  },
+  {
+    "cod": 10715,
+    "name": "Tree planting - Pyrus Calleryana - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10715/"
+  },
+  {
+    "cod": 10716,
+    "name": "Tree planting - Pyrus Calleryana - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10716/"
+  },
+  {
+    "cod": 10717,
+    "name": "Tree planting - Quercus Ilex - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10717/"
+  },
+  {
+    "cod": 10718,
+    "name": "Tree planting - Quercus Ilex - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10718/"
+  },
+  {
+    "cod": 10719,
+    "name": "Tree planting - Quercus Palustris - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10719/"
+  },
+  {
+    "cod": 10720,
+    "name": "Tree planting - Quercus Palustris - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10720/"
+  },
+  {
+    "cod": 10721,
+    "name": "Tree planting - Quercus Robur - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10721/"
+  },
+  {
+    "cod": 10722,
+    "name": "Tree planting - Quercus Robur - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10722/"
+  },
+  {
+    "cod": 10723,
+    "name": "Tree planting - Quercus Rubra - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10723/"
+  },
+  {
+    "cod": 10724,
+    "name": "Tree planting - Quercus Rubra - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10724/"
+  },
+  {
+    "cod": 10725,
+    "name": "Tree planting - Robinia Pseudoacacia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10725/"
+  },
+  {
+    "cod": 10726,
+    "name": "Tree planting - Robinia Pseudoacacia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10726/"
+  },
+  {
+    "cod": 10727,
+    "name": "Tree planting - Salix Alba - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10727/"
+  },
+  {
+    "cod": 10728,
+    "name": "Tree planting - Salix Alba - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10728/"
+  },
+  {
+    "cod": 10729,
+    "name": "Tree planting - Salix Babylonica - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10729/"
+  },
+  {
+    "cod": 10730,
+    "name": "Tree planting - Salix Babylonica - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10730/"
+  },
+  {
+    "cod": 10731,
+    "name": "Tree planting - Schinus Molle - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10731/"
+  },
+  {
+    "cod": 10732,
+    "name": "Tree planting - Schinus Molle - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10732/"
+  },
+  {
+    "cod": 10733,
+    "name": "Tree planting - Sorbus Aria - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10733/"
+  },
+  {
+    "cod": 10734,
+    "name": "Tree planting - Sorbus Aria - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10734/"
+  },
+  {
+    "cod": 10735,
+    "name": "Tree planting - Sorbus Aucuparia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10735/"
+  },
+  {
+    "cod": 10736,
+    "name": "Tree planting - Sorbus Aucuparia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10736/"
+  },
+  {
+    "cod": 10737,
+    "name": "Tree planting - Styphnolobium Japonicum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10737/"
+  },
+  {
+    "cod": 10738,
+    "name": "Tree planting - Styphnolobium Japonicum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10738/"
+  },
+  {
+    "cod": 10739,
+    "name": "Tree planting - Tamarix Spp - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10739/"
+  },
+  {
+    "cod": 10740,
+    "name": "Tree planting - Tamarix Spp - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10740/"
+  },
+  {
+    "cod": 10741,
+    "name": "Tree planting - Taxodium Distichum - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10741/"
+  },
+  {
+    "cod": 10742,
+    "name": "Tree planting - Taxodium Distichum - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10742/"
+  },
+  {
+    "cod": 10743,
+    "name": "Tree planting - Taxus Baccata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10743/"
+  },
+  {
+    "cod": 10744,
+    "name": "Tree planting - Taxus Baccata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10744/"
+  },
+  {
+    "cod": 10745,
+    "name": "Tree planting - Tilia Cordata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10745/"
+  },
+  {
+    "cod": 10746,
+    "name": "Tree planting - Tilia Cordata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10746/"
+  },
+  {
+    "cod": 10747,
+    "name": "Tree planting - Tilia Platyphyllos - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10747/"
+  },
+  {
+    "cod": 10748,
+    "name": "Tree planting - Tilia Platyphyllos - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10748/"
+  },
+  {
+    "cod": 10749,
+    "name": "Tree planting - Tilia Tomentosa - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10749/"
+  },
+  {
+    "cod": 10750,
+    "name": "Tree planting - Tilia Tomentosa - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10750/"
+  },
+  {
+    "cod": 10751,
+    "name": "Tree planting - Tilia x Europaea - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10751/"
+  },
+  {
+    "cod": 10752,
+    "name": "Tree planting - Tilia x Europaea - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10752/"
+  },
+  {
+    "cod": 10753,
+    "name": "Tree planting - Ulmus Parvifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10753/"
+  },
+  {
+    "cod": 10754,
+    "name": "Tree planting - Ulmus Parvifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10754/"
+  },
+  {
+    "cod": 10755,
+    "name": "Tree planting - Ulmus Procera - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10755/"
+  },
+  {
+    "cod": 10756,
+    "name": "Tree planting - Ulmus Procera - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10756/"
+  },
+  {
+    "cod": 10757,
+    "name": "Tree planting - Ulmus Pumila - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10757/"
+  },
+  {
+    "cod": 10758,
+    "name": "Tree planting - Ulmus Pumila - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10758/"
+  },
+  {
+    "cod": 10759,
+    "name": "Tree planting - Zelkova Carpinifolia - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10759/"
+  },
+  {
+    "cod": 10760,
+    "name": "Tree planting - Zelkova Carpinifolia - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10760/"
+  },
+  {
+    "cod": 10761,
+    "name": "Tree planting - Zelkova Serrata - Newly planted tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10761/"
+  },
+  {
+    "cod": 10762,
+    "name": "Tree planting - Zelkova Serrata - Mature tree",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10762/"
+  },
+  {
+    "cod": 10763,
+    "name": "LNG combustion",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10763/"
+  },
+  {
+    "cod": 10764,
+    "name": "LPG combustion",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10764/"
+  },
+  {
+    "cod": 10765,
+    "name": "Diesel fuel combustion",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10765/"
+  },
+  {
+    "cod": 10766,
+    "name": "Low sulphur fuel oil combustion",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10766/"
+  },
+  {
+    "cod": 10767,
+    "name": "Reduction of pollutants with air purification",
+    "geometry_type": "Polygon",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10767/"
+  },
+  {
+    "cod": 10768,
+    "name": "Passenger Cars - Battery electric (urban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10768/"
+  },
+  {
+    "cod": 10769,
+    "name": "Passenger Cars - Battery electric (interurban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10769/"
+  },
+  {
+    "cod": 10770,
+    "name": "Passenger Cars - Battery electric (highways) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10770/"
+  },
+  {
+    "cod": 10771,
+    "name": "Passenger Cars - Battery electric (total) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10771/"
+  },
+  {
+    "cod": 10772,
+    "name": "Transit on paved roads (urban roads) - Cars - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10772/"
+  },
+  {
+    "cod": 10773,
+    "name": "Transit on paved roads (urban roads) - Light duty vehicles <3,5t - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10773/"
+  },
+  {
+    "cod": 10774,
+    "name": "Transit on paved roads (urban roads) - Heavy duty vehicles (goods) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10774/"
+  },
+  {
+    "cod": 10775,
+    "name": "Transit on paved roads (interurban roads) - Cars - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10775/"
+  },
+  {
+    "cod": 10776,
+    "name": "Transit on paved roads (interurban roads) - Light duty vehicles <3,5t - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10776/"
+  },
+  {
+    "cod": 10777,
+    "name": "Transit on paved roads (interurban roads) - Heavy duty vehicles (goods) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10777/"
+  },
+  {
+    "cod": 10778,
+    "name": "Transit on paved roads (highways) - Cars - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10778/"
+  },
+  {
+    "cod": 10779,
+    "name": "Transit on paved roads (highways) - Light duty vehicles <3,5t - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10779/"
+  },
+  {
+    "cod": 10780,
+    "name": "Transit on paved roads (highways) - Heavy duty vehicles (goods) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10780/"
+  },
+  {
+    "cod": 10781,
+    "name": "Photovoltaic system",
+    "geometry_type": "Point",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10781/"
+  },
+  {
+    "cod": 10782,
+    "name": "Transit on paved roads (highways) - Heavy duty vehicles (passengers) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10782/"
+  },
+  {
+    "cod": 10783,
+    "name": "Transit on paved roads (interurban roads) - Heavy duty vehicles (passengers) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10783/"
+  },
+  {
+    "cod": 10784,
+    "name": "Transit on paved roads (urban roads) - Heavy duty vehicles (passengers) >3,5t  - INEMAR 2021",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10784/"
+  },
+  {
+    "cod": 10785,
+    "name": "Passenger Cars - (urban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10785/"
+  },
+  {
+    "cod": 10786,
+    "name": "Passenger Cars - (interurban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10786/"
+  },
+  {
+    "cod": 10787,
+    "name": "Passenger Cars - (highways) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10787/"
+  },
+  {
+    "cod": 10788,
+    "name": "Passenger Cars - (total) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10788/"
+  },
+  {
+    "cod": 10789,
+    "name": "Light Commercial Vehicles <3,5t - (urban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10789/"
+  },
+  {
+    "cod": 10790,
+    "name": "Light Commercial Vehicles <3,5t - (interurban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10790/"
+  },
+  {
+    "cod": 10791,
+    "name": "Light Commercial Vehicles <3,5t - (highways) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10791/"
+  },
+  {
+    "cod": 10792,
+    "name": "Light Commercial Vehicles <3,5t - (total) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10792/"
+  },
+  {
+    "cod": 10793,
+    "name": "Heavy Duty Trucks >3,5t - (urban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10793/"
+  },
+  {
+    "cod": 10794,
+    "name": "Heavy Duty Trucks >3,5t - (interurban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10794/"
+  },
+  {
+    "cod": 10795,
+    "name": "Heavy Duty Trucks >3,5t - (highways) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10795/"
+  },
+  {
+    "cod": 10796,
+    "name": "Heavy Duty Trucks >3,5t - (total) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10796/"
+  },
+  {
+    "cod": 10797,
+    "name": "Buses - (urban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10797/"
+  },
+  {
+    "cod": 10798,
+    "name": "Buses - (interurban roads) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10798/"
+  },
+  {
+    "cod": 10799,
+    "name": "Buses - (highways) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10799/"
+  },
+  {
+    "cod": 10800,
+    "name": "Buses - (total) - ISPRA 2022",
+    "geometry_type": "Polyline",
+    "url": "https://www.q-cumber.org/api/v1/stressors/core/operation-categories/10800/"
+  }
+]

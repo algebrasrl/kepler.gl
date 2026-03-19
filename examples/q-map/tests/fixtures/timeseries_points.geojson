@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "sensor": "A",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "value": 10
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [12.0, 45.0]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sensor": "A",
+        "timestamp": "2024-01-02T00:00:00Z",
+        "value": 20
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [12.1, 45.1]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "sensor": "B",
+        "timestamp": "2024-01-01T00:00:00Z",
+        "value": 5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [12.2, 45.0]
+      }
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "schema": "qmap.tool_manifest.v1",
+  "version": "2026-03-18",
+  "categories": [
+    {
+      "key": "discovery",
+      "label": "Discovery",
+      "description": "Discover loaded datasets, providers, catalogs, and routing metadata.",
+      "tags": ["catalog", "metadata", "routing"],
+      "policy": {"defaultScope": "balanced"},
+      "tools": [
+        "listQMapToolCategories",
+        "listQMapToolsByCategory",
+        "listQMapDatasets",
+        "listQMapChartTools",
+        "listQMapCloudMaps",
+        "listQCumberProviders",
+        "listQCumberDatasets",
+        "getQCumberDatasetHelp"
+      ]
+    },
+    {
+      "key": "query-inspection",
+      "label": "Query & Inspection",
+      "description": "Run dataset queries and inspect fields/rows/rankings deterministically.",
+      "tags": ["query", "inspection", "evidence"],
+      "policy": {"defaultScope": "balanced"},
+      "tools": [
+        "queryQCumberDataset",
+        "queryQCumberTerritorialUnits",
+        "queryQCumberDatasetSpatial",
+        "previewQMapDatasetRows",
+        "rankQMapDatasetRows",
+        "distinctQMapFieldValues",
+        "searchQMapFieldValues",
+        "grammarAnalyzeTool",
+        "summarizeQMapTimeSeries",
+        "aggregateQMapTimeSeries",
+        "describeQMapField",
+        "deriveQMapDatasetBbox",
+        "computeQMapDataQualityReport"
+      ]
+    },
+    {
+      "key": "workflow-control",
+      "label": "Workflow Control",
+      "description": "Coordinate async materialization, validation, and diagnostics across steps.",
+      "tags": ["validation", "diagnostics", "orchestration"],
+      "policy": {"defaultScope": "balanced"},
+      "tools": [
+        "waitForQMapDataset",
+        "countQMapRows",
+        "setQMapFieldEqualsFilter",
+        "debugQMapActiveFilters"
+      ]
+    },
+    {
+      "key": "chart-visualization",
+      "label": "Chart Visualization",
+      "description": "Generate charts or chart-like visual summaries from tabular fields.",
+      "tags": ["charts", "statistics", "visualization"],
+      "policy": {"defaultScope": "intent"},
+      "tools": [
+        "wordCloudTool",
+        "categoryBarsTool",
+        "histogramTool",
+        "boxplotTool",
+        "bubbleChartTool",
+        "pcpTool",
+        "lineChartTool",
+        "scatterplotTool"
+      ]
+    },
+    {
+      "key": "map-styling",
+      "label": "Map Styling",
+      "description": "Apply thematic color/height/tooltip and layer visibility/order controls.",
+      "tags": ["style", "layers", "presentation"],
+      "policy": {"defaultScope": "balanced"},
+      "tools": [
+        "basemap",
+        "mapBoundary",
+        "fitQMapToDataset",
+        "setQMapTooltipFields",
+        "setQMapLayerSolidColor",
+        "setQMapLayerColorByField",
+        "setQMapLayerHeightByField",
+        "applyQMapStylePreset",
+        "setQMapLayerColorByThresholds",
+        "setQMapLayerColorByStatsThresholds",
+        "setQMapLayerVisibility",
+        "openQMapPanel",
+        "setQMapLayerOrder",
+        "showOnlyQMapLayer"
+      ]
+    },
+    {
+      "key": "map-io",
+      "label": "Map I/O",
+      "description": "Load/save maps and datasets into the active q-map workspace.",
+      "tags": ["io", "cloud", "persistence"],
+      "policy": {"defaultScope": "balanced"},
+      "tools": ["loadData", "saveDataToMap", "loadQMapCloudMap", "loadCloudMapAndWait"]
+    },
+    {
+      "key": "mobility-access",
+      "label": "Mobility & Access",
+      "description": "Use geocoding/routing/isochrone road-network helpers.",
+      "tags": ["mobility", "routing", "network"],
+      "policy": {"defaultScope": "intent"},
+      "tools": ["geocoding", "routing", "isochrone", "roads"]
+    },
+    {
+      "key": "geospatial-analysis",
+      "label": "Geospatial Analysis",
+      "description": "Run clipping, joins, overlays, zonal stats, H3 aggregate/join, and reprojection.",
+      "tags": ["spatial", "analysis", "h3"],
+      "policy": {"defaultScope": "intent"},
+      "tools": [
+        "createDatasetFromFilter",
+        "createDatasetFromCurrentFilters",
+        "mergeQMapDatasets",
+        "createDatasetWithGeometryArea",
+        "createDatasetWithNormalizedField",
+        "drawQMapBoundingBox",
+        "reprojectQMapDatasetCrs",
+        "clipQMapDatasetByGeometry",
+        "clipDatasetByBoundary",
+        "eraseQMapDatasetByGeometry",
+        "spatialJoinByPredicate",
+        "zonalStatsByAdmin",
+        "overlayDifference",
+        "overlayUnion",
+        "overlayIntersection",
+        "overlaySymmetricDifference",
+        "dissolveQMapDatasetByField",
+        "simplifyQMapDatasetGeometry",
+        "splitQMapPolygonByLine",
+        "bufferAndSummarize",
+        "nearestFeatureJoin",
+        "adjacencyGraphFromPolygons",
+        "coverageQualityReport",
+        "computeQMapSpatialAutocorrelation",
+        "computeQMapEquityIndices",
+        "joinQMapDatasetsOnH3",
+        "tassellateSelectedGeometry",
+        "tassellateDatasetLayer",
+        "aggregateDatasetToH3",
+        "populateTassellationFromAdminUnits",
+        "computeQMapBivariateCorrelation",
+        "computeQMapDatasetDelta",
+        "addComputedField",
+        "computeQMapHotspotAnalysis",
+        "computeQMapCompositeIndex",
+        "interpolateIDW"
+      ]
+    },
+    {
+      "key": "statistical-analysis",
+      "label": "Statistical Analysis",
+      "description": "Run regression, classification, correlation and field statistics (non-spatial).",
+      "tags": ["statistics", "regression", "classification", "correlation"],
+      "policy": {"defaultScope": "intent"},
+      "tools": [
+        "regressQMapFields",
+        "classifyQMapFieldBreaks",
+        "correlateQMapFields"
+      ]
+    },
+    {
+      "key": "regulatory",
+      "label": "Regulatory Compliance",
+      "description": "Check air quality measurements against D.Lgs. 155/2010 and WHO AQG 2021 thresholds.",
+      "tags": ["regulatory", "compliance", "thresholds", "155/2010", "WHO"],
+      "policy": {"defaultScope": "intent"},
+      "tools": [
+        "listRegulatoryThresholds",
+        "checkRegulatoryCompliance",
+        "assessPopulationExposure"
+      ]
+    },
+    {
+      "key": "h3-editing",
+      "label": "H3 Editing",
+      "description": "Paint/edit explicit H3 cells and rings.",
+      "tags": ["h3", "editing", "manual"],
+      "policy": {"defaultScope": "intent"},
+      "tools": ["paintQMapH3Cell", "paintQMapH3Cells", "paintQMapH3Ring"]
+    }
+  ],
+  "groups": {
+    "baseAllowlist": [
+      "basemap",
+      "loadData",
+      "mapBoundary",
+      "saveDataToMap",
+      "geocoding",
+      "routing",
+      "isochrone",
+      "roads",
+      "histogramTool",
+      "boxplotTool",
+      "bubbleChartTool",
+      "pcpTool",
+      "lineChartTool",
+      "scatterplotTool"
+    ]
+  }
+}

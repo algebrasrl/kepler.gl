@@ -58,6 +58,8 @@ export type KeplerApplicationConfig = {
 
   // A URL to the CDN where the kepler.gl assets are hosted.
   cdnUrl?: string;
+  // If true, skip remote fetch of icon layer svg-icons.json and use local/default icon geometry only.
+  disableIconLayerRemoteSvgIcons?: boolean;
 
   // Raster Tile layer config
   // Raster Tile layer is under development and not ready for production use. Disabled by default.
@@ -115,6 +117,7 @@ const DEFAULT_APPLICATION_CONFIG: Required<KeplerApplicationConfig> = {
   },
 
   cdnUrl: KEPLER_UNFOLDED_BUCKET,
+  disableIconLayerRemoteSvgIcons: false,
 
   plugins: [],
   // The default table class is KeplerTable.

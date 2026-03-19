@@ -6,6 +6,7 @@ export const LOCALES = {
   fi: 'Suomi',
   pt: 'Português',
   es: 'Español',
+  it: 'Italiano',
   ca: 'Català',
   ja: '日本語',
   cn: '简体中文',
@@ -14,7 +15,7 @@ export const LOCALES = {
 
 /**
  * Localization can be passed to `KeplerGl` via uiState `locale`.
- * Available languages are `en` and `fi`. Default language is `en`
+ * Default language is `en`
  * @constant
  * @public
  * @example
