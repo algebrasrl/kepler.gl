@@ -61,8 +61,8 @@ jobs:
       - name: Enable Corepack (Yarn 4)
         run: corepack enable
 
-      - name: Install root kepler dependencies
-        run: yarn install
+      - name: Install root kepler dependencies (skip native builds)
+        run: yarn install --mode skip-build
 
       - name: Install q-map dependencies
         working-directory: examples/q-map
@@ -140,8 +140,8 @@ jobs:
             exit 1
           fi
 
-      - name: Install root kepler dependencies
-        run: yarn install
+      - name: Install root kepler dependencies (skip native builds)
+        run: yarn install --mode skip-build
 
       - name: Install q-map dependencies
         working-directory: examples/q-map
