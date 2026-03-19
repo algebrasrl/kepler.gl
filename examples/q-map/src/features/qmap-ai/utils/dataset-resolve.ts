@@ -12,7 +12,7 @@ export function normalizeDatasetLookupToken(value: unknown): string {
     .trim()
     .toLowerCase()
     .replace(/^id:\s*/i, '')
-    .replace(/^[\"']+|[\"']+$/g, '')
+    .replace(/^["']+|["']+$/g, '')
     .replace(/\.(geojson|json|csv|parquet)$/gi, '')
     .replace(/[\s-]+/g, '_')
     .replace(/_+/g, '_')

@@ -674,9 +674,9 @@ async function loadSpatialRowsWithDuckDb(file: File): Promise<{rows: Record<stri
 
     throw lastError || new Error('Could not read the spatial file with DuckDB ST_READ.');
   } finally {
-    await conn.close().catch(() => {});
+    await conn.close().catch(() => { /* ignore */ });
     for (const sourceName of registeredSourceNames) {
-      await db.dropFile(sourceName).catch(() => {});
+      await db.dropFile(sourceName).catch(() => { /* ignore */ });
     }
   }
 }

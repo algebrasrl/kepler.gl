@@ -27,7 +27,7 @@ async function sendAssistantMessage(page: Page, text: string) {
           document.querySelector('[aria-label="Prompt"]')
       );
     })
-    .catch(() => {});
+    .catch(() => { /* ignore */ });
 
   const sendButton = page.getByRole('button', {name: /Send|Invia/i});
 

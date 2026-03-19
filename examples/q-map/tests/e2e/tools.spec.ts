@@ -233,7 +233,7 @@ async function sendAssistantMessage(page: any, text: string) {
           document.querySelector('[aria-label="Prompt"]')
       );
     })
-    .catch(() => {});
+    .catch(() => { /* ignore */ });
 
   const sendButton = page.getByRole('button', {name: /Send|Invia/i});
   const clickComposerSiblingButton = async (input: any) => {
@@ -313,7 +313,7 @@ function pickDatasetName(payload: any) {
   const normalize = (value: unknown) =>
     String(value || '')
       .trim()
-      .replace(/^[\"']+|[\"']+$/g, '')
+      .replace(/^["']+|["']+$/g, '')
       .replace(/[.,;:]+$/g, '')
       .trim();
   const result = payload?.result || payload;
@@ -419,7 +419,7 @@ test.beforeEach(async () => {
   currentToolTrace = [];
 });
 
-test.afterEach(async ({}, testInfo) => {
+test.afterEach(async ({}, testInfo) => { // eslint-disable-line no-empty-pattern
   if (testInfo.status === testInfo.expectedStatus) return;
   const artifact = {
     test: testInfo.title,
