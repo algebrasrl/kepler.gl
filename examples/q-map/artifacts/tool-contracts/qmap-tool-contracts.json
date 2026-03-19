@@ -2300,7 +2300,10 @@
             "type": "boolean"
           }
         },
-        "required": [],
+        "required": [
+          "datasetId",
+          "providerId"
+        ],
         "additionalProperties": false
       },
       "flags": {
@@ -2359,7 +2362,10 @@
             "type": "array"
           }
         },
-        "required": [],
+        "required": [
+          "datasetId",
+          "providerId"
+        ],
         "additionalProperties": false
       },
       "flags": {
@@ -2418,7 +2424,10 @@
             "type": "string"
           }
         },
-        "required": [],
+        "required": [
+          "datasetId",
+          "providerId"
+        ],
         "additionalProperties": false
       },
       "flags": {

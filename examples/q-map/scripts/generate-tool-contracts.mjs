@@ -122,44 +122,53 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
     },
     ['providerId', 'datasetId']
   ),
-  queryQCumberDataset: buildStrictArgsSchema({
-    providerId: {type: 'string'},
-    datasetId: {type: 'string'},
-    filters: {type: 'array'},
-    orderBy: {type: 'string'},
-    orderDirection: {type: 'string'},
-    limit: {type: 'integer'},
-    offset: {type: 'integer'},
-    loadToMap: {type: 'boolean'},
-    showOnMap: {type: 'boolean'},
-    spatialBbox: {type: 'array'},
-    expectedAdminType: {type: 'string'},
-    inferPointsFromLatLon: {type: 'boolean'}
-  }),
-  queryQCumberTerritorialUnits: buildStrictArgsSchema({
-    providerId: {type: 'string'},
-    datasetId: {type: 'string'},
-    filters: {type: 'array'},
-    orderBy: {type: 'string'},
-    orderDirection: {type: 'string'},
-    limit: {type: 'integer'},
-    offset: {type: 'integer'},
-    loadToMap: {type: 'boolean'},
-    showOnMap: {type: 'boolean'},
-    expectedAdminType: {type: 'string'}
-  }),
-  queryQCumberDatasetSpatial: buildStrictArgsSchema({
-    providerId: {type: 'string'},
-    datasetId: {type: 'string'},
-    filters: {type: 'array'},
-    orderBy: {type: 'string'},
-    orderDirection: {type: 'string'},
-    limit: {type: 'integer'},
-    offset: {type: 'integer'},
-    loadToMap: {type: 'boolean'},
-    showOnMap: {type: 'boolean'},
-    spatialBbox: {type: 'array'}
-  }),
+  queryQCumberDataset: buildStrictArgsSchema(
+    {
+      providerId: {type: 'string'},
+      datasetId: {type: 'string'},
+      filters: {type: 'array'},
+      orderBy: {type: 'string'},
+      orderDirection: {type: 'string'},
+      limit: {type: 'integer'},
+      offset: {type: 'integer'},
+      loadToMap: {type: 'boolean'},
+      showOnMap: {type: 'boolean'},
+      spatialBbox: {type: 'array'},
+      expectedAdminType: {type: 'string'},
+      inferPointsFromLatLon: {type: 'boolean'}
+    },
+    ['providerId', 'datasetId']
+  ),
+  queryQCumberTerritorialUnits: buildStrictArgsSchema(
+    {
+      providerId: {type: 'string'},
+      datasetId: {type: 'string'},
+      filters: {type: 'array'},
+      orderBy: {type: 'string'},
+      orderDirection: {type: 'string'},
+      limit: {type: 'integer'},
+      offset: {type: 'integer'},
+      loadToMap: {type: 'boolean'},
+      showOnMap: {type: 'boolean'},
+      expectedAdminType: {type: 'string'}
+    },
+    ['providerId', 'datasetId']
+  ),
+  queryQCumberDatasetSpatial: buildStrictArgsSchema(
+    {
+      providerId: {type: 'string'},
+      datasetId: {type: 'string'},
+      filters: {type: 'array'},
+      orderBy: {type: 'string'},
+      orderDirection: {type: 'string'},
+      limit: {type: 'integer'},
+      offset: {type: 'integer'},
+      loadToMap: {type: 'boolean'},
+      showOnMap: {type: 'boolean'},
+      spatialBbox: {type: 'array'}
+    },
+    ['providerId', 'datasetId']
+  ),
   waitForQMapDataset: buildStrictArgsSchema(
     {
       datasetName: {type: 'string'},
