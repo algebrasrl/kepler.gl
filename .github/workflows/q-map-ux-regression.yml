@@ -76,7 +76,7 @@ jobs:
 
       - name: Start q-map backends
         working-directory: examples/q-map/backends
-        run: docker compose up -d --build
+        run: QMAP_DOCKER_UID=$(id -u) QMAP_DOCKER_GID=$(id -g) docker compose up -d --build
 
       - name: Wait for backend health
         run: |
@@ -152,7 +152,7 @@ jobs:
 
       - name: Start q-map backends
         working-directory: examples/q-map/backends
-        run: docker compose up -d --build
+        run: QMAP_DOCKER_UID=$(id -u) QMAP_DOCKER_GID=$(id -g) docker compose up -d --build
 
       - name: Wait for backend health
         run: |
