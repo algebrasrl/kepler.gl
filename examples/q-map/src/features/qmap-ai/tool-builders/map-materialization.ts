@@ -1,7 +1,7 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
+import {preprocessBoundaryClipArgs} from '../tool-args-normalization';
 
 export function createClipDatasetByBoundaryTool(ctx: QMapToolContext & {clipQMapDatasetByGeometry: any}) {
   const {
@@ -15,10 +15,10 @@ export function createClipDatasetByBoundaryTool(ctx: QMapToolContext & {clipQMap
     clipQMapDatasetByGeometry
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Clip/mask a source geometry dataset by a boundary dataset (administrative boundary or custom shape).',
-    parameters: z.object({
+    parameters: z.preprocess(preprocessBoundaryClipArgs, z.object({
       sourceDatasetName: z.string(),
       boundaryDatasetName: z.string(),
       mode: buildOptionalLenientEnumSchema(
@@ -58,8 +58,8 @@ export function createClipDatasetByBoundaryTool(ctx: QMapToolContext & {clipQMap
         .optional()
         .describe('Default true. Set false for intermediate technical datasets kept off-map.'),
       newDatasetName: z.string().optional()
-    }),
-    execute: async args => {
+    })),
+    execute: async (args: any) => {
       const {sourceDatasetName, boundaryDatasetName} = args as any;
       const mode = (args as any).mode || 'intersects';
       const currentVisState = getCurrentVisState();
@@ -174,7 +174,7 @@ export function createClipDatasetByBoundaryTool(ctx: QMapToolContext & {clipQMap
       };
     },
     component: clipQMapDatasetByGeometry.component as any
-  });
+  };
 
 }
 
@@ -191,7 +191,7 @@ export function createDrawQMapBoundingBoxTool(ctx: QMapToolContext) {
     dispatch
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Create/draw a bounding-box polygon dataset from explicit bounds, center+radius, or an existing dataset extent.',
     parameters: z.object({
@@ -226,7 +226,7 @@ export function createDrawQMapBoundingBoxTool(ctx: QMapToolContext) {
       maxFeatures,
       showOnMap,
       newDatasetName
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const datasets = vis?.datasets || {};
       let resolvedMinLon: number | null = null;
@@ -369,6 +369,6 @@ export function createDrawQMapBoundingBoxTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }

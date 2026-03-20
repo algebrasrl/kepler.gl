@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 import type {QMapChartToolState} from '../chart-tools';
 
@@ -11,7 +10,7 @@ export function createListQMapChartTools({
   timeSeriesEligibility: any;
   getMergedStates: () => QMapChartToolState[];
 }) {
-  return extendedTool({
+  return {
     description:
       'List chart rendering tools currently available/enabled in q-map runtime (mode safe/full/timeseries-safe with env overrides).',
     parameters: z.object({}),
@@ -31,5 +30,5 @@ export function createListQMapChartTools({
         }
       };
     }
-  });
+  };
 }

@@ -1,6 +1,5 @@
 import type {QMapChartToolState} from './chart-tools';
 import {getQMapToolManifest} from './tool-manifest';
-import {extendedTool} from './tool-shim';
 import {z} from 'zod';
 
 export type QMapToolCategoryDescriptor = {
@@ -103,14 +102,14 @@ export function createQMapToolCategoryIntrospectionTools({
       Object.keys(QMAP_MANUAL_TOOL_DESCRIPTIONS)
     );
 
-  const listQMapToolCategories = extendedTool({
+  const listQMapToolCategories = {
     description:
       'List q-map tool categories (functional classes) with available counts to guide deterministic tool routing.',
     parameters: z.object({
       includeToolNames: z.boolean().optional().describe('Include available tool names per category (default true).'),
       includeUncategorized: z.boolean().optional().describe('Include available uncategorized tools (default false).')
     }),
-    execute: async ({includeToolNames, includeUncategorized}) => {
+    execute: async ({includeToolNames, includeUncategorized}: any) => {
       const includeNames = includeToolNames !== false;
       const includeUncat = includeUncategorized === true;
       const snapshot = getToolCategorySnapshot();
@@ -139,9 +138,9 @@ export function createQMapToolCategoryIntrospectionTools({
         }
       };
     }
-  });
+  };
 
-  const listQMapToolsByCategory = extendedTool({
+  const listQMapToolsByCategory = {
     description:
       'List tools for one q-map functional category. Use this to reduce tool ambiguity before executing a workflow.',
     parameters: z.object({
@@ -156,7 +155,7 @@ export function createQMapToolCategoryIntrospectionTools({
         .describe('Include known-but-unavailable tools for the category (default false).'),
       limit: z.number().min(1).max(200).optional().describe('Max number of available tools returned (default 120).')
     }),
-    execute: async ({categoryKey, includeDescriptions, includeUnavailable, limit}) => {
+    execute: async ({categoryKey, includeDescriptions, includeUnavailable, limit}: any) => {
       const normalizedKey = String(categoryKey || '')
         .trim()
         .toLowerCase();
@@ -211,7 +210,7 @@ export function createQMapToolCategoryIntrospectionTools({
         }
       };
     }
-  });
+  };
 
   return {
     listQMapToolCategories,

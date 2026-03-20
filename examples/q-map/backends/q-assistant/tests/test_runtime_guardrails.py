@@ -1424,5 +1424,139 @@ class RuntimeToolPolicySummaryTests(unittest.TestCase):
         self.assertTrue(len(result.get("tools", [])) > 0)
 
 
+class PostHelpIncompleteCoverageTests(unittest.TestCase):
+    """Tests for build_post_help_incomplete_coverage_decision."""
+
+    def _build(self, results, request_tool_names=None):
+        from q_assistant.runtime_loop_limit_rules import (
+            build_post_help_incomplete_coverage_decision,
+        )
+        return build_post_help_incomplete_coverage_decision(
+            results=results,
+            request_tool_names=request_tool_names or {"getQCumberDatasetHelp"},
+            runtime_guardrail_prefix="[RUNTIME_GUARDRAIL]",
+            runtime_next_step_prefix="[RUNTIME_NEXT_STEP]",
+        )
+
+    def test_forces_help_when_datasets_missing(self):
+        results = [
+            {
+                "toolName": "listQCumberProviders",
+                "success": True,
+            },
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [
+                    {"datasetRef": "kontur-boundaries-italia"},
+                    {"datasetRef": "clc-2018-italia"},
+                ],
+            },
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [
+                    {"datasetRef": "natura2000-siti"},
+                ],
+            },
+            {
+                "toolName": "getQCumberDatasetHelp",
+                "success": True,
+                "datasetRef": "kontur-boundaries-italia",
+            },
+            {
+                "toolName": "getQCumberDatasetHelp",
+                "success": True,
+                "datasetRef": "clc-2018-italia",
+            },
+        ]
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "getQCumberDatasetHelp")
+        self.assertTrue(any("natura2000-siti" in line for line in decision.guidance_lines))
+
+    def test_noop_when_all_datasets_covered(self):
+        results = [
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [
+                    {"datasetRef": "ds-a"},
+                    {"datasetRef": "ds-b"},
+                ],
+            },
+            {"toolName": "getQCumberDatasetHelp", "success": True, "datasetRef": "ds-a"},
+            {"toolName": "getQCumberDatasetHelp", "success": True, "datasetRef": "ds-b"},
+        ]
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "")
+
+    def test_noop_when_help_tool_not_available(self):
+        results = [
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [{"datasetRef": "ds-a"}],
+            },
+        ]
+        decision = self._build(results, request_tool_names={"queryQCumberDataset"})
+        self.assertEqual(decision.forced_tool_choice_name, "")
+
+    def test_noop_when_no_discovered_datasets(self):
+        results = [
+            {"toolName": "listQCumberDatasets", "success": True, "catalogDatasets": []},
+        ]
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "")
+
+    def test_matches_normalized_id_prefix_refs(self):
+        """catalogDatasets and help results both use 'id:' prefix from normalization."""
+        results = [
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [
+                    {"datasetRef": "id:ds-a"},
+                    {"datasetRef": "id:ds-b"},
+                ],
+            },
+            {"toolName": "getQCumberDatasetHelp", "success": True, "datasetRef": "id:ds-a"},
+            {"toolName": "getQCumberDatasetHelp", "success": True, "datasetRef": "id:ds-b"},
+        ]
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "")
+
+    def test_stops_after_safety_cap(self):
+        """Don't force indefinitely when help calls exceed max_help_rounds * datasets."""
+        results = [
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [{"datasetRef": "id:ds-a"}],
+            },
+        ]
+        # Simulate max_help_rounds(3) * 1 dataset = 3 failed help calls
+        for _ in range(3):
+            results.append(
+                {"toolName": "getQCumberDatasetHelp", "success": False, "datasetRef": ""}
+            )
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "")
+
+    def test_guidance_strips_id_prefix(self):
+        """Guidance message shows clean dataset IDs without 'id:' prefix."""
+        results = [
+            {
+                "toolName": "listQCumberDatasets",
+                "success": True,
+                "catalogDatasets": [{"datasetRef": "id:natura2000-siti"}],
+            },
+        ]
+        decision = self._build(results)
+        self.assertEqual(decision.forced_tool_choice_name, "getQCumberDatasetHelp")
+        guidance = " ".join(decision.guidance_lines)
+        self.assertIn("natura2000-siti", guidance)
+        self.assertNotIn("id:natura2000-siti", guidance)
+
+
 if __name__ == "__main__":
     unittest.main()

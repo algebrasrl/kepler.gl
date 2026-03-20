@@ -297,7 +297,17 @@ def _extract_request_tool_results(payload: Any, *, max_items: int = 48) -> list[
                 routing_preferred_tool = parsed_routing_preferred_tool
             qmap_result = parsed.get("qmapToolResult")
             if isinstance(qmap_result, dict):
-                contract_validation_payload = dict(qmap_result)
+                # Merge qmapToolResult (envelope: success, details, schema …)
+                # with llmResult (tool-specific fields: providers, datasets,
+                # providerId, datasetId …).  llmResult fields take priority on
+                # collision because they carry the actual response data.
+                llm_for_contract = parsed.get("llmResult")
+                if isinstance(llm_for_contract, dict):
+                    merged = dict(qmap_result)
+                    merged.update(llm_for_contract)
+                    contract_validation_payload = merged
+                else:
+                    contract_validation_payload = dict(qmap_result)
                 qmap_catalog_datasets = _extract_catalog_dataset_metadata(qmap_result)
                 if qmap_catalog_datasets:
                     catalog_datasets = qmap_catalog_datasets

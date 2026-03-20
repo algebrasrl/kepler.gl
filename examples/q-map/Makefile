@@ -39,7 +39,6 @@ EVAL_PREFLIGHT_RETRIES ?= 6
 EVAL_PREFLIGHT_RETRY_DELAY_MS ?= 1500
 BACKEND_READY_TIMEOUT_SEC ?= 180
 BACKEND_READY_INTERVAL_MS ?= 2000
-BACKEND_READY_BUILD ?= 0
 EVAL_RUN_TYPE ?= baseline
 EVAL_VARIANCE_RUN_TYPE ?= baseline
 KPI_SUMMARY_RUN_TYPE ?= baseline
@@ -78,7 +77,6 @@ EVAL_ACTIVE_BASE_URL := $(if $(filter direct,$(strip $(EVAL_TRANSPORT))),$(EVAL_
 EVAL_ACTIVE_ARGS := --base-url $(EVAL_ACTIVE_BASE_URL) --model $(EVAL_MODEL) $(EVAL_GATE_ARGS)
 EVAL_ACTIVE_ARGS += --preflight-timeout-ms $(EVAL_PREFLIGHT_TIMEOUT_MS) --preflight-retries $(EVAL_PREFLIGHT_RETRIES) --preflight-retry-delay-ms $(EVAL_PREFLIGHT_RETRY_DELAY_MS)
 EVAL_PREFLIGHT_HINT_TARGET := $(if $(filter direct,$(strip $(EVAL_TRANSPORT))),ai-eval-preflight-direct,ai-eval-preflight)
-BACKEND_READY_BUILD_ARG := $(if $(filter 0 false no,$(strip $(BACKEND_READY_BUILD))),--no-build,--build)
 
 .PHONY: help registry-login ui-image-refs ui-image-build ui-image-push dev dev-local dev-local-prepare dev-local-stop same-origin-up same-origin-down same-origin-ps same-origin-logs backend-ready fix-test-perms clean-loop clean-loop-hard changelog-audit ai-governance-audit ai-eval-schema-audit ai-threshold-audit ai-variance-audit ai-area-variance-audit ai-trace-grade-audit ai-operational-audit ai-cost-audit ai-response-quality-audit ai-trace-quality-audit ai-passk-audit ai-eval-preflight ai-eval-preflight-direct tool-contract-audit tool-contract-sync tool-arg-audit prompt-lint typecheck test-workers test-eval-runner test-e2e-tools test-e2e-assistant-live audit-assistant-live audit-assistant-live-strict assistant-live-gate assistant-live-gate-strict tool-coverage-audit ai-matrix-audit backend-audit test-backends ai-eval ai-eval-direct ai-eval-functional ai-eval-functional-direct ai-eval-case-functional ai-eval-case-functional-direct ai-eval-adversarial ai-eval-adversarial-direct ai-eval-case-adversarial ai-eval-case-adversarial-direct ai-eval-all kpi-weekly-summary quality-gate loop
 
@@ -94,11 +92,7 @@ help:
 	@echo "  make ui-image-refs                # print fully-qualified q-map-ui image tag"
 	@echo "  make ui-image-build               # build q-map-ui from full kepler.gl repo context"
 	@echo "  make ui-image-push                # push q-map-ui to registry (platform release policy stays in root Makefile)"
-	@echo "  make same-origin-up               # start q-map UI + Kong/backends behind one same-origin shell on :8080"
-	@echo "  make same-origin-down             # stop same-origin shell stack"
-	@echo "  make same-origin-ps               # show status for same-origin shell stack"
-	@echo "  make same-origin-logs [SERVICE=q-map-shell] # tail logs for same-origin shell stack"
-	@echo "  make backend-ready                # start backend docker stack (+ Kong) and wait for health on 3004/3001/3005 + 8001"
+	@echo "  make backend-ready                # wait for running backend health on direct ports + Kong admin (start backends with: make dev-local)"
 	@echo "  make fix-test-perms               # normalize permissions for test/audit artifact folders"
 	@echo "  make clean-loop                   # clean audit/playwright artifacts, preserve ai-eval history by default"
 	@echo "  make clean-loop-hard              # clean audit/playwright artifacts and purge ai-eval history"
@@ -132,6 +126,12 @@ help:
 	@echo "  make tool-coverage-audit          # runtime tools vs e2e/ai-eval coverage report"
 	@echo "  make backend-audit                # backend unittest suite (docker)"
 	@echo "  make test-backends                # backend unittest suite (docker)"
+	@echo
+	@echo "Demo/deployment:"
+	@echo "  make same-origin-up               # start q-map UI + Kong/backends behind one same-origin shell on :8080"
+	@echo "  make same-origin-down             # stop same-origin shell stack"
+	@echo "  make same-origin-ps               # show status for same-origin shell stack"
+	@echo "  make same-origin-logs [SERVICE=q-map-shell] # tail logs for same-origin shell stack"
 	@echo
 	@echo "Prompt-driven loop:"
 	@echo "  make ai-eval                      # baseline prompt eval suite"
@@ -182,7 +182,6 @@ help:
 	@echo "  EVAL_PREFLIGHT_TIMEOUT_SEC=<sec>  # ai-eval-preflight timeout (default 5)"
 	@echo "  BACKEND_READY_TIMEOUT_SEC=<sec>   # backend-ready max wait for health checks (default 180)"
 	@echo "  BACKEND_READY_INTERVAL_MS=<ms>    # backend-ready polling interval (default 2000)"
-	@echo "  BACKEND_READY_BUILD=0|1           # backend-ready compose build toggle (default 0, set 1 after Dockerfile/deps changes)"
 	@echo "  EVAL_RUN_TYPE=baseline|stabilization|debug|heldout|adversarial # label ai-eval reports by run type (default baseline)"
 	@echo "  EVAL_VARIANCE_RUN_TYPE=baseline|stabilization|debug|heldout|adversarial|all # variance audit filter (default baseline)"
 	@echo "  KPI_SUMMARY_RUN_TYPE=baseline|stabilization|debug|heldout|adversarial|all # KPI weekly summary filter (default baseline)"
@@ -253,7 +252,7 @@ same-origin-logs:
 	$(COMPOSE_SAME_ORIGIN) --profile gateway logs -f $(if $(SERVICE),$(SERVICE),q-map-shell)
 
 backend-ready:
-	$(NODE) scripts/backend-ready.mjs --compose-file backends/docker-compose.yaml --compose-file backends/docker-compose.kong.yaml $(BACKEND_READY_BUILD_ARG) --timeout-sec $(BACKEND_READY_TIMEOUT_SEC) --interval-ms $(BACKEND_READY_INTERVAL_MS)
+	$(NODE) scripts/backend-ready.mjs --timeout-sec $(BACKEND_READY_TIMEOUT_SEC) --interval-ms $(BACKEND_READY_INTERVAL_MS)
 
 fix-test-perms:
 	@mkdir -p tests/ai-eval/results test-results playwright-report backends/logs/q-assistant/chat-audit

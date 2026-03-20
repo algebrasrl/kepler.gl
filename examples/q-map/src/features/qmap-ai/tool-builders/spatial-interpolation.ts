@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -86,7 +85,7 @@ export function createInterpolateIDWTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for spatial interpolation] Inverse Distance Weighting (IDW) interpolation from point measurements ' +
       'to an H3 hexagonal grid. Creates a continuous surface estimate from sparse point data ' +
@@ -130,7 +129,7 @@ export function createInterpolateIDWTool(ctx: QMapToolContext) {
       maxDistanceKm,
       newDatasetName,
       showOnMap
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const dataset = resolveDatasetByName(vis?.datasets || {}, sourceDatasetName);
       if (!dataset?.id) {
@@ -401,5 +400,5 @@ export function createInterpolateIDWTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 }

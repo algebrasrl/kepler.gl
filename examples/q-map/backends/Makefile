@@ -2,7 +2,7 @@ SHELL := /bin/bash
 PYTHON ?= python3
 
 COMPOSE ?= docker compose
-COMPOSE_GATEWAY ?= $(COMPOSE) -f docker-compose.yaml -f docker-compose.edge-only.yaml -f docker-compose.kong.yaml --profile gateway
+COMPOSE_GATEWAY ?= $(COMPOSE) -f docker-compose.yaml -f docker-compose.kong.yaml --profile gateway
 DOCKER ?= docker
 SERVICES ?= q-cumber-backend q-storage-backend q-assistant
 DOCTOR_STRICT ?= 1
@@ -32,7 +32,7 @@ ifneq ($(strip $(BUILD)),0)
 SWITCH_ARGS += --build
 endif
 
-.PHONY: help init doctor render-kong-config registry-login image-refs image-build image-push up up-build restart up-ui up-gateway up-direct up-direct-build down down-gateway down-direct ps ps-gateway ps-direct logs logs-gateway logs-direct health fix-audit-perms clean-audit export-audit qa-switch qa-switch-dry \
+.PHONY: help init doctor render-kong-config registry-login image-refs image-build image-push up up-build restart up-direct up-direct-build down down-direct ps ps-direct logs logs-direct health fix-audit-perms clean-audit export-audit qa-switch qa-switch-dry \
         qa-switch-openai qa-switch-openrouter qa-switch-openrouter-nemotron qa-switch-openrouter-deepseek qa-switch-openrouter-gemini qa-switch-ollama \
         test-q-cumber test-q-assistant test-q-storage test-backends \
         pgdump-sync clean-postgis
@@ -52,21 +52,16 @@ help:
 	@echo "                                       # push q-map backend images after docker login (platform release policy stays in root Makefile)"
 	@echo
 	@echo "Compose:"
-	@echo "  make up                              # start default edge-only stack (Kong exposed, backends internal)"
-	@echo "  make up-build                        # start default edge-only stack with build for Python backends"
+	@echo "  make up                              # start backends + Kong (direct ports + gateway exposed)"
+	@echo "  make up-build                        # start backends + Kong with build for Python backends"
 	@echo "  make restart                         # restart default stack (Kong + backends)"
-	@echo "  make up-gateway                      # alias of make up"
-	@echo "  make up-direct                       # start backends without Kong gateway (direct ports exposed)"
-	@echo "  make up-direct-build                 # start direct backends with build (direct ports exposed)"
-	@echo "  make up-ui                           # start UI + backend stack (profile ui)"
+	@echo "  make up-direct                       # start backends without Kong gateway (direct ports only)"
+	@echo "  make up-direct-build                 # start direct backends with build (direct ports only)"
 	@echo "  make down                            # stop default stack (Kong + backends)"
-	@echo "  make down-gateway                    # alias of make down"
 	@echo "  make down-direct                     # stop direct stack without Kong overlay"
 	@echo "  make ps                              # show status for default stack (Kong + backends)"
-	@echo "  make ps-gateway                      # alias of make ps"
 	@echo "  make ps-direct                       # show status for direct stack"
 	@echo "  make logs [SERVICE=kong]             # tail logs for default stack (default kong)"
-	@echo "  make logs-gateway [SERVICE=kong]     # tail logs for gateway stack (default kong)"
 	@echo "  make logs-direct [SERVICE=q-assistant] # tail logs for direct stack (default q-assistant)"
 	@echo "  make health                          # quick health check for q-assistant"
 	@echo "  make fix-audit-perms                 # normalize q-assistant chat-audit ownership/permissions"
@@ -159,12 +154,6 @@ up-build: doctor render-kong-config
 restart: doctor render-kong-config
 	$(COMPOSE_GATEWAY) restart q-cumber-backend q-storage-backend q-assistant kong
 
-up-ui: doctor
-	$(COMPOSE) -f docker-compose.yaml -f docker-compose.ui.yaml --profile ui up -d --build
-
-up-gateway: doctor render-kong-config
-	$(COMPOSE_GATEWAY) up -d q-cumber-backend q-storage-backend q-assistant kong
-
 up-direct: doctor
 	$(COMPOSE) up -d $(SERVICES)
 
@@ -174,25 +163,16 @@ up-direct-build: doctor
 down:
 	$(COMPOSE_GATEWAY) down
 
-down-gateway:
-	$(COMPOSE_GATEWAY) down
-
 down-direct:
 	$(COMPOSE) down
 
 ps:
 	$(COMPOSE_GATEWAY) ps
 
-ps-gateway:
-	$(COMPOSE_GATEWAY) ps
-
 ps-direct:
 	$(COMPOSE) ps
 
 logs:
-	$(COMPOSE_GATEWAY) logs -f $(if $(SERVICE),$(SERVICE),kong)
-
-logs-gateway:
 	$(COMPOSE_GATEWAY) logs -f $(if $(SERVICE),$(SERVICE),kong)
 
 logs-direct:

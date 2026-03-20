@@ -5,7 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const TOOL_MANIFEST_PATH = 'src/features/qmap-ai/tool-manifest.json';
-const POST_VALIDATION_PATH = 'src/features/qmap-ai/post-validation.ts';
+const POST_VALIDATION_PATH = 'src/features/qmap-ai/services/post-validation.ts';
 const OUTPUT_PATH = 'artifacts/tool-contracts/qmap-tool-contracts.json';
 const BACKEND_MIRROR_PATH = 'backends/q-assistant/src/q_assistant/qmap-tool-contracts.json';
 const QMAP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -126,14 +126,14 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
     {
       providerId: {type: 'string'},
       datasetId: {type: 'string'},
-      filters: {type: 'array'},
+      filters: {type: 'array', items: {type: 'object', properties: {field: {type: 'string'}, op: {type: 'string', enum: ['eq','ne','gt','gte','lt','lte','in','contains','startswith','endswith','is_null','not_null']}, value: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}, values: {type: 'array', items: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}}}, required: ['field']}},
       orderBy: {type: 'string'},
       orderDirection: {type: 'string'},
       limit: {type: 'integer'},
       offset: {type: 'integer'},
       loadToMap: {type: 'boolean'},
       showOnMap: {type: 'boolean'},
-      spatialBbox: {type: 'array'},
+      spatialBbox: {type: 'array', items: {type: 'number'}, minItems: 4, maxItems: 4, description: '[minLon, minLat, maxLon, maxLat]'},
       expectedAdminType: {type: 'string'},
       inferPointsFromLatLon: {type: 'boolean'}
     },
@@ -143,7 +143,7 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
     {
       providerId: {type: 'string'},
       datasetId: {type: 'string'},
-      filters: {type: 'array'},
+      filters: {type: 'array', items: {type: 'object', properties: {field: {type: 'string'}, op: {type: 'string', enum: ['eq','ne','gt','gte','lt','lte','in','contains','startswith','endswith','is_null','not_null']}, value: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}, values: {type: 'array', items: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}}}, required: ['field']}},
       orderBy: {type: 'string'},
       orderDirection: {type: 'string'},
       limit: {type: 'integer'},
@@ -158,14 +158,14 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
     {
       providerId: {type: 'string'},
       datasetId: {type: 'string'},
-      filters: {type: 'array'},
+      filters: {type: 'array', items: {type: 'object', properties: {field: {type: 'string'}, op: {type: 'string', enum: ['eq','ne','gt','gte','lt','lte','in','contains','startswith','endswith','is_null','not_null']}, value: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}, values: {type: 'array', items: {anyOf: [{type: 'string'},{type: 'number'},{type: 'boolean'},{type: 'null'}]}}}, required: ['field']}},
       orderBy: {type: 'string'},
       orderDirection: {type: 'string'},
       limit: {type: 'integer'},
       offset: {type: 'integer'},
       loadToMap: {type: 'boolean'},
       showOnMap: {type: 'boolean'},
-      spatialBbox: {type: 'array'}
+      spatialBbox: {type: 'array', items: {type: 'number'}, minItems: 4, maxItems: 4, description: '[minLon, minLat, maxLon, maxLat]'}
     },
     ['providerId', 'datasetId']
   ),
@@ -175,6 +175,96 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
       timeoutMs: {type: 'number'}
     },
     ['datasetName']
+  ),
+  clipQMapDatasetByGeometry: buildStrictArgsSchema(
+    {
+      sourceDatasetName: {type: 'string'},
+      clipDatasetName: {type: 'string'},
+      sourceGeometryField: {type: 'string'},
+      clipGeometryField: {type: 'string'},
+      mode: {type: 'string', enum: ['intersects', 'centroid', 'within']},
+      useActiveFilters: {type: 'boolean'},
+      maxSourceFeatures: {type: 'number'},
+      maxClipFeatures: {type: 'number'},
+      includeIntersectionMetrics: {type: 'boolean'},
+      includeDistinctPropertyCounts: {type: 'boolean'},
+      includeDistinctPropertyValueCounts: {type: 'boolean'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['sourceDatasetName', 'clipDatasetName']
+  ),
+  zonalStatsByAdmin: buildStrictArgsSchema(
+    {
+      adminDatasetName: {type: 'string'},
+      valueDatasetName: {type: 'string'},
+      adminGeometryField: {type: 'string'},
+      valueGeometryField: {type: 'string'},
+      valueField: {type: 'string'},
+      aggregation: {type: 'string', enum: ['sum', 'avg', 'min', 'max', 'count']},
+      weightMode: {type: 'string', enum: ['area_weighted', 'intersects', 'centroid']},
+      useActiveFilters: {type: 'boolean'},
+      maxAdminFeatures: {type: 'number'},
+      maxValueFeatures: {type: 'number'},
+      outputFieldName: {type: 'string'},
+      outputAreaField: {type: 'string'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['adminDatasetName', 'valueDatasetName']
+  ),
+  spatialJoinByPredicate: buildStrictArgsSchema(
+    {
+      leftDatasetName: {type: 'string'},
+      rightDatasetName: {type: 'string'},
+      leftGeometryField: {type: 'string'},
+      rightGeometryField: {type: 'string'},
+      predicate: {type: 'string', enum: ['intersects', 'within', 'contains', 'touches']},
+      rightValueField: {type: 'string'},
+      aggregations: {type: 'array', items: {type: 'string'}},
+      includeRightFields: {type: 'array', items: {type: 'string'}},
+      useActiveFilters: {type: 'boolean'},
+      maxLeftFeatures: {type: 'number'},
+      maxRightFeatures: {type: 'number'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['leftDatasetName', 'rightDatasetName']
+  ),
+  overlayDifference: buildStrictArgsSchema(
+    {
+      datasetAName: {type: 'string'},
+      datasetBName: {type: 'string'},
+      geometryFieldA: {type: 'string'},
+      geometryFieldB: {type: 'string'},
+      includeIntersection: {type: 'boolean'},
+      includeADifference: {type: 'boolean'},
+      includeBDifference: {type: 'boolean'},
+      useActiveFilters: {type: 'boolean'},
+      maxFeaturesA: {type: 'number'},
+      maxFeaturesB: {type: 'number'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['datasetAName', 'datasetBName']
+  ),
+  bufferAndSummarize: buildStrictArgsSchema(
+    {
+      sourceDatasetName: {type: 'string'},
+      targetDatasetName: {type: 'string'},
+      sourceGeometryField: {type: 'string'},
+      targetGeometryField: {type: 'string'},
+      radiusKm: {type: 'number'},
+      targetValueField: {type: 'string'},
+      aggregation: {type: 'string', enum: ['count', 'sum', 'avg', 'min', 'max']},
+      outputFieldName: {type: 'string'},
+      useActiveFilters: {type: 'boolean'},
+      maxSourceFeatures: {type: 'number'},
+      maxTargetFeatures: {type: 'number'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['sourceDatasetName', 'targetDatasetName', 'radiusKm']
   )
 };
 
@@ -318,7 +408,28 @@ const RESPONSE_CONTRACT_OVERRIDES = {
     numericFields: STRING_LIST_SCHEMA,
     styleableFields: STRING_LIST_SCHEMA,
     defaultStyleField: STRING_SCHEMA
-  }, ['success', 'details', 'dataset', 'fieldCatalog', 'numericFields', 'styleableFields', 'defaultStyleField'])
+  }, ['success', 'details', 'dataset', 'fieldCatalog', 'numericFields', 'styleableFields', 'defaultStyleField']),
+  getQCumberDatasetHelp: buildResponseContract({
+    success: BOOLEAN_SCHEMA,
+    details: STRING_SCHEMA,
+    providerId: STRING_SCHEMA,
+    datasetId: STRING_SCHEMA,
+    datasetName: STRING_SCHEMA,
+    aiHints: {type: 'object', description: 'Field catalog, row count, geometry fields, suggested ops'},
+    routing: {type: 'object', description: 'Query routing metadata: queryToolHint.preferredTool, levelFieldCandidates, parentIdFieldCandidates, nameFieldCandidates, metricProfile'},
+    metricProfile: {type: 'object', description: 'Metric orchestration: metricSemantic, numeratorFieldCandidates, denominatorFieldCandidates, preferredRankingFieldCandidates, recommendedDerivedMetrics, analysisCaveats'}
+  }, ['success', 'details', 'providerId', 'datasetId']),
+  listQCumberProviders: buildResponseContract({
+    success: BOOLEAN_SCHEMA,
+    details: STRING_SCHEMA,
+    providers: ARRAY_SCHEMA
+  }, ['success', 'details', 'providers']),
+  listQCumberDatasets: buildResponseContract({
+    success: BOOLEAN_SCHEMA,
+    details: STRING_SCHEMA,
+    providerId: STRING_SCHEMA,
+    datasets: ARRAY_SCHEMA
+  }, ['success', 'details', 'providerId', 'datasets'])
 };
 
 /**

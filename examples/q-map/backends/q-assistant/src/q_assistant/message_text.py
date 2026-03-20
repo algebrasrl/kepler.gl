@@ -8,6 +8,9 @@ def _text_from_message_content(content: Any) -> str:
     def _sanitize_message_text(text: str) -> str:
         # Remove control bytes that can leak from upstream providers and pollute final narrative.
         sanitized = re.sub(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]", "", str(text or ""))
+        # Remove literal <ctrlNN> escape sequences emitted by some upstream providers
+        # (e.g. Gemini via OpenRouter).
+        sanitized = re.sub(r"<ctrl\d+>", "", sanitized)
         return sanitized.strip()
 
     if isinstance(content, str):

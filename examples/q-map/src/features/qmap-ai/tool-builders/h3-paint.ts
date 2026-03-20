@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -18,7 +17,7 @@ export function createPaintQMapH3CellTool(ctx: QMapToolContext) {
     paintDatasetLabelPrefix,
     paintDatasetIdPrefix
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Paint a single H3 cell at a geographic coordinate (lat/lng) into Hex_Paint_r{resolution}.',
     parameters: z.object({
@@ -26,7 +25,7 @@ export function createPaintQMapH3CellTool(ctx: QMapToolContext) {
       lng: z.number().min(-180).max(180).describe('Longitude in WGS84'),
       resolution: z.number().min(3).max(11).optional().describe('H3 resolution, default 7')
     }),
-    execute: async ({lat, lng, resolution}) => {
+    execute: async ({lat, lng, resolution}: any) => {
       const vis = getCurrentVisState();
       const datasets = vis?.datasets || {};
       const targetResolution = clampH3Resolution(Number(resolution || 7));
@@ -66,7 +65,7 @@ export function createPaintQMapH3CellTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }
 
 export function createPaintQMapH3CellsTool(ctx: QMapToolContext) {
@@ -80,7 +79,7 @@ export function createPaintQMapH3CellsTool(ctx: QMapToolContext) {
     paintDatasetLabelPrefix,
     paintDatasetIdPrefix
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Paint multiple H3 cells from a list of coordinates into Hex_Paint_r{resolution}.',
     parameters: z.object({
@@ -96,7 +95,7 @@ export function createPaintQMapH3CellsTool(ctx: QMapToolContext) {
         .max(200)
         .describe('List of coordinates to convert/paint as H3 cells')
     }),
-    execute: async ({resolution, points}) => {
+    execute: async ({resolution, points}: any) => {
       const targetResolution = clampH3Resolution(Number(resolution || 7));
       const beforeDatasets = getCurrentVisState()?.datasets || {};
       const beforeDataset = getH3PaintDataset(beforeDatasets, targetResolution);
@@ -142,7 +141,7 @@ export function createPaintQMapH3CellsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }
 
 export function createPaintQMapH3RingTool(ctx: QMapToolContext) {
@@ -160,7 +159,7 @@ export function createPaintQMapH3RingTool(ctx: QMapToolContext) {
     paintDatasetLabelPrefix,
     paintDatasetIdPrefix
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Paint an H3 ring around a center H3 cell into Hex_Paint_r{resolution}. Radius k=1 means the 6 adjacent neighbors.',
     parameters: z.object({
@@ -169,7 +168,7 @@ export function createPaintQMapH3RingTool(ctx: QMapToolContext) {
       resolution: z.number().min(3).max(11).optional().describe('Optional target resolution override'),
       includeCenter: z.boolean().optional().describe('Include center cell in output, default false')
     }),
-    execute: async ({centerH3, k, resolution, includeCenter}) => {
+    execute: async ({centerH3, k, resolution, includeCenter}: any) => {
       const center = String(centerH3 || '').trim();
       if (!center || !isValidCell(center)) {
         return {llmResult: {success: false, details: `Invalid center H3 id: "${centerH3}".`}};
@@ -246,5 +245,5 @@ export function createPaintQMapH3RingTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

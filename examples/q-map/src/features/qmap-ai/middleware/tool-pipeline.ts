@@ -32,11 +32,24 @@ export type ToolPipelineOptions = WrapToolRuntimeOptions;
 
 /** Max calls per tool name per turn before the circuit breaker blocks execution. */
 const TOOL_CALL_CIRCUIT_BREAKER_MAX = 3;
+/** Tools that may legitimately exceed the default circuit breaker limit.
+ *  Discovery/metadata tools scale with the number of providers/datasets. */
+const TOOL_CALL_CIRCUIT_BREAKER_OVERRIDES: Record<string, number> = {
+  getQCumberDatasetHelp: 8,
+  listQCumberDatasets: 6
+};
 /** Max total tool calls per turn (all tools combined) before hard abort. */
 const TOOL_CALL_TURN_HARD_CAP = 15;
 /** Max tool calls per single LLM response (batch cap). Allows legitimate batches
  *  (e.g. showOnly + fit + tooltip = 3) but blocks pathological ones (4+ wait, 16 count). */
 const TOOL_CALL_RESPONSE_BATCH_CAP = 3;
+/** Frozen singleton result for silent batch-overflow calls.
+ *  Avoids allocating 300+ identical objects when Gemini emits pathological batches. */
+const BATCH_OVERFLOW_RESULT = Object.freeze({
+  success: false,
+  details: 'Skipped (batch overflow).',
+  llmResult: Object.freeze({success: false, details: 'Skipped (batch overflow).'})
+});
 
 /**
  * Wraps a tool registry through the 5-stage pipeline.
@@ -155,6 +168,13 @@ export function wrapToolsWithPipeline(
               const batch = responseBatchTracker.current;
               batch.callsInBatch += 1;
               if (batch.callsInBatch > TOOL_CALL_RESPONSE_BATCH_CAP) {
+                // Beyond 2x cap: return frozen singleton immediately — no object
+                // allocation, no events, no state updates. This keeps 300+ overflow
+                // calls nearly free (<0.01ms each).
+                if (batch.callsInBatch > TOOL_CALL_RESPONSE_BATCH_CAP * 2) {
+                  return BATCH_OVERFLOW_RESULT;
+                }
+                // Between cap and 2x cap: normal skip with events for diagnostics.
                 const skippedResult = normalizeToolResult(toolName, {
                   llmResult: {
                     success: false,
@@ -164,15 +184,13 @@ export function wrapToolsWithPipeline(
                       `Wait for results, then call remaining tools in a new response.`
                   }
                 });
-                if (!isInternalValidationRun) {
-                  onToolEvent?.({
-                    phase: 'blocked',
-                    toolName,
-                    toolCallId,
-                    success: false,
-                    details: skippedResult.details
-                  });
-                }
+                onToolEvent?.({
+                  phase: 'blocked',
+                  toolName,
+                  toolCallId,
+                  success: false,
+                  details: skippedResult.details
+                });
                 emitNormalizedResult(onNormalizedToolResult, toolName, skippedResult);
                 return finalizeResult(skippedResult, turnExecutionStateRef, toolName);
               }
@@ -210,13 +228,15 @@ export function wrapToolsWithPipeline(
               }
               const count = (toolCallCounter.get(toolName) || 0) + 1;
               toolCallCounter.set(toolName, count);
-              if (count > TOOL_CALL_CIRCUIT_BREAKER_MAX) {
+              const maxForTool =
+                TOOL_CALL_CIRCUIT_BREAKER_OVERRIDES[toolName] ?? TOOL_CALL_CIRCUIT_BREAKER_MAX;
+              if (count > maxForTool) {
                 const blockedResult = normalizeToolResult(toolName, {
                   llmResult: {
                     success: false,
                     details:
                       `Circuit breaker: "${toolName}" called ${count} times this turn ` +
-                      `(max ${TOOL_CALL_CIRCUIT_BREAKER_MAX}). Stop repeating and proceed ` +
+                      `(max ${maxForTool}). Stop repeating and proceed ` +
                       'with available evidence or call a different tool.'
                   }
                 });
@@ -399,7 +419,7 @@ function emitToolFinishEvent(
     toolCallId,
     success: Boolean(result?.success),
     details: result?.details || '',
-    requiresDatasetValidation: shouldRunDatasetPostValidation(toolName),
+    requiresDatasetValidation: shouldRunDatasetPostValidation(toolName, result as Record<string, unknown>),
     datasetName: canonicalValidationDatasetName
   });
 }

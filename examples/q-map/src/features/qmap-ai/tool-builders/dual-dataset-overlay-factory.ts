@@ -5,7 +5,6 @@
  * intersection, and symmetric-difference overlay tools.
  */
 import {setLoadingIndicator, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -35,7 +34,7 @@ export function createDualDatasetOverlayTool(ctx: QMapToolContext, config: Overl
     hideLayersForDatasetIds
   } = ctx;
 
-  return extendedTool({
+  return {
     description: config.toolDescription,
     parameters: z.object({
       datasetAName: z.string(),
@@ -128,5 +127,5 @@ export function createDualDatasetOverlayTool(ctx: QMapToolContext, config: Overl
         if (useLoadingIndicator) dispatch(wrapTo('map', setLoadingIndicator({change: -1}) as any));
       }
     }
-  });
+  };
 }

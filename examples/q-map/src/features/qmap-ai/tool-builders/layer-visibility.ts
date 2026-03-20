@@ -1,6 +1,5 @@
 import {useEffect} from 'react';
 import {layerConfigChange, reorderLayer, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -10,13 +9,13 @@ import {useToolExecution} from './use-tool-execution';
 
 export function createSetQMapLayerVisibilityTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, makeExecutionKey, executedToolComponentKeys, rememberExecutedToolComponentKey} = ctx;
-  return extendedTool({
+  return {
     description: 'Set a layer visibility on/off by layer name or id.',
     parameters: z.object({
       layerNameOrId: z.string().describe('Exact layer label or id'),
       visible: z.boolean().describe('true to show, false to hide')
     }),
-    execute: async ({layerNameOrId, visible}) => {
+    execute: async ({layerNameOrId, visible}: any) => {
       const currentVisState = getCurrentVisState();
       const datasets = currentVisState?.datasets || {};
       const layers = (currentVisState?.layers || []) as any[];
@@ -86,17 +85,17 @@ export function createSetQMapLayerVisibilityTool(ctx: QMapToolContext) {
       }, [localDispatch, localLayers, executionKey, layerId, visible, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createShowOnlyQMapLayerTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, makeExecutionKey, executedToolComponentKeys, rememberExecutedToolComponentKey} = ctx;
-  return extendedTool({
+  return {
     description: 'Show only one layer and hide all others.',
     parameters: z.object({
       layerNameOrId: z.string().describe('Layer to keep visible')
     }),
-    execute: async ({layerNameOrId}) => {
+    execute: async ({layerNameOrId}: any) => {
       const currentVisState = getCurrentVisState();
       const datasets = currentVisState?.datasets || {};
       const layers = (currentVisState?.layers || []) as any[];
@@ -171,19 +170,19 @@ export function createShowOnlyQMapLayerTool(ctx: QMapToolContext) {
       }, [localDispatch, localLayers, executionKey, keepLayerId, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createSetQMapLayerOrderTool(ctx: QMapToolContext) {
   const {getCurrentVisState, makeExecutionKey, positionSchema, executedToolComponentKeys, rememberExecutedToolComponentKey} = ctx;
-  return extendedTool({
+  return {
     description: 'Reorder layers in z-order. Index 0 = bottom, last = top.',
     parameters: z.object({
       layerNameOrId: z.string().describe('Layer to move'),
       position: positionSchema.describe('Target position'),
       referenceLayerNameOrId: z.string().optional().describe('Required for above/below')
     }),
-    execute: async ({layerNameOrId, position, referenceLayerNameOrId}) => {
+    execute: async ({layerNameOrId, position, referenceLayerNameOrId}: any) => {
       const currentVisState = getCurrentVisState();
       const layers = (currentVisState?.layers || []) as any[];
       const findLayer = (nameOrId?: string) => {
@@ -276,5 +275,5 @@ export function createSetQMapLayerOrderTool(ctx: QMapToolContext) {
       }, [localDispatch, localLayers, executionKey, targetLayerId, referenceLayerId, position, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }

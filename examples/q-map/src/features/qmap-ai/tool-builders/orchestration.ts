@@ -1,9 +1,9 @@
 import {useEffect} from 'react';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
 import {selectQMapDatasets, selectQMapLayers, selectQMapVisState} from '../../../state/qmap-selectors';
+import {preprocessDualDatasetArgs} from '../tool-args-normalization';
 import {useToolExecution} from './use-tool-execution';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -34,10 +34,10 @@ export function createJoinQMapDatasetsOnH3Tool(ctx: QMapToolContext) {
     ALL_FIELD_TYPES
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Join two loaded datasets on H3 id and create a derived dataset for mapping/styling.',
-    parameters: z.object({
+    parameters: z.preprocess(preprocessDualDatasetArgs, z.object({
       leftDatasetName: z.string().describe('Primary dataset to keep geometry/coverage from'),
       rightDatasetName: z.string().describe('Dataset providing fields to append'),
       leftH3Field: z.string().optional().describe('Optional explicit H3 field in left dataset'),
@@ -56,7 +56,7 @@ export function createJoinQMapDatasetsOnH3Tool(ctx: QMapToolContext) {
         .optional()
         .describe('Fail join when matched left coverage is below this threshold (default 5).'),
       newDatasetName: z.string().optional().describe('Default <left>_joined_<right>')
-    }),
+    })),
     execute: async ({
       leftDatasetName,
       rightDatasetName,
@@ -68,7 +68,7 @@ export function createJoinQMapDatasetsOnH3Tool(ctx: QMapToolContext) {
       showOnMap,
       minCoveragePct,
       newDatasetName
-    }) => {
+    }: any) => {
       const currentVisState = getCurrentVisState();
       const leftDataset = resolveDatasetByName(currentVisState?.datasets || {}, leftDatasetName);
       const rightDataset = resolveDatasetByName(currentVisState?.datasets || {}, rightDatasetName);
@@ -490,7 +490,7 @@ export function createJoinQMapDatasetsOnH3Tool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 
 }
 
@@ -510,7 +510,7 @@ export function createFitQMapToDatasetTool(ctx: QMapToolContext) {
     scheduleMergedMapFit
   } = ctx;
 
-  return extendedTool({
+  return {
     description: 'Fit/zoom map viewport to a dataset extent (optionally considering active filters).',
     parameters: z.object({
       datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
@@ -520,7 +520,7 @@ export function createFitQMapToDatasetTool(ctx: QMapToolContext) {
         .optional()
         .describe('Optional explicit cap for fit computation. Unset = full matched coverage (no truncation).')
     }),
-    execute: async ({datasetName, useActiveFilters, maxFeatures}) => {
+    execute: async ({datasetName, useActiveFilters, maxFeatures}: any) => {
       const sourceDataset = resolveDatasetByName(getCurrentVisState()?.datasets || {}, datasetName);
       if (!sourceDataset?.id) {
         return {
@@ -670,7 +670,7 @@ export function createFitQMapToDatasetTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 
 }
 
@@ -682,7 +682,7 @@ export function createWaitForQMapDatasetTool(ctx: QMapToolContext) {
     WAIT_DATASET_RETRY_TTL_MS
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Wait until a dataset is available in current q-map visState (useful after async operations like tessellation/load).',
     parameters: z.object({
@@ -786,6 +786,6 @@ export function createWaitForQMapDatasetTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }

@@ -1215,10 +1215,15 @@ export default function QMapAiAssistantComponent() {
       const failedRuns = invocationRuns.filter(run => run.success === false);
       const latestFailedRun = failedRuns.length > 0 ? failedRuns[failedRuns.length - 1] : null;
       const finishedCount = toolParts.filter((part: any) => part?.toolInvocation?.state === 'result').length;
+      const isBatchSkippedResult = (result: any) => {
+        const d = String(result?.details || result?.llmResult?.details || '').toLowerCase();
+        return d.includes('skipped') && d.includes('batch');
+      };
       const failedCount = toolParts.filter((part: any) => {
         if (part?.toolInvocation?.state !== 'result') return false;
         const result = part?.toolInvocation?.result;
-        return result?.success === false || result?.llmResult?.success === false;
+        const isFailed = result?.success === false || result?.llmResult?.success === false;
+        return isFailed && !isBatchSkippedResult(result);
       }).length;
       const progressLine =
         toolParts.length > 0

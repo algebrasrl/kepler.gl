@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 import {setLoadingIndicator, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
 import {selectQMapVisState} from '../../../state/qmap-selectors';
 import {runSpatialOpsJob, computeSpatialOpsTimeout} from '../../../workers/spatial-ops-runner';
+import {preprocessDualDatasetArgs} from '../tool-args-normalization';
 import {useToolExecution} from './use-tool-execution';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -35,7 +35,7 @@ export function createNearestFeatureJoinTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Join nearest feature attributes/distances from target dataset to source dataset (geojson or H3).',
     parameters: z.object({
@@ -74,7 +74,7 @@ export function createNearestFeatureJoinTool(ctx: QMapToolContext) {
       maxTargetFeatures,
       showOnMap,
       newDatasetName
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const source = resolveDatasetByName(vis?.datasets || {}, sourceDatasetName);
       const target = resolveDatasetByName(vis?.datasets || {}, targetDatasetName);
@@ -347,7 +347,7 @@ export function createNearestFeatureJoinTool(ctx: QMapToolContext) {
       }, [localDispatch, localVisState, props, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createAdjacencyGraphFromPolygonsTool(ctx: QMapToolContext) {
@@ -378,7 +378,7 @@ export function createAdjacencyGraphFromPolygonsTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description: 'Build adjacency graph (edges table) from polygon or H3 datasets.',
     parameters: z.object({
       datasetName: z.string(),
@@ -392,7 +392,7 @@ export function createAdjacencyGraphFromPolygonsTool(ctx: QMapToolContext) {
         .describe('Optional explicit cap on features. Unset = full matched coverage (no truncation).'),
       newDatasetName: z.string().optional().describe('Default <dataset>_adjacency')
     }),
-    execute: async ({datasetName, geometryField, idField, predicate, useActiveFilters, maxFeatures, newDatasetName}) => {
+    execute: async ({datasetName, geometryField, idField, predicate, useActiveFilters, maxFeatures, newDatasetName}: any) => {
       const vis = getCurrentVisState();
       const dataset = resolveDatasetByName(vis?.datasets || {}, datasetName);
       if (!dataset?.id) return {llmResult: {success: false, details: `Dataset "${datasetName}" not found.`}};
@@ -590,7 +590,7 @@ export function createAdjacencyGraphFromPolygonsTool(ctx: QMapToolContext) {
       }, [localDispatch, localVisState, props, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createCoverageQualityReportTool(ctx: QMapToolContext) {
@@ -617,10 +617,10 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
     yieldToMainThread
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Report coverage and data-quality diagnostics for spatial matching between two geometry/H3 datasets.',
-    parameters: z.object({
+    parameters: z.preprocess(preprocessDualDatasetArgs, z.object({
       leftDatasetName: z.string(),
       rightDatasetName: z.string(),
       leftGeometryField: z.string().optional(),
@@ -636,7 +636,7 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
         .number()
         .optional()
         .describe('Optional explicit cap on right features. Unset = full matched coverage (no truncation).')
-    }),
+    })),
     execute: async ({
       leftDatasetName,
       rightDatasetName,
@@ -647,7 +647,7 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
       useActiveFilters,
       maxLeftFeatures,
       maxRightFeatures
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const left = resolveDatasetByName(vis?.datasets || {}, leftDatasetName);
       const right = resolveDatasetByName(vis?.datasets || {}, rightDatasetName);
@@ -821,5 +821,5 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

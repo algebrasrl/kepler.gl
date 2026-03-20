@@ -7,7 +7,7 @@ import {fileURLToPath} from 'node:url';
 const TOOL_MANIFEST_PATH = 'src/features/qmap-ai/tool-manifest.json';
 const TOOL_CONTRACTS_PATH = 'artifacts/tool-contracts/qmap-tool-contracts.json';
 const BACKEND_MIRROR_PATH = 'backends/q-assistant/src/q_assistant/qmap-tool-contracts.json';
-const POST_VALIDATION_PATH = 'src/features/qmap-ai/post-validation.ts';
+const POST_VALIDATION_PATH = 'src/features/qmap-ai/services/post-validation.ts';
 const QMAP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function readJson(filePath) {

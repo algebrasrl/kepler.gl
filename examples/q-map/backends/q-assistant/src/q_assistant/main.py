@@ -888,7 +888,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     }
                                 )
 
-                            response_text = "".join(stream_state["text_parts"]).strip() or None
+                            _raw_response_text = "".join(stream_state["text_parts"]).strip()
+                            # Strip literal <ctrlNN> escape sequences leaked by some providers.
+                            response_text = re.sub(r"<ctrl\d+>", "", _raw_response_text).strip() or None
                             _write_chat_audit_event(
                                 app_settings,
                                 endpoint="/chat/completions",

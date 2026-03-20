@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {setLoadingIndicator, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
 import {selectQMapVisState} from '../../../state/qmap-selectors';
 import {runSpatialOpsJob, computeSpatialOpsTimeout} from '../../../workers/spatial-ops-runner';
 import type {QMapToolContext} from '../context/tool-context';
+import {preprocessDualDatasetArgs} from '../tool-args-normalization';
 import {useToolExecution} from './use-tool-execution';
 
 export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
@@ -36,10 +36,10 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
     hideLayersForDatasetIds
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Spatially join two geometry/H3 datasets by predicate and materialize a derived dataset with aggregated right-side metrics.',
-    parameters: z.object({
+    parameters: z.preprocess(preprocessDualDatasetArgs, z.object({
       leftDatasetName: z.string().describe('Primary dataset (rows preserved)'),
       rightDatasetName: z.string().describe('Secondary dataset used for spatial matching'),
       leftGeometryField: z.string().optional(),
@@ -62,7 +62,7 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
         .optional()
         .describe('Default false. Set true to auto-create a map layer for the output dataset.'),
       newDatasetName: z.string().optional()
-    }),
+    })),
     execute: async ({
       leftDatasetName,
       rightDatasetName,
@@ -77,7 +77,7 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
       maxRightFeatures,
       showOnMap,
       newDatasetName
-    }) => {
+    }: any) => {
       const currentVisState = getCurrentVisState();
       const left = resolveDatasetByName(currentVisState?.datasets || {}, leftDatasetName);
       const right = resolveDatasetByName(currentVisState?.datasets || {}, rightDatasetName);
@@ -401,7 +401,7 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 
 }
 
@@ -427,7 +427,7 @@ export function createOverlayDifferenceTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Overlay two polygon/H3 datasets and materialize intersection/difference geometries for gap analysis.',
     parameters: z.object({
@@ -466,7 +466,7 @@ export function createOverlayDifferenceTool(ctx: QMapToolContext) {
       maxFeaturesB,
       showOnMap,
       newDatasetName
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const a = resolveDatasetByName(vis?.datasets || {}, datasetAName);
       const b = resolveDatasetByName(vis?.datasets || {}, datasetBName);
@@ -684,6 +684,6 @@ export function createOverlayDifferenceTool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 
 }

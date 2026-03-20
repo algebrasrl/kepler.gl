@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {layerConfigChange, setLoadingIndicator, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -140,7 +139,7 @@ export function createComputeQMapEquityIndicesTool(ctx: QMapToolContext) {
     resolveStyleTargetLayer
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Compute standard equity and segregation metrics over spatial units (municipalities, H3 cells, etc.). ' +
       'Always computes: Gini coefficient, Theil T entropy index, Concentration Ratio CR-k, and Location Quotient (LQ) per unit. ' +
@@ -170,7 +169,7 @@ export function createComputeQMapEquityIndicesTool(ctx: QMapToolContext) {
         .optional()
         .describe('Auto-create layer for output dataset and apply diverging LQ colour preset. Default true.')
     }),
-    execute: async ({datasetName, valueField, totalField, groupAField, groupBField, topK, newDatasetName, showOnMap}) => {
+    execute: async ({datasetName, valueField, totalField, groupAField, groupBField, topK, newDatasetName, showOnMap}: any) => {
       const vis = getCurrentVisState();
       const dataset = resolveDatasetByName(vis?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -512,5 +511,5 @@ export function createComputeQMapEquityIndicesTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 }

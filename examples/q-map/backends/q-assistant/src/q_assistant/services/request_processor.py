@@ -755,6 +755,29 @@ def _latest_successful_tool_index(results: list[dict[str, Any]], tool_names: set
     return -1
 
 
+_QCUMBER_QUERY_TOOLS: set[str] = {
+    "queryQCumberTerritorialUnits",
+    "queryQCumberDatasetSpatial",
+    "queryQCumberDataset",
+}
+
+
+def _latest_qcumber_load_index(results: list[dict[str, Any]]) -> int:
+    """Return the index of the latest successful q-cumber query that loaded a
+    dataset to the map (``loadedToMap=true`` in the tool result)."""
+    for idx in range(len(results) - 1, -1, -1):
+        row = results[idx]
+        name = str(row.get("toolName") or "").strip()
+        if row.get("success") is True and name in _QCUMBER_QUERY_TOOLS:
+            # Check whether the tool actually loaded a dataset.
+            if row.get("loadedToMap") is True:
+                return idx
+            # Also accept when a loadedDatasetRef is present (implies load).
+            if row.get("datasetRef") or row.get("datasetName"):
+                return idx
+    return -1
+
+
 def _needs_boundary_clip_guardrail(
     *,
     objective_text: str,
@@ -1478,6 +1501,9 @@ def _derive_runtime_quality_metrics(
     response_calls = _collect_response_tool_call_names(response_tool_calls)
 
     latest_create_idx = _latest_successful_tool_index(results, _DATASET_CREATE_OR_UPDATE_TOOLS)
+    # q-cumber query tools with loadedToMap=true also create datasets in the map.
+    if latest_create_idx < 0:
+        latest_create_idx = _latest_qcumber_load_index(results)
     has_dataset_mutation = latest_create_idx >= 0
     wait_idx = _next_successful_tool_index(results, latest_create_idx + 1, "waitForQMapDataset")
     count_idx = _next_successful_tool_index(results, wait_idx + 1, "countQMapRows") if wait_idx >= 0 else -1

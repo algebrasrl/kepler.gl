@@ -1,7 +1,6 @@
 import {useEffect, MutableRefObject} from 'react';
 import {addDataToMap, layerConfigChange, replaceDataInMap, wrapTo} from '@kepler.gl/actions';
 import {ALL_FIELD_TYPES} from '@kepler.gl/constants';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 import {z} from 'zod';
 
@@ -79,7 +78,7 @@ export function createDatasetFromFilterTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Create a new dataset from an existing dataset by applying a field filter. Uses q-hive addDataToMap action.',
     parameters: z.preprocess(
@@ -99,7 +98,7 @@ export function createDatasetFromFilterTool(ctx: QMapToolContext) {
           .describe('Default false. Set true to auto-create a map layer for the output dataset.')
       })
     ),
-    execute: async ({datasetName, fieldName, operator, value, newDatasetName, showOnMap}) => {
+    execute: async ({datasetName, fieldName, operator, value, newDatasetName, showOnMap}: any) => {
       const currentVisState = getCurrentVisState();
       const sourceDataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!sourceDataset?.id) {
@@ -276,7 +275,7 @@ export function createDatasetFromFilterTool(ctx: QMapToolContext) {
       }, [localDispatch, datasets, executionKey, sourceDatasetId, rowIndices, newDatasetName, newDatasetId, showOnMap, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createDatasetFromCurrentFiltersTool(ctx: QMapToolContext) {
@@ -291,7 +290,7 @@ export function createDatasetFromCurrentFiltersTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Create a new dataset from currently active UI filters for a dataset. Uses q-hive addDataToMap action.',
     parameters: z.object({
@@ -302,7 +301,7 @@ export function createDatasetFromCurrentFiltersTool(ctx: QMapToolContext) {
         .optional()
         .describe('Default false. Set true to auto-create a map layer for the output dataset.')
     }),
-    execute: async ({datasetName, newDatasetName, showOnMap}) => {
+    execute: async ({datasetName, newDatasetName, showOnMap}: any) => {
       const currentVisState = getCurrentVisState();
       const sourceDataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!sourceDataset?.id) {
@@ -429,7 +428,7 @@ export function createDatasetFromCurrentFiltersTool(ctx: QMapToolContext) {
       }, [localDispatch, datasets, executionKey, sourceDatasetId, rowIndices, newDatasetName, newDatasetId, showOnMap, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createMergeQMapDatasetsTool(ctx: QMapToolContext) {
@@ -458,7 +457,7 @@ export function createMergeQMapDatasetsTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Merge multiple loaded datasets into one dataset using deterministic schema union (no SQL). Optionally keep only merged layer visible.',
     parameters: z.object({
@@ -520,7 +519,7 @@ export function createMergeQMapDatasetsTool(ctx: QMapToolContext) {
       sourceCrs,
       outputGeometryField,
       strictValidation
-    }) => {
+    }: any) => {
       const vis = getCurrentVisState();
       const datasetsMap = vis?.datasets || {};
       const loadedDatasets = Object.values(datasetsMap || {}) as any[];
@@ -1079,5 +1078,5 @@ export function createMergeQMapDatasetsTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 }

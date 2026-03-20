@@ -1202,7 +1202,8 @@
     ],
     "expected_tools_any": [
       "previewQMapDatasetRows",
-      "showOnlyQMapLayer"
+      "showOnlyQMapLayer",
+      "describeQMapField"
     ],
     "forbidden_tools": [
       "aggregateDatasetToH3",
@@ -2118,14 +2119,22 @@
             "id": "qmap_comuni",
             "name": "Comuni_Amministrativi",
             "datasetRef": "id:qmap_comuni",
-            "fields": ["codice_istat", "nome", "popolazione", "_geojson"],
+            "fields": [
+              "codice_istat",
+              "nome",
+              "popolazione",
+              "_geojson"
+            ],
             "rowCount": 7904
           },
           {
             "id": "qmap_h3_grid",
             "name": "H3_Grid_Italia",
             "datasetRef": "id:qmap_h3_grid",
-            "fields": ["h3index", "_geojson"],
+            "fields": [
+              "h3index",
+              "_geojson"
+            ],
             "rowCount": 12500
           }
         ],
@@ -2137,7 +2146,12 @@
             "datasetName": "Comuni_Amministrativi",
             "datasetRef": "id:qmap_comuni",
             "type": "geojson",
-            "availableFields": ["codice_istat", "nome", "popolazione", "_geojson"]
+            "availableFields": [
+              "codice_istat",
+              "nome",
+              "popolazione",
+              "_geojson"
+            ]
           },
           {
             "id": "layer-h3",
@@ -2146,7 +2160,10 @@
             "datasetName": "H3_Grid_Italia",
             "datasetRef": "id:qmap_h3_grid",
             "type": "h3",
-            "availableFields": ["h3index", "_geojson"]
+            "availableFields": [
+              "h3index",
+              "_geojson"
+            ]
           }
         ],
         "details": "Found 2 datasets in current map."
@@ -2156,9 +2173,17 @@
         "dataset": "H3_Grid_Popolazione",
         "datasetName": "H3_Grid_Popolazione",
         "datasetRef": "id:qmap_h3_pop",
-        "fieldCatalog": ["h3index", "popolazione", "_geojson"],
-        "numericFields": ["popolazione"],
-        "styleableFields": ["popolazione"],
+        "fieldCatalog": [
+          "h3index",
+          "popolazione",
+          "_geojson"
+        ],
+        "numericFields": [
+          "popolazione"
+        ],
+        "styleableFields": [
+          "popolazione"
+        ],
         "defaultStyleField": "popolazione",
         "details": "Population distributed to H3 grid (12500 cells). Total conserved."
       },
@@ -2314,6 +2339,9 @@
       "saveDataToMap",
       "listQMapDatasets",
       "listQCumberDatasets",
+      "listQCumberProviders",
+      "getQCumberDatasetHelp",
+      "checkRegulatoryCompliance",
       "spatialJoinByPredicate",
       "waitForQMapDataset"
     ],
@@ -2379,7 +2407,8 @@
       "countQMapRows",
       "listQMapDatasets",
       "fitQMapToDataset",
-      "showOnlyQMapLayer"
+      "showOnlyQMapLayer",
+      "listQCumberDatasets"
     ],
     "forbidden_tools": [
       "genericQuery",
@@ -3100,7 +3129,13 @@
             "id": "qmap_qualita_aria",
             "name": "QualitaAria_Stazioni",
             "datasetRef": "id:qmap_qualita_aria",
-            "fields": ["stazione_id", "timestamp", "pm25", "pm10", "no2"],
+            "fields": [
+              "stazione_id",
+              "timestamp",
+              "pm25",
+              "pm10",
+              "no2"
+            ],
             "rowCount": 8760
           }
         ],
@@ -3112,7 +3147,13 @@
             "datasetName": "QualitaAria_Stazioni",
             "datasetRef": "id:qmap_qualita_aria",
             "type": "point",
-            "availableFields": ["stazione_id", "timestamp", "pm25", "pm10", "no2"]
+            "availableFields": [
+              "stazione_id",
+              "timestamp",
+              "pm25",
+              "pm10",
+              "no2"
+            ]
           }
         ],
         "details": "Found 1 dataset in current map."
@@ -3121,11 +3162,36 @@
         "success": true,
         "trend": "decreasing",
         "buckets": [
-          {"window_start_iso": "2023-01-01T00:00:00Z", "window_end_iso": "2023-01-31T23:59:59Z", "n_observations": 744, "aggregated_value": 28.4},
-          {"window_start_iso": "2023-02-01T00:00:00Z", "window_end_iso": "2023-02-28T23:59:59Z", "n_observations": 672, "aggregated_value": 24.1},
-          {"window_start_iso": "2023-03-01T00:00:00Z", "window_end_iso": "2023-03-31T23:59:59Z", "n_observations": 744, "aggregated_value": 19.7},
-          {"window_start_iso": "2023-04-01T00:00:00Z", "window_end_iso": "2023-04-30T23:59:59Z", "n_observations": 720, "aggregated_value": 17.3},
-          {"window_start_iso": "2023-05-01T00:00:00Z", "window_end_iso": "2023-05-31T23:59:59Z", "n_observations": 744, "aggregated_value": 15.8}
+          {
+            "window_start_iso": "2023-01-01T00:00:00Z",
+            "window_end_iso": "2023-01-31T23:59:59Z",
+            "n_observations": 744,
+            "aggregated_value": 28.4
+          },
+          {
+            "window_start_iso": "2023-02-01T00:00:00Z",
+            "window_end_iso": "2023-02-28T23:59:59Z",
+            "n_observations": 672,
+            "aggregated_value": 24.1
+          },
+          {
+            "window_start_iso": "2023-03-01T00:00:00Z",
+            "window_end_iso": "2023-03-31T23:59:59Z",
+            "n_observations": 744,
+            "aggregated_value": 19.7
+          },
+          {
+            "window_start_iso": "2023-04-01T00:00:00Z",
+            "window_end_iso": "2023-04-30T23:59:59Z",
+            "n_observations": 720,
+            "aggregated_value": 17.3
+          },
+          {
+            "window_start_iso": "2023-05-01T00:00:00Z",
+            "window_end_iso": "2023-05-31T23:59:59Z",
+            "n_observations": 744,
+            "aggregated_value": 15.8
+          }
         ],
         "details": "Aggregated pm25 by month. Mann-Kendall trend: decreasing (Z=-2.14, p=0.032)."
       }
@@ -3180,7 +3246,9 @@
       "getQCumberDatasetHelp",
       "queryQCumberTerritorialUnits",
       "queryQCumberDataset",
-      "queryQCumberDatasetSpatial"
+      "queryQCumberDatasetSpatial",
+      "waitForQMapDataset",
+      "countQMapRows"
     ],
     "expected_keywords_any": [
       "delta",
@@ -3387,7 +3455,8 @@
       "queryQCumberTerritorialUnits",
       "waitForQMapDataset",
       "countQMapRows",
-      "setQMapLayerColorByField"
+      "setQMapLayerColorByField",
+      "fitQMapToDataset"
     ],
     "expected_keywords_any": [
       "classe",
@@ -3448,7 +3517,9 @@
       "queryQCumberDatasetSpatial",
       "queryQCumberTerritorialUnits",
       "listQCumberDatasets",
-      "getQCumberDatasetHelp"
+      "getQCumberDatasetHelp",
+      "queryQCumberDataset",
+      "checkRegulatoryCompliance"
     ],
     "expected_keywords_any": [
       "esposizione",
@@ -3478,7 +3549,8 @@
       "queryQCumberDatasetSpatial",
       "listQCumberDatasets",
       "getQCumberDatasetHelp",
-      "waitForQMapDataset"
+      "waitForQMapDataset",
+      "listQMapDatasets"
     ],
     "expected_keywords_any": [
       "interpolazione",
@@ -3508,7 +3580,9 @@
       "listQCumberDatasets",
       "getQCumberDatasetHelp",
       "queryQCumberDatasetSpatial",
-      "listRegulatoryThresholds"
+      "listRegulatoryThresholds",
+      "listQMapDatasets",
+      "queryQCumberDataset"
     ],
     "expected_keywords_any": [
       "superamento",
@@ -3565,12 +3639,22 @@
       "showOnlyQMapLayer",
       "countQMapRows"
     ],
-    "forbidden_tools": ["genericQuery", "queryDataset", "filterDataset"],
-    "expected_keywords_any": ["comuni", "Mantova", "popolazione"],
+    "forbidden_tools": [
+      "genericQuery",
+      "queryDataset",
+      "filterDataset"
+    ],
+    "expected_keywords_any": [
+      "comuni",
+      "Mantova",
+      "popolazione"
+    ],
     "expected_tool_arguments": [
       {
         "tool": "queryQCumberTerritorialUnits",
-        "required_keys_all": ["expectedAdminType"]
+        "required_keys_all": [
+          "expectedAdminType"
+        ]
       }
     ]
   }

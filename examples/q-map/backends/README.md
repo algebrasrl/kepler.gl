@@ -117,7 +117,6 @@ make qa-switch-openrouter
 make qa-switch-openrouter-deepseek
 make qa-switch-openrouter-gemini
 make qa-switch-ollama MODEL=qwen3-coder:30b
-make up-gateway
 make test-backends
 ```
 
@@ -132,7 +131,7 @@ Kong DB-less overlay is now the default runtime entrypoint and is available in:
 - `kong/kong.yml`
 - `kong/README.md`
 
-Before startup, `make up`/`make up-gateway` runs:
+Before startup, `make up` runs:
 
 ```bash
 make render-kong-config
@@ -148,15 +147,15 @@ This renders `kong/kong.yml` from env (`QMAP_KONG_JWT_PRIMARY_*`, `QMAP_KONG_JWT
 Start backends + gateway:
 
 ```bash
-make up-gateway
+make up
 ```
 
 Gateway ports:
 - `127.0.0.1:8000` (proxy)
 - `127.0.0.1:8001` (admin; local-only binding)
 
-In default gateway mode (`make up`/`make up-gateway`), direct backend host ports (`3001/3004/3005`) are disabled via `docker-compose.edge-only.yaml`.
-Use `make up-direct` only for local debugging when direct backend ports are explicitly needed.
+In default mode (`make up`), both direct backend host ports (`3001/3004/3005`) and Kong gateway (`:8000`) are exposed.
+Use `make up-direct` to start backends without Kong (direct ports only).
 
 Gateway routes:
 - `/api/q-assistant/*` -> `q-assistant:3004`

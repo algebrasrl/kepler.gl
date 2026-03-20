@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 import type {QMapToolContext} from '../context/tool-context';
 import regulatoryThresholds from '../data/regulatory-thresholds.json';
@@ -68,7 +67,7 @@ function findThresholds(parameterName: string): ThresholdEntry | null {
 export function createCheckRegulatoryComplianceTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, resolveDatasetFieldName} = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for regulatory compliance] Check air quality measurements against D.Lgs. 155/2010 limits and WHO AQG 2021. ' +
       'Returns per-station exceedance counts, compliance rate %. Use this when the question mentions "limiti di legge", "superamenti", "normativa", "155/2010", "conforme".',
@@ -308,7 +307,7 @@ export function createCheckRegulatoryComplianceTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -316,7 +315,7 @@ export function createCheckRegulatoryComplianceTool(ctx: QMapToolContext) {
 // ---------------------------------------------------------------------------
 
 export function createListRegulatoryThresholdsTool() {
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for air quality limits] List D.Lgs. 155/2010 + WHO AQG 2021 regulatory thresholds for 12 pollutants. No dataset required. Use this when the question asks about "limiti", "soglie normative", "qualità dell\'aria", "155/2010".',
     parameters: z.object({
@@ -374,5 +373,5 @@ export function createListRegulatoryThresholdsTool() {
         }
       };
     }
-  });
+  };
 }

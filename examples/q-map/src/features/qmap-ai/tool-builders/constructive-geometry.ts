@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -49,7 +48,7 @@ export function createOverlaySymmetricDifferenceTool(ctx: QMapToolContext) {
 }
 
 export function createDissolveQMapDatasetByFieldTool(ctx: QMapToolContext) {
-  return extendedTool({
+  return {
     description: 'Dissolve polygon/H3 features of a dataset into merged geometry, optionally grouped by a field.',
     parameters: z.object({
       datasetName: z.string(),
@@ -97,5 +96,5 @@ export function createDissolveQMapDatasetByFieldTool(ctx: QMapToolContext) {
         };
       });
     }
-  });
+  };
 }

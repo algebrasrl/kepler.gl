@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -22,7 +21,7 @@ export function createRegressQMapFieldsTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for regression] OLS linear regression Y~X between two numeric fields. Returns slope, intercept, R², equation. NOT spatial — use this instead of computeQMapBivariateCorrelation when the question is about regression/prediction/R².',
     parameters: z.object({
@@ -32,7 +31,7 @@ export function createRegressQMapFieldsTool(ctx: QMapToolContext) {
       newDatasetName: z.string().optional().describe('Name for derived dataset'),
       showOnMap: z.boolean().optional().describe('Create derived dataset on map. Default false.')
     }),
-    execute: async ({datasetName, dependentField, independentField, newDatasetName, showOnMap}) => {
+    execute: async ({datasetName, dependentField, independentField, newDatasetName, showOnMap}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -209,7 +208,7 @@ export function createRegressQMapFieldsTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 }
 
 // ─── Tool 2: Natural Break Classification (Ckmeans) ─────────────────────────
@@ -226,7 +225,7 @@ export function createClassifyQMapFieldBreaksTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for classification/grouping] Classify a numeric field into optimal natural-break classes (Ckmeans/Jenks). Creates a derived dataset with class labels. NOT a styling tool — use this instead of setQMapLayerColorByStatsThresholds when the question asks to classify/group/categorize into N groups.',
     parameters: z.object({
@@ -237,7 +236,7 @@ export function createClassifyQMapFieldBreaksTool(ctx: QMapToolContext) {
       classFieldName: z.string().optional().describe('Classification field name. Default: {fieldName}_class'),
       showOnMap: z.boolean().optional().describe('Create derived dataset on map. Default false.')
     }),
-    execute: async ({datasetName, fieldName, classes, newDatasetName, classFieldName, showOnMap}) => {
+    execute: async ({datasetName, fieldName, classes, newDatasetName, classFieldName, showOnMap}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -423,7 +422,7 @@ export function createClassifyQMapFieldBreaksTool(ctx: QMapToolContext) {
 
       return null;
     }
-  });
+  };
 }
 
 // ─── Tool 3: Pairwise Pearson Correlation Matrix ─────────────────────────────
@@ -431,14 +430,14 @@ export function createClassifyQMapFieldBreaksTool(ctx: QMapToolContext) {
 export function createCorrelateQMapFieldsTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, resolveDatasetFieldName} = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for field correlation] Pairwise Pearson r correlation matrix between 2-10 numeric fields. Returns r values + strength (strong/moderate/weak). NOT spatial — use this instead of computeQMapBivariateCorrelation when the question is about simple field-to-field correlation without spatial weights.',
     parameters: z.object({
       datasetName: z.string().describe('Dataset name from listQMapDatasets'),
       fieldNames: z.array(z.string()).min(2).max(10).describe('Numeric fields to correlate')
     }),
-    execute: async ({datasetName, fieldNames}) => {
+    execute: async ({datasetName, fieldNames}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -544,5 +543,5 @@ export function createCorrelateQMapFieldsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

@@ -54,7 +54,7 @@ function extractExplicitRuntimeTools(source) {
 
 function loadRuntimeTools(repoRoot) {
   const assistantPath = path.join(repoRoot, 'src/features/qmap-ai/qmap-ai-assistant-component.tsx');
-  const cloudPath = path.join(repoRoot, 'src/features/qmap-ai/cloud-tools.tsx');
+  const cloudPath = path.join(repoRoot, 'src/features/qmap-ai/cloud/components.tsx');
   const assistantSource = fs.readFileSync(assistantPath, 'utf8');
   const cloudSource = fs.readFileSync(cloudPath, 'utf8');
   return uniqueSorted([

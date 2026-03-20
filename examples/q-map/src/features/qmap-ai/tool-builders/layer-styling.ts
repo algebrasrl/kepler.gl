@@ -1,6 +1,5 @@
 import {useEffect} from 'react';
 import {layerConfigChange, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -29,7 +28,7 @@ export function createSetQMapLayerColorByFieldTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Color an existing layer by a field with q-hive native scales: linear/quantize/quantile (numeric) or ordinal/categorical (string/category).',
     parameters: z.object({
@@ -61,7 +60,7 @@ export function createSetQMapLayerColorByFieldTool(ctx: QMapToolContext) {
       minValue,
       maxValue,
       applyToStroke
-    }) => {
+    }: any) => {
       const currentVisState = getCurrentVisState();
       const layers = (currentVisState?.layers || []) as any[];
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
@@ -292,7 +291,7 @@ export function createSetQMapLayerColorByFieldTool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 }
 
 export function createSetQMapLayerSolidColorTool(ctx: QMapToolContext) {
@@ -305,7 +304,7 @@ export function createSetQMapLayerSolidColorTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Apply a solid fill/stroke color style to a layer (no statistical field mapping).',
     parameters: z.object({
@@ -317,7 +316,7 @@ export function createSetQMapLayerSolidColorTool(ctx: QMapToolContext) {
       strokeOpacity: z.number().min(0).max(1).optional().describe('Default 1'),
       hideFill: z.boolean().optional().describe('If true, transparent fill')
     }),
-    execute: async input => {
+    execute: async (input: any) => {
       const normalizedInput =
         input && typeof input === 'object' && !Array.isArray(input)
           ? (input as Record<string, unknown>)
@@ -467,7 +466,7 @@ export function createSetQMapLayerSolidColorTool(ctx: QMapToolContext) {
       }, [localDispatch, localLayers, localDatasets, executionKey, layerId, fillRgba, strokeRgba, shouldSkip, abort, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createSetQMapLayerHeightByFieldTool(ctx: QMapToolContext) {
@@ -484,7 +483,7 @@ export function createSetQMapLayerHeightByFieldTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Set layer 3D height/extrusion by numeric field (enables 3D and maps field to elevation).',
     parameters: z.object({
@@ -495,7 +494,7 @@ export function createSetQMapLayerHeightByFieldTool(ctx: QMapToolContext) {
       elevationScale: z.number().min(0.1).max(1000).optional().describe('Extrusion multiplier, default 1'),
       maxHeight: z.number().min(10).max(1000).optional().describe('Maximum extruded height (range upper bound), default 120')
     }),
-    execute: async ({datasetName, fieldName, layerName, scale, elevationScale, maxHeight}) => {
+    execute: async ({datasetName, fieldName, layerName, scale, elevationScale, maxHeight}: any) => {
       const currentVisState = getCurrentVisState();
       const layers = (currentVisState?.layers || []) as any[];
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
@@ -666,5 +665,5 @@ export function createSetQMapLayerHeightByFieldTool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 }

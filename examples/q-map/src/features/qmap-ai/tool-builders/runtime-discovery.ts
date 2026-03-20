@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -12,7 +11,7 @@ export function createListQMapDatasetsTool(ctx: QMapToolContext) {
     getTooltipFieldNamesForDataset
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'List currently loaded datasets in q-map with exact names, ids and datasetRef (`id:<datasetId>`) for reliable chaining across tools.',
     parameters: z.object({}),
@@ -52,7 +51,7 @@ export function createListQMapDatasetsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }
 
@@ -69,7 +68,7 @@ export function createLoadCloudMapAndWaitTool(ctx: QMapToolContext) {
     loadCloudMap
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Load a q-map cloud map and wait until visState datasets are available. Uses MCP for map resolution and q-hive loadCloudMap action.',
     parameters: z.object({
@@ -77,7 +76,7 @@ export function createLoadCloudMapAndWaitTool(ctx: QMapToolContext) {
       mapId: z.string().describe('Cloud map id returned by listQMapCloudMaps'),
       timeoutMs: z.number().optional()
     }),
-    execute: async ({provider, mapId, timeoutMs}) => {
+    execute: async ({provider, mapId, timeoutMs}: any) => {
       const resolvedProvider = normalizeCloudMapProvider(provider || DEFAULT_PROVIDER);
       const requestedProvider = String(resolvedProvider).trim().toLowerCase();
       const resolvedMapId = String(mapId || '').trim();
@@ -174,6 +173,6 @@ export function createLoadCloudMapAndWaitTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }

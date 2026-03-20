@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -13,7 +12,7 @@ export function createPreviewQMapDatasetRowsTool(ctx: QMapToolContext) {
     yieldToMainThread
   } = ctx;
 
-  return extendedTool({
+  return {
     description: 'Preview dataset rows with selected fields to inspect records.',
     parameters: z.object({
       datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
@@ -29,7 +28,7 @@ export function createPreviewQMapDatasetRowsTool(ctx: QMapToolContext) {
       orderBy: z.string().optional().describe('Optional field name used to sort rows before preview'),
       sortDirection: QMAP_SORT_DIRECTION_SCHEMA.describe('Sort direction for orderBy (default asc)')
     }),
-    execute: async ({datasetName, limit, fields, orderBy, sortDirection}) => {
+    execute: async ({datasetName, limit, fields, orderBy, sortDirection}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -239,7 +238,7 @@ export function createPreviewQMapDatasetRowsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }
 
@@ -254,7 +253,7 @@ export function createRankQMapDatasetRowsTool(ctx: QMapToolContext) {
     lastRankContextRef
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Compute exact top/bottom ranking on a loaded dataset by metric field. Use for analytical ranking (top N/bottom N) instead of unsorted previews.',
     parameters: z.object({
@@ -264,7 +263,7 @@ export function createRankQMapDatasetRowsTool(ctx: QMapToolContext) {
       sortDirection: QMAP_SORT_DIRECTION_SCHEMA.describe('desc = highest values first (default), asc = lowest values first'),
       fields: z.array(z.string()).optional().describe('Optional fields to include in ranked rows')
     }),
-    execute: async ({datasetName, metricFieldName, topN, sortDirection, fields}) => {
+    execute: async ({datasetName, metricFieldName, topN, sortDirection, fields}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -688,21 +687,21 @@ export function createRankQMapDatasetRowsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }
 
 export function createDistinctQMapFieldValuesTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, resolveDatasetFieldName} = ctx;
 
-  return extendedTool({
+  return {
     description: 'List distinct values for a dataset field.',
     parameters: z.object({
       datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
       fieldName: z.string().describe('Field name'),
       limit: z.number().min(1).max(500).optional().describe('Default 50')
     }),
-    execute: async ({datasetName, fieldName, limit}) => {
+    execute: async ({datasetName, fieldName, limit}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -744,14 +743,14 @@ export function createDistinctQMapFieldValuesTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }
 
 export function createSearchQMapFieldValuesTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, resolveDatasetFieldName} = ctx;
 
-  return extendedTool({
+  return {
     description: 'Search field values by case-insensitive contains and return matching distinct values.',
     parameters: z.object({
       datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
@@ -759,7 +758,7 @@ export function createSearchQMapFieldValuesTool(ctx: QMapToolContext) {
       contains: z.string().describe('Case-insensitive substring to search'),
       limit: z.number().min(1).max(500).optional().describe('Default 100')
     }),
-    execute: async ({datasetName, fieldName, contains, limit}) => {
+    execute: async ({datasetName, fieldName, contains, limit}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -816,6 +815,6 @@ export function createSearchQMapFieldValuesTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 
 }

@@ -1,0 +1,88 @@
+{
+  "id": "natura2000-it",
+  "name": "Rete Natura 2000 — Aree protette Italia",
+  "locale": "it",
+  "category": "environmental",
+  "organizationType": "agency",
+  "country": "IT",
+  "capabilities": ["query", "geometry", "postgis"],
+  "formats": ["row", "geojson"],
+  "tags": ["natura2000", "aree-protette", "SIC", "ZSC", "ZPS", "habitat", "biodiversità", "direttiva-habitat", "direttiva-uccelli", "MASE"],
+  "notes": "Rete Natura 2000 Italia — SIC/ZSC (Direttiva Habitat 92/43/CEE) e ZPS (Direttiva Uccelli 2009/147/CE). Fonte: MASE, licenza CC BY 4.0. Importato da GeoPackage EPSG:3035 riproiettato a EPSG:4326.",
+  "datasets": [
+    {
+      "id": "natura2000-siti",
+      "name": "Siti Rete Natura 2000 (SIC/ZSC e ZPS)",
+      "description": "2684 siti della Rete Natura 2000 in Italia: Zone Speciali di Conservazione (ZSC, ex SIC — Direttiva Habitat) e Zone di Protezione Speciale (ZPS — Direttiva Uccelli). Geometrie poligonali dei perimetri ufficiali.",
+      "source": {
+        "type": "postgis",
+        "schema": "qvt",
+        "table": "natura2000",
+        "geometryColumn": "geom"
+      },
+      "format": "geojson",
+      "tags": ["siti", "SIC", "ZSC", "ZPS", "habitat", "uccelli", "aree-protette"],
+      "ai": {
+        "profile": {
+          "datasetClass": "features",
+          "queryRouting": {
+            "preferredTool": "queryQCumberDatasetSpatial",
+            "requiresSpatialBbox": false,
+            "forbiddenAdminConstraints": ["expectedAdminType", "lv"]
+          },
+          "analysisMetrics": {
+            "metricSemantic": "protected_area",
+            "numeratorFieldCandidates": ["area_ha"],
+            "denominatorFieldCandidates": [],
+            "preferredRankingFieldCandidates": ["area_ha"],
+            "recommendedDerivedMetrics": [],
+            "analysisCaveats": [
+              "SITETYPE indica la classificazione: A=ZPS, B=SIC/ZSC, C=SIC/ZSC+ZPS.",
+              "L'area_ha è calcolata dalla geometria riproiettata; per analisi ufficiali usare le superfici ministeriali."
+            ]
+          }
+        },
+        "fieldHints": {
+          "_geojson": {
+            "description": "Perimetro del sito Natura 2000 (poligono/multipoligono)",
+            "type": "geojson",
+            "filterOps": ["is_null", "not_null"],
+            "sortable": false,
+            "rankable": false
+          },
+          "sitecode": {
+            "description": "Codice identificativo del sito Natura 2000 (es. IT1110001)",
+            "type": "string",
+            "semanticRole": "id",
+            "filterOps": ["eq", "in", "contains", "startswith"],
+            "examples": ["ITA040013", "IT1110001", "IT3210003"]
+          },
+          "sitename": {
+            "description": "Denominazione ufficiale del sito",
+            "type": "string",
+            "semanticRole": "name",
+            "filterOps": ["eq", "in", "contains", "startswith", "endswith"],
+            "examples": ["Arcipelago delle Pelagie - area marina e terrestre", "Parco Nazionale del Gran Paradiso"]
+          },
+          "sitetype": {
+            "description": "Tipo di sito: A=ZPS, B=SIC/ZSC, C=SIC/ZSC+ZPS",
+            "type": "string",
+            "semanticRole": "category_code",
+            "filterOps": ["eq", "in"],
+            "enumValues": ["A", "B", "C"]
+          },
+          "ms": {
+            "description": "Stato membro (IT per Italia)",
+            "type": "string",
+            "filterOps": ["eq"]
+          },
+          "inspire_id": {
+            "description": "Identificativo INSPIRE (opzionale)",
+            "type": "string",
+            "filterOps": ["eq", "contains"]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 import {useEffect} from 'react';
 import {layerConfigChange, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -25,7 +24,7 @@ export function createApplyQMapStylePresetTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Apply a predefined style preset to a target layer/dataset. Useful for consistent choropleth styling.',
     parameters: z.object({
@@ -33,7 +32,7 @@ export function createApplyQMapStylePresetTool(ctx: QMapToolContext) {
       datasetName: z.string().optional().describe('Exact dataset name from listQMapDatasets'),
       layerName: z.string().optional().describe('Exact layer name or id')
     }),
-    execute: async ({presetName, datasetName, layerName}) => {
+    execute: async ({presetName, datasetName, layerName}: any) => {
       const currentVisState = getCurrentVisState();
       const datasets = Object.values(currentVisState?.datasets || {}) as any[];
       const layers = (currentVisState?.layers || []) as any[];
@@ -292,7 +291,7 @@ export function createApplyQMapStylePresetTool(ctx: QMapToolContext) {
       ]);
       return null;
     }
-  });
+  };
 }
 
 export function createSetQMapLayerColorByThresholdsTool(ctx: QMapToolContext) {
@@ -312,7 +311,7 @@ export function createSetQMapLayerColorByThresholdsTool(ctx: QMapToolContext) {
     executedToolComponentKeys,
     rememberExecutedToolComponentKey
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Color an existing layer by numeric field using explicit manual thresholds (q-hive custom threshold scale).',
     parameters: z.object({
@@ -326,7 +325,7 @@ export function createSetQMapLayerColorByThresholdsTool(ctx: QMapToolContext) {
       reverse: z.boolean().optional(),
       applyToStroke: z.boolean().optional()
     }),
-    execute: async ({datasetName, fieldName, thresholds, layerName, palette, reverse, applyToStroke}) => {
+    execute: async ({datasetName, fieldName, thresholds, layerName, palette, reverse, applyToStroke}: any) => {
       const currentVisState = getCurrentVisState();
       const layers = (currentVisState?.layers || []) as any[];
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
@@ -478,7 +477,7 @@ export function createSetQMapLayerColorByThresholdsTool(ctx: QMapToolContext) {
       }, [localDispatch, localLayers, localDatasets, executionKey, layerId, fieldName, colorRange, manualDomain, applyToStroke, shouldSkip, abort, complete]);
       return null;
     }
-  });
+  };
 }
 
 export function createSetQMapLayerColorByStatsThresholdsTool(ctx: QMapToolContext & {setQMapLayerColorByThresholds: any}) {
@@ -491,7 +490,7 @@ export function createSetQMapLayerColorByStatsThresholdsTool(ctx: QMapToolContex
     thresholdStrategySchema,
     paletteSchema
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Color an existing layer by numeric field using thresholds derived from statistics (mean/median/mode/quantiles).',
     parameters: z.object({
@@ -512,7 +511,7 @@ export function createSetQMapLayerColorByStatsThresholdsTool(ctx: QMapToolContex
       reverse: z.boolean().optional(),
       applyToStroke: z.boolean().optional()
     }),
-    execute: async ({datasetName, fieldName, strategy, layerName, classes, quantiles, palette, reverse, applyToStroke}) => {
+    execute: async ({datasetName, fieldName, strategy, layerName, classes, quantiles, palette, reverse, applyToStroke}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -574,5 +573,5 @@ export function createSetQMapLayerColorByStatsThresholdsTool(ctx: QMapToolContex
       return forwarded;
     },
     component: (setQMapLayerColorByThresholds as any).component
-  });
+  };
 }

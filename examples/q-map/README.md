@@ -229,15 +229,8 @@ make qa-switch-openrouter
 
 ### UI + Backend via Docker (Prod-like)
 
-You can run q-map UI as a container (Nginx serving Vite build) together with backends:
-
-```bash
-cd examples/q-map/backends
-cp .env.example .env
-docker compose -f docker-compose.yaml -f docker-compose.ui.yaml --profile ui up -d --build
-```
-
-For the future single-origin topology used by `q_hive`, the preferred local entrypoint is:
+For running q-map UI as a container (Nginx serving Vite build) together with backends,
+use the same-origin shell from `examples/q-map`:
 
 ```bash
 cd examples/q-map

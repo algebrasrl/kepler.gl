@@ -1,11 +1,10 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
 
 export function createCountQMapRowsTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName, resolveDatasetFieldName, evaluateFilter} = ctx;
-  return extendedTool({
+  return {
     description: 'Count rows in a dataset, optionally using a simple field filter.',
     parameters: z.object({
       datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
@@ -15,7 +14,7 @@ export function createCountQMapRowsTool(ctx: QMapToolContext) {
         .optional(),
       value: z.union([z.number(), z.string(), z.boolean(), z.array(z.union([z.number(), z.string()]))]).optional()
     }),
-    execute: async ({datasetName, fieldName, operator, value}) => {
+    execute: async ({datasetName, fieldName, operator, value}: any) => {
       const resolveDatasetEventually = async () => {
         const maxAttempts = 12;
         const retryDelayMs = 150;
@@ -93,18 +92,18 @@ export function createCountQMapRowsTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }
 
 export function createDebugQMapActiveFiltersTool(ctx: QMapToolContext) {
   const {getCurrentVisState, resolveDatasetByName} = ctx;
-  return extendedTool({
+  return {
     description:
       'Debug helper: list active filters currently applied to datasets (optionally scoped to one dataset).',
     parameters: z.object({
       datasetName: z.string().optional().describe('Optional dataset name/id to scope filters')
     }),
-    execute: async ({datasetName}) => {
+    execute: async ({datasetName}: any) => {
       const vis = getCurrentVisState();
       const filters = Array.isArray(vis?.filters) ? vis.filters : [];
       const datasets = vis?.datasets || {};
@@ -138,5 +137,5 @@ export function createDebugQMapActiveFiltersTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

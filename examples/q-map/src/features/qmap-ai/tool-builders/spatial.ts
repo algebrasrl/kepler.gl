@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -15,7 +14,7 @@ export function createDeriveQMapDatasetBboxTool(ctx: QMapToolContext) {
     yieldToMainThread,
     defaultChunkSize
   } = ctx;
-  return extendedTool({
+  return {
     description:
       'Derive bounding box [minLon,minLat,maxLon,maxLat] from a loaded geometry dataset, for backend spatial prefilter queries.',
     parameters: z.object({
@@ -29,7 +28,7 @@ export function createDeriveQMapDatasetBboxTool(ctx: QMapToolContext) {
         .optional()
         .describe('Optional bbox padding in percent, default 0.')
     }),
-    execute: async ({datasetName, geometryField, sampleLimit, paddingPercent}) => {
+    execute: async ({datasetName, geometryField, sampleLimit, paddingPercent}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
       if (!dataset?.id) {
@@ -106,5 +105,5 @@ export function createDeriveQMapDatasetBboxTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

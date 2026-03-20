@@ -15,16 +15,13 @@ import {
   createSetQMapLayerColorByStatsThresholdsTool,
   createSetQMapLayerColorByThresholdsTool
 } from '../tool-builders/advanced-styling';
+import {createSummarizeQMapTimeSeriesTool, createAggregateQMapTimeSeriesTool} from '../tool-builders/timeseries-tools';
+import {createWordCloudTool, createCategoryBarsTool, createGrammarAnalyzeTool} from '../tool-builders/chart-tool-builders';
 import {
-  createAggregateQMapTimeSeriesTool,
-  createCategoryBarsTool,
-  createCompositeIndexTool,
-  createDataQualityReportTool,
   createDescribeQMapFieldTool,
-  createGrammarAnalyzeTool,
-  createSummarizeQMapTimeSeriesTool,
-  createWordCloudTool
-} from '../tool-builders/analytics';
+  createCompositeIndexTool,
+  createDataQualityReportTool
+} from '../tool-builders/statistical-tool-builders';
 import {createCountQMapRowsTool, createDebugQMapActiveFiltersTool} from '../tool-builders/dataset';
 import {
   createDistinctQMapFieldValuesTool,
@@ -35,24 +32,19 @@ import {
 import {createSetQMapFieldEqualsFilterTool, createSetQMapTooltipFieldsTool} from '../tool-builders/dataset-ui';
 import {createListQMapDatasetsTool, createLoadCloudMapAndWaitTool} from '../tool-builders/runtime-discovery';
 import {createClipDatasetByBoundaryTool, createDrawQMapBoundingBoxTool} from '../tool-builders/map-materialization';
-import {
-  createAggregateDatasetToH3Tool,
-  createPopulateTassellationFromAdminUnitsTool,
-  createTassellateDatasetLayerTool,
-  createTassellateSelectedGeometryTool
-} from '../tool-builders/tessellation-population';
+import {createTassellateSelectedGeometryTool, createTassellateDatasetLayerTool} from '../tool-builders/tessellation-tools';
+import {createAggregateDatasetToH3Tool} from '../tool-builders/h3-aggregation';
+import {createPopulateTassellationFromAdminUnitsTool} from '../tool-builders/population-tools';
 import {
   createDatasetFromCurrentFiltersTool,
   createDatasetFromFilterTool,
   createMergeQMapDatasetsTool
 } from '../tool-builders/dataset-mutations';
-import {
-  createDatasetWithGeometryAreaTool,
-  createDatasetWithNormalizedFieldTool,
-  createReprojectQMapDatasetCrsTool,
-  createComputeQMapDatasetDeltaTool,
-  createAddComputedFieldTool
-} from '../tool-builders/dataset-derived';
+import {createDatasetWithGeometryAreaTool} from '../tool-builders/geometry-area';
+import {createDatasetWithNormalizedFieldTool} from '../tool-builders/normalized-field';
+import {createReprojectQMapDatasetCrsTool} from '../tool-builders/crs-reproject';
+import {createComputeQMapDatasetDeltaTool} from '../tool-builders/dataset-delta';
+import {createAddComputedFieldTool} from '../tool-builders/computed-field';
 import {createPaintQMapH3CellTool, createPaintQMapH3CellsTool, createPaintQMapH3RingTool} from '../tool-builders/h3-paint';
 import {
   createSetQMapLayerColorByFieldTool,
@@ -65,7 +57,8 @@ import {
   createShowOnlyQMapLayerTool
 } from '../tool-builders/layer-visibility';
 import {createDeriveQMapDatasetBboxTool} from '../tool-builders/spatial';
-import {createClipQMapDatasetByGeometryTool, createZonalStatsByAdminTool} from '../tool-builders/geometry-materialization';
+import {createClipQMapDatasetByGeometryTool} from '../tool-builders/clip-by-geometry';
+import {createZonalStatsByAdminTool} from '../tool-builders/zonal-stats';
 import {createOverlayDifferenceTool, createSpatialJoinByPredicateTool} from '../tool-builders/spatial-overlays';
 import {
   createDissolveQMapDatasetByFieldTool,
@@ -84,11 +77,9 @@ import {
   createCoverageQualityReportTool,
   createNearestFeatureJoinTool
 } from '../tool-builders/spatial-analysis';
-import {
-  createComputeQMapSpatialAutocorrelationTool,
-  createComputeQMapBivariateCorrelationTool,
-  createComputeQMapHotspotAnalysisTool
-} from '../tool-builders/spatial-statistics';
+import {createComputeQMapSpatialAutocorrelationTool} from '../tool-builders/autocorrelation';
+import {createComputeQMapBivariateCorrelationTool} from '../tool-builders/bivariate-correlation';
+import {createComputeQMapHotspotAnalysisTool} from '../tool-builders/hotspot-analysis';
 import {createComputeQMapEquityIndicesTool} from '../tool-builders/equity-analysis';
 import {
   createRegressQMapFieldsTool,

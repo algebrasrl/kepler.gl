@@ -1049,6 +1049,80 @@ def build_post_discovery_force_query_decision(
     )
 
 
+def build_post_help_incomplete_coverage_decision(
+    *,
+    results: list[dict[str, Any]],
+    request_tool_names: set[str],
+    runtime_guardrail_prefix: str,
+    runtime_next_step_prefix: str,
+    max_help_rounds: int = 3,
+) -> RuntimeLoopRuleDecision:
+    """After getQCumberDatasetHelp has been called but not for all discovered
+    datasets, force another round so every dataset gets its routing metadata.
+
+    Without this rule, the model may call help for a subset of datasets
+    (e.g. 3 out of 6) and skip datasets from newer/less-familiar providers,
+    leaving them without queryRouting metadata for subsequent queries.
+    """
+    if "getQCumberDatasetHelp" not in request_tool_names:
+        return RuntimeLoopRuleDecision(remove_tool_names=set(), guidance_lines=[])
+
+    # Collect all dataset IDs discovered via listQCumberDatasets
+    discovered_datasets: set[str] = set()
+    for row in results:
+        tool_name = str(row.get("toolName") or "").strip()
+        if tool_name == "listQCumberDatasets" and row.get("success") is True:
+            catalog = row.get("catalogDatasets") or []
+            for entry in catalog:
+                if isinstance(entry, dict):
+                    ref = str(entry.get("datasetRef") or entry.get("datasetId") or "").strip()
+                    if ref:
+                        discovered_datasets.add(ref)
+
+    if not discovered_datasets:
+        return RuntimeLoopRuleDecision(remove_tool_names=set(), guidance_lines=[])
+
+    # Collect dataset IDs that have already received help
+    helped_datasets: set[str] = set()
+    help_call_count = 0
+    for row in results:
+        tool_name = str(row.get("toolName") or "").strip()
+        if tool_name == "getQCumberDatasetHelp":
+            help_call_count += 1
+            if row.get("success") is True:
+                ref = str(row.get("datasetRef") or "").strip()
+                if ref:
+                    helped_datasets.add(ref)
+
+    # If all discovered datasets have been helped, nothing to do
+    missing = discovered_datasets - helped_datasets
+    if not missing:
+        return RuntimeLoopRuleDecision(remove_tool_names=set(), guidance_lines=[])
+
+    # Safety: don't force indefinitely
+    if help_call_count >= max_help_rounds * len(discovered_datasets):
+        return RuntimeLoopRuleDecision(remove_tool_names=set(), guidance_lines=[])
+
+    # Strip "id:" prefix from dataset refs for readable guidance
+    missing_list = ", ".join(sorted(
+        ref[3:] if ref.startswith("id:") else ref for ref in missing
+    ))
+    return RuntimeLoopRuleDecision(
+        remove_tool_names=set(),
+        guidance_lines=[
+            (
+                f"{runtime_guardrail_prefix} Selected rule `post_help_incomplete_coverage` "
+                f"({len(helped_datasets)}/{len(discovered_datasets)} datasets have routing metadata)."
+            ),
+            (
+                f"{runtime_next_step_prefix} Call getQCumberDatasetHelp for the remaining "
+                f"datasets that still need routing metadata: {missing_list}"
+            ),
+        ],
+        forced_tool_choice_name="getQCumberDatasetHelp",
+    )
+
+
 def build_cloud_load_no_redundant_fallback_decision(
     *,
     results: list[dict[str, Any]],

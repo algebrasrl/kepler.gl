@@ -119,6 +119,99 @@ export function preprocessFlatFilterToolArgs(raw: unknown): unknown {
   return args;
 }
 
+// ─────────────────────────────────────────────────────────────────────
+// Dataset-argument normalization is intentionally NOT done here.
+//
+// Best practice (OpenAI strict mode, Anthropic tool-use-examples,
+// Vercel AI SDK .describe()): let the schema define the contract,
+// let validation errors flow back to the model, let the model
+// self-correct.  Silent normalization masks errors and prevents
+// the model from learning correct parameter names.
+//
+// The correct fix for wrong arg names is:
+//   1. argsSchema with required fields + types in tool contracts
+//   2. Clear .describe() annotations on Zod parameters
+//   3. Structured validation errors returned to the model by AI SDK
+//   4. Model retries with correct args (circuit breaker caps retries)
+//
+// Exception: dual-dataset tools with left/right naming are
+// systematically confused by models that emit source/target instead.
+// Zod preprocess normalises these *before* validation so the call
+// succeeds on the first attempt instead of burning circuit-breaker
+// budget on a predictable alias mismatch.
+// ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Zod-preprocess callback for tools that use leftDatasetName / rightDatasetName.
+ * Maps the common model aliases sourceDatasetName → leftDatasetName,
+ * targetDatasetName → rightDatasetName when the canonical keys are absent.
+ */
+export function preprocessDualDatasetArgs(raw: unknown): unknown {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw;
+  const args = {...(raw as ToolArgs)};
+  if (!args.leftDatasetName && typeof args.sourceDatasetName === 'string') {
+    args.leftDatasetName = args.sourceDatasetName;
+    delete args.sourceDatasetName;
+  }
+  if (!args.rightDatasetName && typeof args.targetDatasetName === 'string') {
+    args.rightDatasetName = args.targetDatasetName;
+    delete args.targetDatasetName;
+  }
+  return args;
+}
+
+/**
+ * Zod-preprocess callback for clip tools (sourceDatasetName + clipDatasetName).
+ * Maps common model aliases: datasetName → sourceDatasetName,
+ * maskDatasetName / boundaryDatasetName → clipDatasetName.
+ */
+export function preprocessClipDatasetArgs(raw: unknown): unknown {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw;
+  const args = {...(raw as ToolArgs)};
+  if (!args.sourceDatasetName && typeof args.datasetName === 'string') {
+    args.sourceDatasetName = args.datasetName;
+    delete args.datasetName;
+  }
+  if (!args.clipDatasetName) {
+    const alias =
+      (typeof args.maskDatasetName === 'string' && args.maskDatasetName) ||
+      (typeof args.boundaryDatasetName === 'string' && args.boundaryDatasetName) ||
+      (typeof args.clipGeometryDatasetName === 'string' && args.clipGeometryDatasetName);
+    if (alias) {
+      args.clipDatasetName = alias;
+      delete args.maskDatasetName;
+      delete args.boundaryDatasetName;
+      delete args.clipGeometryDatasetName;
+    }
+  }
+  return args;
+}
+
+/**
+ * Zod-preprocess callback for boundary-clip tools (sourceDatasetName + boundaryDatasetName).
+ * Maps: datasetName → sourceDatasetName,
+ *       maskDatasetName / clipDatasetName → boundaryDatasetName.
+ */
+export function preprocessBoundaryClipArgs(raw: unknown): unknown {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw;
+  const args = {...(raw as ToolArgs)};
+  if (!args.sourceDatasetName && typeof args.datasetName === 'string') {
+    args.sourceDatasetName = args.datasetName;
+    delete args.datasetName;
+  }
+  if (!args.boundaryDatasetName) {
+    const alias =
+      (typeof args.maskDatasetName === 'string' && args.maskDatasetName) ||
+      (typeof args.clipDatasetName === 'string' && args.clipDatasetName);
+    if (alias) {
+      args.boundaryDatasetName = alias;
+      delete args.maskDatasetName;
+      delete args.clipDatasetName;
+    }
+  }
+  return args;
+}
+
 export function normalizeQMapToolExecuteArgs(
   toolName: string,
   rawArgs: unknown,

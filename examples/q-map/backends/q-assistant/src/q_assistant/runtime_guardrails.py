@@ -236,7 +236,18 @@ def objective_requests_map_display(objective_text: str) -> bool:
         r"\bshow\b[^.]{0,60}\bon\s+(?:the\s+)?map\b",
         r"\bdisplay\b[^.]{0,60}\bon\s+(?:the\s+)?map\b",
     )
-    return any(re.search(pattern, compact) for pattern in explicit_display_patterns)
+    if any(re.search(pattern, compact) for pattern in explicit_display_patterns):
+        return True
+    # Standalone display verbs at the start of the objective imply map display
+    # in a map application context (e.g. "mostra aree contaminate …").
+    leading_display_patterns = (
+        r"^mostr(?:a|ami|i|are)\b",
+        r"^visualizz(?:a|ami|are)\b",
+        r"^fai\s+vedere\b",
+        r"^show\b",
+        r"^display\b",
+    )
+    return any(re.search(pattern, compact) for pattern in leading_display_patterns)
 
 
 def objective_requests_provider_discovery(objective_text: str) -> bool:
@@ -918,6 +929,14 @@ def enforce_runtime_tool_loop_limits(
         forced_tool_choice_name = post_discovery.forced_tool_choice_name
     if post_discovery.guidance_lines:
         guidance_lines.extend(post_discovery.guidance_lines)
+
+    # ─── Post-help incomplete coverage ─────────────────────────────────
+    # REMOVED: forcing help for ALL discovered datasets wasted tool-call
+    # budget and confused the model into using wrong query tools (e.g.
+    # queryQCumberDataset instead of queryQCumberTerritorialUnits).
+    # The correct fix for missing metadata is argsSchema in tool contracts
+    # (schema-first approach) + the existing post_discovery_force_query
+    # guardrail that ensures at least one help call happens.
 
     # ─── Statistical/regulatory tool routing ──────────────────────────────
     stat_routing = _build_force_statistical_tool_routing_decision(
@@ -2017,6 +2036,18 @@ def _inject_runtime_guardrail_message(
             response_mode_hint = str(best.get("responseModeHint") or "").strip().lower()
             if response_mode_hint in {"clarification", "limitation"}:
                 guidance_lines.append(f"{_RUNTIME_RESPONSE_MODE_PREFIX} {response_mode_hint}")
+
+    # ── Display-intent showOnMap enforcement ──
+    # When the user objective starts with a display verb ("mostra", "show", …),
+    # inject guidance on every sub-request so the model uses showOnMap=true for
+    # the final data query that satisfies the user request.
+    if objective_requests_map_display(objective_text):
+        guidance_lines.append(
+            f"{_RUNTIME_GUARDRAIL_PREFIX} "
+            "Display objective detected. The final q-cumber data query (the one that "
+            "satisfies the user request) MUST use showOnMap=true so the result is visible "
+            "on the map. Use showOnMap=false only for intermediate/boundary datasets."
+        )
 
     if not results:
         if "listQMapDatasets" in tools_available and not _objective_requests_dataset_discovery(objective_text):

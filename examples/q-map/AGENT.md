@@ -32,7 +32,7 @@ Bootstrap sequence (default):
    - `clean-loop` now preserves `tests/ai-eval/results` by default so variance gates keep their baseline window; use `make -C examples/q-map clean-loop-hard` (or `CLEAN_LOOP_PURGE_EVAL_RESULTS=1`) only when you intentionally want to reset eval history.
    - `fix-test-perms` normalizes ownership/permissions for test/audit folders (`test-results`, `playwright-report`, `tests/ai-eval/results`, `backends/logs/q-assistant/chat-audit`) and should be preferred over ad-hoc manual `chown`.
 4. Validate eval transport preflight before loop:
-   - `make -C examples/q-map backend-ready`
+   - `make -C examples/q-map backend-ready` (health-check only, expects stack from `make dev-local`)
    - `make -C examples/q-map ai-eval-preflight`
    - if backend is behind JWT-protected Kong edge, export `QMAP_AI_EVAL_BEARER_TOKEN=<jwt>` before preflight/loop.
    - if `Q_ASSISTANT_PROVIDER=openrouter`, ensure `OPENROUTER_API_KEY` (or `Q_ASSISTANT_API_KEY`) is set in `examples/q-map/backends/.env` and `q-assistant` has been recreated after the change; `/health` can be green while `/chat/completions` still returns `401` without provider credentials.
@@ -64,6 +64,7 @@ Working rule:
 - Changelog discipline is enforced by `make -C examples/q-map changelog-audit` (included in `quality-gate`): q-map technical changes must include `examples/q-map/CHANGELOG.md` update.
 - Fast triage rule for failed evals:
   - `scripts/run-ai-eval.mjs` now prints `[ai-eval][fail]` blocks with prompt, observed toolCalls, required tools and assistant text; use this output first to decide whether to fix runtime routing, extend case expectations, or retire a stale case.
+- Transient failure auto-retry: `run-ai-eval.mjs` automatically retries cases that fail due to empty provider responses, transport errors, or marginal precision misses (score>=0.8, precision in [0.6,0.7)). If the retry passes, the result is patched in-place in the report. Max 5 retryable per run; above that the run is treated as systemic failure. Disable with `QMAP_AI_EVAL_TRANSIENT_RETRY_MAX=0`.
 
 ## Future Option: External Remediation Agent
 - Candidate: `mini-swe-agent` (or equivalent) may be adopted later as an outer remediation loop for q-assistant/backend maintenance.
@@ -108,17 +109,16 @@ Working rule:
 - Backend orchestration (Docker):
   - `cd examples/q-map/backends`
   - `cp .env.example .env`
-  - `make up` (default: Kong edge-only, backend ports internal)
-  - `make up-direct` (debug: backend direct ports exposed on host)
+  - `make up` (default: backends + Kong, direct ports + gateway exposed)
+  - `make up-direct` (debug: backend direct ports only, no Kong)
   - Compose files (source of truth):
     - `examples/q-map/backends/docker-compose.yaml` (core backend stack)
-    - `examples/q-map/backends/docker-compose.edge-only.yaml` (gateway overlay, strips backend host ports)
+    - `examples/q-map/backends/docker-compose.edge-only.yaml` (gateway overlay, strips backend host ports — used only by `same-origin-up`)
     - `examples/q-map/backends/docker-compose.kong.yaml` (Kong edge overlay/profile)
-    - `examples/q-map/backends/docker-compose.ui.yaml` (UI overlay/profile)
     - `examples/q-map/docker-compose.same-origin.yaml` (same-origin local shell: `/` -> `q-map-ui`, `/api/*` -> Kong/backends)
   - note: `docker-compose.local.yml` is not present in this repo snapshot; use `docker-compose.yaml`
   - quick status/log checks (run from `examples/q-map/backends`):
-    - `make ps` (gateway mode) or `make ps-direct` (direct mode)
+    - `make ps` or `make ps-direct`
     - `docker compose -f docker-compose.yaml logs --tail=120 q-assistant`
     - `docker compose -f docker-compose.yaml logs --tail=120 q-cumber-backend`
     - `docker compose -f docker-compose.yaml logs --tail=120 q-storage-backend`
@@ -128,10 +128,7 @@ Working rule:
   - quick q-assistant provider/model switch:
     - `./switch-q-assistant.sh openrouter google/gemini-3-flash-preview`
     - `make -C examples/q-map/backends qa-switch-openrouter`
-  - UI + backend prod-like stack:
-    - `docker compose -f docker-compose.yaml -f docker-compose.ui.yaml --profile ui up -d --build`
-    - UI available at `http://localhost:8081`
-  - preferred local single-origin shell from `examples/q-map`:
+  - preferred local single-origin shell from `examples/q-map` (includes UI + backends prod-like):
     - `make same-origin-up`
     - `make same-origin-ps`
     - `make same-origin-logs SERVICE=q-map-shell`
@@ -161,10 +158,17 @@ Working rule:
     - `docker exec q-map-q-storage-backend python -m unittest -q tests/test_config_and_storage.py tests/test_jwt_auth.py`
 - Mapbox token for geocoder/base map:
   - Set `VITE_MAPBOX_TOKEN` in `.env.development.local`
-- Local IT datasets (q-cumber provider):
-  - Provider id: `local-assets-it`
-  - Dataset `kontur-boundaries-italia` (admin boundaries, lv levels, population)
-  - Dataset `clc-2018-italia` (Corine Land Cover 2018)
+- Local IT datasets (q-cumber providers):
+  - Provider `local-assets-it` — territoriale/tematico:
+    - Dataset `kontur-boundaries-italia` (admin boundaries, lv levels, population)
+    - Dataset `clc-2018-italia` (Corine Land Cover 2018)
+  - Provider `ispra-opas` — qualità dell'aria (ETL da API OPAS ISPRA):
+    - Dataset `opas-stations` (699 stazioni rete RMQA, classificazione, localizzazione)
+    - Dataset `opas-measurements` (ultimo valore 48h per stazione/parametro: PM10, PM2.5, NO2, O3, SO2, CO, Benzene)
+    - Dataset `opas-hourly` (serie orarie storiche, partizionate per mese, da gen 2025)
+  - Provider `natura2000-it` — aree protette Rete Natura 2000 (fonte MASE, CC BY 4.0):
+    - Dataset `natura2000-siti` (2684 siti SIC/ZSC + ZPS, geometrie poligonali perimetri ufficiali)
+  - Provider descriptors: `backends/q-cumber-backend/provider-descriptors/it/*.json`
   - Onboarding guide for adding new territorial/thematic providers: `examples/q-map/backends/q-cumber-backend/PROVIDER_ONBOARDING.md`
 - Cloud storage in UI (optional):
   - Set `VITE_QCUMBER_CLOUD_*` vars in `.env.development.local` (see below)
@@ -664,11 +668,17 @@ Working rule:
   - `GET /providers/{provider_id}/datasets`
   - `GET /providers/{provider_id}/datasets/{dataset_id}/help`
 - Provider descriptors:
-  - Active descriptor under `QCUMBER_PROVIDERS_DIR` (default `./provider-descriptors`):
-    - `provider-descriptors/it/local-assets-it.json`
+  - Active descriptors under `QCUMBER_PROVIDERS_DIR` (default `./provider-descriptors`):
+    - `provider-descriptors/it/local-assets-it.json` (territoriale/tematico)
+    - `provider-descriptors/it/ispra-opas.json` (qualità dell'aria)
+    - `provider-descriptors/it/natura2000-it.json` (aree protette Natura 2000)
   - Active PostGIS datasets:
-    - `qvt.clc_2018`
-    - `qvt.kontur_boundaries`
+    - `qvt.clc_2018` — Corine Land Cover (provider `local-assets-it`)
+    - `qvt.kontur_boundaries` — confini amministrativi (provider `local-assets-it`)
+    - `qvt.opas_stations` — stazioni RMQA (provider `ispra-opas`)
+    - `qvt.opas_measurements` — snapshot ultime 48h (provider `ispra-opas`)
+    - `qvt.opas_hourly` — serie orarie (provider `ispra-opas`)
+    - `qvt.natura2000` — siti Rete Natura 2000 SIC/ZSC/ZPS (provider `natura2000-it`)
   - Use `GET /providers/{provider_id}/datasets` and `POST /datasets/query` for data access.
   - Dataset catalog/help/query responses include `aiHints` and backend `routing` metadata to keep assistant logic dataset-agnostic for hierarchy/field-role decisions.
   - Query filters support: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `contains`, `startswith`, `endswith`, `is_null`, `not_null`.
@@ -716,10 +726,13 @@ Working rule:
   - `qvt.opas_stations` — stazioni ISPRA qualità aria
   - `qvt.opas_measurements` — snapshot ultime 48h
   - `qvt.opas_hourly` — serie orarie (partizionata per mese)
+  - `qvt.natura2000` — siti Rete Natura 2000 (SIC/ZSC/ZPS, 2684 siti)
 - Data sources:
   - imported from local assets:
     - `assets/U2018_CLC2018_V2020_20u1_italia_intersects.geojson`
     - `assets/kontur_boundaries_20230628_with_lv_id_italia_gpkg.json`
+  - imported from GeoPackage (via ogr2ogr, EPSG:3035→4326):
+    - `Natura2000_Italia.gpkg` → `qvt.natura2000` (dump: `dumps/natura2000.pgdump`)
 - Operational notes:
   - First bootstrap can take time due to large GeoJSON import (`~452MB` CLC file).
   - Martin may restart a few times while Postgres initializes; this is expected.
@@ -727,6 +740,30 @@ Working rule:
   - Adding new pgdump files to `dumps/`: they are automatically restored on next container start (entrypoint-wrapper detects missing markers and restores incrementally).
   - Manual sync for running container: `make -C examples/q-map/backends pgdump-sync`.
   - Full reset: `make -C examples/q-map/backends clean-postgis` then `make up`.
+- Adding a new dataset from GeoPackage (GPKG):
+  1. Inspect GPKG on host: `python3 -c "import sqlite3; conn=sqlite3.connect('FILE.gpkg'); [print(r) for r in conn.execute('SELECT table_name,srs_id FROM gpkg_contents')]; conn.close()"`
+  2. Identify source CRS (e.g. `3035`) and layer name.
+  3. Import into PostGIS via temporary GDAL container on the docker network:
+     ```
+     NETWORK=$(docker inspect q-map-q-cumber-postgis --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}' | head -1)
+     docker run --rm --network "$NETWORK" \
+       -v "$(pwd)/FILE.gpkg:/data/FILE.gpkg:ro" \
+       ghcr.io/osgeo/gdal:alpine-small-3.8.4 \
+       ogr2ogr -f "PostgreSQL" \
+         "PG:host=q-map-q-cumber-postgis port=5432 dbname=qvt user=qvt password=qvt" \
+         /data/FILE.gpkg \
+         -nln qvt.<table_name> \
+         -lco SCHEMA=qvt -lco GEOMETRY_NAME=geom -lco FID=gid \
+         -t_srs EPSG:4326 -s_srs EPSG:<source_srid> \
+         -overwrite -progress
+     ```
+  4. Verify: `docker exec q-map-q-cumber-postgis psql -U qvt -d qvt -c "SELECT count(*) FROM qvt.<table_name>;"`
+  5. Dump for persistence: `docker exec q-map-q-cumber-postgis pg_dump -U qvt -d qvt --schema=qvt --table=qvt.<table_name> --no-owner --no-privileges --format=custom > backends/q-cumber-postgis/dumps/<name>.pgdump`
+  6. Create provider descriptor in `backends/q-cumber-backend/provider-descriptors/it/<provider-id>.json` (or add dataset to existing provider).
+  7. Verify q-cumber discovery: `curl -s http://localhost:3001/providers` and `curl -s http://localhost:3001/providers/<id>/datasets`.
+  8. Update AGENT.md (Quick Start providers, Q-cumber provider descriptors, PostGIS datasets, data sources).
+  - Note: PostGIS container mounts `dumps/` as `:ro`; use stdout redirect for `pg_dump` instead of writing inside the container.
+  - Note: `restore-dumps.sh` auto-restores new `.pgdump` files on next container start (marker-based idempotency).
 
 ## Runtime Guardrail: Cloud Map Tools
 - Cloud map tools (`listQMapCloudMaps`, `loadCloudMapAndWait`, `loadQMapCloudMap`) are pruned at runtime unless the user objective explicitly mentions cloud, saved, or personal maps.

@@ -1,4 +1,3 @@
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 import type {QMapToolContext} from '../context/tool-context';
 import regulatoryThresholds from '../data/regulatory-thresholds.json';
@@ -119,7 +118,7 @@ export function createAssessPopulationExposureTool(ctx: QMapToolContext) {
     turfCentroid
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       '[PREFERRED for exposure assessment] Estimate population exposure to air pollution by joining measurement stations with nearby administrative boundaries (municipalities). ' +
       'For each station, finds municipalities within a buffer radius and aggregates exposed population. ' +
@@ -426,5 +425,5 @@ export function createAssessPopulationExposureTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

@@ -49,8 +49,23 @@ function isDatasetValidationTool(toolName: string): boolean {
   return toolName === 'waitForQMapDataset' || toolName === 'countQMapRows';
 }
 
-export function shouldRunDatasetPostValidation(toolName: string): boolean {
-  return DATASET_VALIDATION_MUTATING_TOOLS.has(toolName) && !isDatasetValidationTool(toolName);
+const QCUMBER_QUERY_TOOLS = new Set([
+  'queryQCumberTerritorialUnits',
+  'queryQCumberDatasetSpatial',
+  'queryQCumberDataset'
+]);
+
+export function shouldRunDatasetPostValidation(
+  toolName: string,
+  result?: Record<string, unknown> | null
+): boolean {
+  if (isDatasetValidationTool(toolName)) return false;
+  if (DATASET_VALIDATION_MUTATING_TOOLS.has(toolName)) return true;
+  // q-cumber query tools with loadedToMap=true also create datasets in the map.
+  if (QCUMBER_QUERY_TOOLS.has(toolName) && result) {
+    return result.loadedToMap === true;
+  }
+  return false;
 }
 
 export function firstNonEmptyString(...values: unknown[]): string {

@@ -1,5 +1,4 @@
 import {useEffect, useRef} from 'react';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -27,7 +26,7 @@ export function createSetQMapFieldEqualsFilterTool(ctx: QMapToolContext) {
     isLevelLikeField
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Apply an equality filter to a loaded dataset field in the current map (e.g. lv = 6).',
     parameters: z.object({
@@ -35,7 +34,7 @@ export function createSetQMapFieldEqualsFilterTool(ctx: QMapToolContext) {
       fieldName: z.string().describe('Exact field name'),
       value: z.union([z.number(), z.string(), z.boolean()])
     }),
-    execute: async ({datasetName, fieldName, value}) => {
+    execute: async ({datasetName, fieldName, value}: any) => {
       const normalizedValue = value;
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
@@ -240,7 +239,7 @@ export function createSetQMapFieldEqualsFilterTool(ctx: QMapToolContext) {
       }, [localDispatch, localDatasets, localFilters, executionKey, datasetId, fieldName, value, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 
 }
 
@@ -256,7 +255,7 @@ export function createSetQMapTooltipFieldsTool(ctx: QMapToolContext) {
     wrapTo
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Configure visible tooltip fields for a dataset (replace or append), with optional tooltip auto-enable.',
     parameters: z.object({
@@ -268,7 +267,7 @@ export function createSetQMapTooltipFieldsTool(ctx: QMapToolContext) {
         .describe('replace = overwrite current tooltip fields for dataset; append = add missing fields'),
       enableTooltip: z.boolean().optional().describe('Default true')
     }),
-    execute: async ({datasetName, fieldNames, mode, enableTooltip}) => {
+    execute: async ({datasetName, fieldNames, mode, enableTooltip}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, String(datasetName || ''));
 
@@ -398,6 +397,6 @@ export function createSetQMapTooltipFieldsTool(ctx: QMapToolContext) {
       }, [localDispatch, localVisState, executionKey, datasetId, fieldNames, enableTooltip, shouldSkip, abort, complete]);
       return null;
     }
-  });
+  };
 
 }

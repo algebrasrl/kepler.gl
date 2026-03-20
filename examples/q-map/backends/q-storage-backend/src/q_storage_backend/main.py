@@ -139,13 +139,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     detail="Invalid bearer token"
                 )
 
-        if app_settings.allow_insecure_default_user:
-            return AuthContext(user=app_settings.default_user)
-
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Auth is not configured"
-        )
+        # No auth mechanism configured — return default user (matches q-cumber behavior)
+        return AuthContext(user=app_settings.default_user)
 
     def require_read(auth: AuthContext = Depends(resolve_auth)) -> AuthContext:
         _ensure_roles(auth, app_settings.jwt_auth.read_roles, action="read")

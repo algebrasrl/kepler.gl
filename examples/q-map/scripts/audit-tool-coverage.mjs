@@ -5,7 +5,7 @@ import path from 'node:path';
 
 const rootDir = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const assistantPath = path.join(rootDir, 'src/features/qmap-ai/qmap-ai-assistant-component.tsx');
-const cloudToolsPath = path.join(rootDir, 'src/features/qmap-ai/cloud-tools.tsx');
+const cloudToolsPath = path.join(rootDir, 'src/features/qmap-ai/cloud/components.tsx');
 const toolsSpecPath = path.join(rootDir, 'tests/e2e/tools.spec.ts');
 const aiCasePaths = [
   path.join(rootDir, 'tests/ai-eval/cases.sample.json'),

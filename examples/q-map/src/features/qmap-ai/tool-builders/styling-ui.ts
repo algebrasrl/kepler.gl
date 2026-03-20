@@ -1,12 +1,11 @@
 import {toggleSidePanel, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {z} from 'zod';
 
 import type {QMapToolContext} from '../context/tool-context';
 
 export function createOpenQMapPanelTool(ctx: QMapToolContext) {
   const {dispatch, getCurrentUiState} = ctx;
-  return extendedTool({
+  return {
     description:
       'Open a q-map side panel tab (UI navigation only; this does NOT run analysis or generate charts). Supported canonical panel ids: layer, filter, interaction, map, profile, operations. Use panelId=null to close.',
     parameters: z.object({
@@ -14,7 +13,7 @@ export function createOpenQMapPanelTool(ctx: QMapToolContext) {
         .union([z.string(), z.null()])
         .describe('Panel id or alias (e.g. layers/filter/interaction/mapstyle/profile/operations/analytics). Use null or "close" to close side panel.')
     }),
-    execute: async ({panelId}) => {
+    execute: async ({panelId}: any) => {
       const raw = panelId === null ? '' : String(panelId || '').trim().toLowerCase();
       const aliasMap: Record<string, string> = {
         layer: 'layer',
@@ -69,5 +68,5 @@ export function createOpenQMapPanelTool(ctx: QMapToolContext) {
         }
       };
     }
-  });
+  };
 }

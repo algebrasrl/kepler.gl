@@ -14,6 +14,7 @@ export type QMapAssistantExecutionStats = {
   total: number;
   completed: number;
   failed: number;
+  skipped: number;
   blocked: number;
   validationFailed: number;
   fitAttempted: number;
@@ -89,9 +90,14 @@ export function computeAssistantExecutionStats({
   validationFailures: number;
 }): QMapAssistantExecutionStats {
   const completed = runs.length;
-  const failed = runs.filter(run => run.success === false).length;
+  const isBatchSkipped = (run: QMapInvocationResultSummary) => {
+    const d = String(run.details || '').toLowerCase();
+    return d.includes('skipped') && d.includes('batch');
+  };
+  const skipped = runs.filter(run => run.success === false && isBatchSkipped(run)).length;
+  const failed = runs.filter(run => run.success === false && !isBatchSkipped(run)).length;
   const blocked = runs.filter(
-    run => run.success === false && String(run.details || '').toLowerCase().includes('blocked')
+    run => run.success === false && !isBatchSkipped(run) && String(run.details || '').toLowerCase().includes('blocked')
   ).length;
   const fitRuns = runs.filter(run => run.toolName === 'fitQMapToDataset');
   const fitSuccess = fitRuns.filter(run => run.success === true).length;
@@ -105,6 +111,7 @@ export function computeAssistantExecutionStats({
     total: Math.max(0, Number(totalToolCalls || 0)),
     completed,
     failed,
+    skipped,
     blocked,
     validationFailed: Math.max(0, Number(validationFailures || 0)),
     fitAttempted: fitRuns.length,
@@ -141,6 +148,7 @@ export function buildExecutionSummaryLine(
       total: stats.total,
       completed: stats.completed,
       failed: stats.failed,
+      skipped: stats.skipped,
       blocked: stats.blocked
     },
     validationFailed: stats.validationFailed,

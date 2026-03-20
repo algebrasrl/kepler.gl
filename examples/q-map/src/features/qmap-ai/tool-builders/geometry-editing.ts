@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {setLoadingIndicator, wrapTo} from '@kepler.gl/actions';
-import {extendedTool} from '../tool-shim';
 import {useDispatch, useSelector} from 'react-redux';
 import {z} from 'zod';
 
@@ -17,7 +16,7 @@ import {
 } from './geometry-tool-helpers';
 
 export function createSimplifyQMapDatasetGeometryTool(ctx: QMapToolContext) {
-  return extendedTool({
+  return {
     description:
       'Clean/simplify dataset geometries and optionally remove slivers by min area threshold (m2).',
     parameters: z.object({
@@ -67,11 +66,11 @@ export function createSimplifyQMapDatasetGeometryTool(ctx: QMapToolContext) {
         return {llmResult: {success: true, dataset: targetName, rows: rows.length, details: `Geometry cleanup completed on "${source.label || source.id}" (${rows.length} output rows).`}};
       });
     }
-  });
+  };
 }
 
 export function createSplitQMapPolygonByLineTool(ctx: QMapToolContext) {
-  return extendedTool({
+  return {
     description: 'Split one polygon feature with one line feature and materialize split parts as a derived dataset.',
     parameters: z.object({
       polygonDatasetName: z.string(),
@@ -123,11 +122,11 @@ export function createSplitQMapPolygonByLineTool(ctx: QMapToolContext) {
         return {llmResult: {success: true, dataset: targetName, parts: rows.length, details: `Polygon split generated ${rows.length} part(s).`}};
       });
     }
-  });
+  };
 }
 
 export function createEraseQMapDatasetByGeometryTool(ctx: QMapToolContext) {
-  return extendedTool({
+  return {
     description: 'Erase/mask source dataset geometries using one mask dataset (difference operation per feature).',
     parameters: z.object({
       sourceDatasetName: z.string(),
@@ -183,7 +182,7 @@ export function createEraseQMapDatasetByGeometryTool(ctx: QMapToolContext) {
         return {llmResult: {success: true, dataset: targetName, rows: outputRows.length, details: `Erase operation completed with ${outputRows.length} output row(s).`}};
       });
     }
-  });
+  };
 }
 
 export function createBufferAndSummarizeTool(ctx: QMapToolContext) {
@@ -210,7 +209,7 @@ export function createBufferAndSummarizeTool(ctx: QMapToolContext) {
     upsertDerivedDatasetRows
   } = ctx;
 
-  return extendedTool({
+  return {
     description:
       'Buffer source features (km) and summarize target features/values inside each buffer (geojson or H3).',
     parameters: z.object({
@@ -363,5 +362,5 @@ export function createBufferAndSummarizeTool(ctx: QMapToolContext) {
       }, [localDispatch, localVisState, props, shouldSkip, complete]);
       return null;
     }
-  });
+  };
 }
