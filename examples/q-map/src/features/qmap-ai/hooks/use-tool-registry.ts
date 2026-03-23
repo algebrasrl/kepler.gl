@@ -98,6 +98,7 @@ import {
   createWaitForQMapDatasetTool
 } from '../tool-builders/orchestration';
 import {createOpenQMapPanelTool} from '../tool-builders/styling-ui';
+import {createCentroidOfDatasetTool, createCircleBufferFromPointTool, createDrawGeometryToDatasetTool} from '../tool-builders/point-geometry';
 
 import type {QMapToolContext} from '../context/tool-context';
 
@@ -199,6 +200,9 @@ export function useToolRegistry(ctx: QMapToolContext): Record<string, any> {
   const listRegulatoryThresholds = createListRegulatoryThresholdsTool();
   const assessPopulationExposure = createAssessPopulationExposureTool(ctx);
   const interpolateIDW = createInterpolateIDWTool(ctx);
+  const centroidOfDataset = createCentroidOfDatasetTool(ctx);
+  const circleBufferFromPoint = createCircleBufferFromPointTool(ctx);
+  const drawGeometryToDataset = createDrawGeometryToDatasetTool(ctx);
 
   // ─── 2. Base tools from kepler.gl AI assistant ──────────────────────────────
 
@@ -303,7 +307,10 @@ export function useToolRegistry(ctx: QMapToolContext): Record<string, any> {
     checkRegulatoryCompliance,
     listRegulatoryThresholds,
     assessPopulationExposure,
-    interpolateIDW
+    interpolateIDW,
+    centroidOfDataset,
+    circleBufferFromPoint,
+    drawGeometryToDataset
   });
 
   // ─── 7. Merge and apply policies ────────────────────────────────────────────

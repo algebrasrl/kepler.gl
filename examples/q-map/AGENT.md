@@ -387,6 +387,10 @@ Working rule:
     - Exposure and interpolation tools:
       - `assessPopulationExposure` -> joins measurement stations with nearby admin boundaries (haversine buffer); aggregates exposed population per station with optional regulatory compliance check; supports `showOnMap=true` for derived dataset
       - `interpolateIDW` -> Inverse Distance Weighting interpolation from point measurements to H3 hexagonal grid; creates continuous surface estimate with configurable power/neighbors/search radius; output is H3 layer auto-detected by Kepler
+    - Geometry drawing tools (programmatic geometry creation for spatial queries):
+      - `centroidOfDataset` -> computes the geographic centroid (center point) of a loaded dataset's geometries; returns `{longitude, latitude, spatialBbox}`; use as input for `circleBufferFromPoint` or spatial queries
+      - `circleBufferFromPoint` -> creates a circular buffer polygon dataset from a point + radius (km or m); materializes as reusable dataset for clip/spatial queries
+      - `drawGeometryToDataset` -> programmatically creates point, line, polygon or circle geometry and materializes as dataset with computed metrics (`area_m2`, `area_km2`, `length_m`, `perimeter_m`, `radius_km`); use for spatial filters on thematic datasets
   - Real MCP endpoint is `/mcp` (HTTP transport).
   - Reference implementation for MCP TS clients:
     - https://github.com/modelcontextprotocol/typescript-sdk?tab=readme-ov-file#writing-mcp-clients

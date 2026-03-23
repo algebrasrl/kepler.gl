@@ -102,6 +102,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         max_size=app_settings.postgis_pool_max_size,
         kwargs={"row_factory": dict_row},
         open=False,
+        check=psycopg_pool.ConnectionPool.check_connection,
     )
 
     # -- Source backends ----------------------------------------------------

@@ -105,6 +105,9 @@ type QMapRuntimeToolInput = {
   listRegulatoryThresholds: any;
   assessPopulationExposure: any;
   interpolateIDW: any;
+  centroidOfDataset: any;
+  circleBufferFromPoint: any;
+  drawGeometryToDataset: any;
 };
 
 export function buildQMapRuntimeCustomToolGroups(tools: QMapRuntimeToolInput): QMapToolGroups {
@@ -181,7 +184,10 @@ export function buildQMapRuntimeCustomToolGroups(tools: QMapRuntimeToolInput): Q
       computeQMapBivariateCorrelation: tools.computeQMapBivariateCorrelation,
       computeQMapHotspotAnalysis: tools.computeQMapHotspotAnalysis,
       computeQMapCompositeIndex: tools.computeQMapCompositeIndex,
-      interpolateIDW: tools.interpolateIDW
+      interpolateIDW: tools.interpolateIDW,
+      centroidOfDataset: tools.centroidOfDataset,
+      circleBufferFromPoint: tools.circleBufferFromPoint,
+      drawGeometryToDataset: tools.drawGeometryToDataset
     },
     h3Processing: {
       joinQMapDatasetsOnH3: tools.joinQMapDatasetsOnH3,
