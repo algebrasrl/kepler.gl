@@ -516,6 +516,33 @@
         "bridgeOperation": false
       }
     },
+    "centroidOfDataset": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "datasetName",
+        "geometryField"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "datasetName": {
+            "type": "string"
+          },
+          "geometryField": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
     "checkRegulatoryCompliance": {
       "categories": [
         "regulatory"
@@ -530,6 +557,53 @@
       ],
       "flags": {
         "mutatesDataset": false,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
+    "circleBufferFromPoint": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "longitude",
+        "latitude",
+        "datasetName",
+        "radiusKm",
+        "radiusM",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "datasetName": {
+            "type": "string"
+          },
+          "radiusKm": {
+            "type": "number"
+          },
+          "radiusM": {
+            "type": "number"
+          },
+          "showOnMap": {
+            "type": "boolean"
+          },
+          "newDatasetName": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": true,
         "discovery": false,
         "bridgeOperation": false
       }
@@ -555,11 +629,7 @@
       "categories": [
         "geospatial-analysis"
       ],
-      "inputKeys": [
-        "sourceDatasetName",
-        "boundaryDatasetName",
-        "mode"
-      ],
+      "inputKeys": [],
       "responseContract": {
         "schema": "qmap.tool_result.v1",
         "properties": {
@@ -1020,17 +1090,7 @@
       "categories": [
         "geospatial-analysis"
       ],
-      "inputKeys": [
-        "leftDatasetName",
-        "rightDatasetName",
-        "leftGeometryField",
-        "rightGeometryField",
-        "predicate",
-        "rightValueField",
-        "useActiveFilters",
-        "maxLeftFeatures",
-        "maxRightFeatures"
-      ],
+      "inputKeys": [],
       "flags": {
         "mutatesDataset": false,
         "discovery": false,
@@ -1336,6 +1396,62 @@
         "bridgeOperation": false
       }
     },
+    "drawGeometryToDataset": {
+      "categories": [
+        "geospatial-analysis"
+      ],
+      "inputKeys": [
+        "type",
+        "coordinates",
+        "radiusKm",
+        "radiusM",
+        "label",
+        "showOnMap",
+        "newDatasetName"
+      ],
+      "argsSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "point",
+              "line",
+              "polygon",
+              "circle"
+            ]
+          },
+          "coordinates": {
+            "type": "array"
+          },
+          "radiusKm": {
+            "type": "number"
+          },
+          "radiusM": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "showOnMap": {
+            "type": "boolean"
+          },
+          "newDatasetName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "coordinates",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "flags": {
+        "mutatesDataset": true,
+        "discovery": false,
+        "bridgeOperation": false
+      }
+    },
     "drawQMapBoundingBox": {
       "categories": [
         "geospatial-analysis"
@@ -1534,18 +1650,7 @@
       "categories": [
         "geospatial-analysis"
       ],
-      "inputKeys": [
-        "leftDatasetName",
-        "rightDatasetName",
-        "leftH3Field",
-        "rightH3Field",
-        "includeRightFields",
-        "metric",
-        "joinType",
-        "showOnMap",
-        "minCoveragePct",
-        "newDatasetName"
-      ],
+      "inputKeys": [],
       "responseContract": {
         "schema": "qmap.tool_result.v1",
         "properties": {

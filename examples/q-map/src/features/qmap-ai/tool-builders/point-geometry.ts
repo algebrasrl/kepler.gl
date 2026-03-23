@@ -23,72 +23,118 @@ export function createCentroidOfDatasetTool(ctx: QMapToolContext) {
     defaultChunkSize
   } = ctx;
 
+  /** Accumulate bbox from a single dataset. Returns rows used. */
+  async function accumulateBbox(
+    dataset: any,
+    geoField: string,
+    bounds: {minLon: number; minLat: number; maxLon: number; maxLat: number},
+    loopYield: number
+  ): Promise<number> {
+    const idx = getDatasetIndexes(dataset).slice(0, 100000);
+    let used = 0;
+    for (let i = 0; i < idx.length; i++) {
+      const parsed = parseGeoJsonLike(dataset.getValue(geoField, idx[i]));
+      const geom = parsed?.type === 'Feature' ? parsed.geometry : parsed;
+      const bbox = geometryToBbox(geom);
+      if (bbox) {
+        bounds.minLon = Math.min(bounds.minLon, bbox[0]);
+        bounds.minLat = Math.min(bounds.minLat, bbox[1]);
+        bounds.maxLon = Math.max(bounds.maxLon, bbox[2]);
+        bounds.maxLat = Math.max(bounds.maxLat, bbox[3]);
+        used++;
+      }
+      if (i > 0 && i % loopYield === 0) {
+        await yieldToMainThread();
+      }
+    }
+    return used;
+  }
+
   return {
     description:
-      'Compute the geographic centroid (center point) of a loaded dataset. ' +
-      'Use this to find the center of visible layers before creating a circular buffer for spatial queries.',
+      'Compute the geographic centroid (center point) of a loaded dataset or of ALL visible layers. ' +
+      'When datasetName is omitted, computes a combined centroid across every visible layer. ' +
+      'Use this to find the center before creating a circular buffer for spatial queries.',
     parameters: z.object({
       datasetName: z
         .string()
-        .describe('Exact dataset name or datasetRef (id:...) from listQMapDatasets.'),
+        .optional()
+        .describe(
+          'Dataset name or datasetRef (id:...). ' +
+          'Omit to compute centroid of ALL visible layers.'
+        ),
       geometryField: z
         .string()
         .optional()
         .describe('Optional geometry field name; default auto-detect (_geojson).')
     }),
-    execute: async ({datasetName, geometryField}: {datasetName: string; geometryField?: string}) => {
+    execute: async ({datasetName, geometryField}: {datasetName?: string; geometryField?: string}) => {
       const currentVisState = getCurrentVisState();
-      const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);
-      if (!dataset?.id) {
-        return {llmResult: {success: false, details: `Dataset "${datasetName}" not found.`}};
-      }
-      const geoField =
-        resolveGeojsonFieldName(dataset, String(geometryField || '')) ||
-        resolveDatasetFieldName(dataset, '_geojson') ||
-        null;
-      if (!geoField) {
-        return {
-          llmResult: {
-            success: false,
-            details: `No geometry field found in dataset "${dataset.label || dataset.id}".`
-          }
-        };
-      }
-
-      const idx = getDatasetIndexes(dataset).slice(0, 100000);
-      let minLon = Infinity;
-      let minLat = Infinity;
-      let maxLon = -Infinity;
-      let maxLat = -Infinity;
-      let usedRows = 0;
+      const datasets = currentVisState?.datasets || {};
       const loopYield = Math.max(100, defaultChunkSize);
+      const bounds = {minLon: Infinity, minLat: Infinity, maxLon: -Infinity, maxLat: -Infinity};
+      let usedRows = 0;
+      const coveredLabels: string[] = [];
 
-      for (let i = 0; i < idx.length; i++) {
-        const parsed = parseGeoJsonLike(dataset.getValue(geoField, idx[i]));
-        const geom = parsed?.type === 'Feature' ? parsed.geometry : parsed;
-        const bbox = geometryToBbox(geom);
-        if (bbox) {
-          minLon = Math.min(minLon, bbox[0]);
-          minLat = Math.min(minLat, bbox[1]);
-          maxLon = Math.max(maxLon, bbox[2]);
-          maxLat = Math.max(maxLat, bbox[3]);
-          usedRows++;
+      if (datasetName) {
+        // ─── Single dataset mode ───────────────────────────────────────
+        const dataset = resolveDatasetByName(datasets, datasetName);
+        if (!dataset?.id) {
+          return {llmResult: {success: false, details: `Dataset "${datasetName}" not found.`}};
         }
-        if (i > 0 && i % loopYield === 0) {
-          await yieldToMainThread();
+        const geoField =
+          resolveGeojsonFieldName(dataset, String(geometryField || '')) ||
+          resolveDatasetFieldName(dataset, '_geojson') ||
+          null;
+        if (!geoField) {
+          return {
+            llmResult: {
+              success: false,
+              details: `No geometry field found in dataset "${dataset.label || dataset.id}".`
+            }
+          };
+        }
+        usedRows = await accumulateBbox(dataset, geoField, bounds, loopYield);
+        coveredLabels.push(dataset.label || dataset.id);
+      } else {
+        // ─── All visible layers mode ───────────────────────────────────
+        const layers = (currentVisState?.layers || []) as any[];
+        const visibleDatasetIds = new Set<string>();
+        for (const layer of layers) {
+          if (layer?.config?.isVisible && layer?.config?.dataId) {
+            visibleDatasetIds.add(layer.config.dataId);
+          }
+        }
+        if (!visibleDatasetIds.size) {
+          return {llmResult: {success: false, details: 'No visible layers found on the map.'}};
+        }
+        for (const dsId of visibleDatasetIds) {
+          const ds = datasets[dsId];
+          if (!ds) continue;
+          const geoField =
+            resolveGeojsonFieldName(ds, '') ||
+            resolveDatasetFieldName(ds, '_geojson') ||
+            null;
+          if (!geoField) continue;
+          const rows = await accumulateBbox(ds, geoField, bounds, loopYield);
+          if (rows > 0) {
+            usedRows += rows;
+            coveredLabels.push(ds.label || ds.id);
+          }
         }
       }
 
-      if (!Number.isFinite(minLon)) {
+      if (!Number.isFinite(bounds.minLon)) {
         return {
           llmResult: {
             success: false,
-            details: `Could not compute centroid: no valid geometries in "${dataset.label || dataset.id}".`
+            details: datasetName
+              ? `Could not compute centroid: no valid geometries in "${datasetName}".`
+              : 'Could not compute centroid: no valid geometries in any visible layer.'
           }
         };
       }
 
-      // Build bbox polygon and compute centroid via turf.
       const bboxPolygon = {
         type: 'Feature' as const,
         properties: {},
@@ -96,32 +142,35 @@ export function createCentroidOfDatasetTool(ctx: QMapToolContext) {
           type: 'Polygon' as const,
           coordinates: [
             [
-              [minLon, minLat],
-              [maxLon, minLat],
-              [maxLon, maxLat],
-              [minLon, maxLat],
-              [minLon, minLat]
+              [bounds.minLon, bounds.minLat],
+              [bounds.maxLon, bounds.minLat],
+              [bounds.maxLon, bounds.maxLat],
+              [bounds.minLon, bounds.maxLat],
+              [bounds.minLon, bounds.minLat]
             ]
           ]
         }
       };
       const center = turfCentroid(bboxPolygon);
       const [lon, lat] = center.geometry.coordinates;
+      const sourceDesc = coveredLabels.length === 1
+        ? `"${coveredLabels[0]}"`
+        : `${coveredLabels.length} visible layers (${coveredLabels.join(', ')})`;
 
       return {
         llmResult: {
           success: true,
-          dataset: dataset.label || dataset.id,
+          datasets: coveredLabels,
           usedRows,
           longitude: Number(lon.toFixed(8)),
           latitude: Number(lat.toFixed(8)),
           spatialBbox: [
-            Number(minLon.toFixed(8)),
-            Number(minLat.toFixed(8)),
-            Number(maxLon.toFixed(8)),
-            Number(maxLat.toFixed(8))
+            Number(bounds.minLon.toFixed(8)),
+            Number(bounds.minLat.toFixed(8)),
+            Number(bounds.maxLon.toFixed(8)),
+            Number(bounds.maxLat.toFixed(8))
           ],
-          details: `Centroid of "${dataset.label || dataset.id}": [${lon.toFixed(6)}, ${lat.toFixed(6)}] (from ${usedRows} geometries).`
+          details: `Centroid of ${sourceDesc}: [${lon.toFixed(6)}, ${lat.toFixed(6)}] (from ${usedRows} geometries).`
         }
       };
     }
@@ -134,15 +183,34 @@ export function createCentroidOfDatasetTool(ctx: QMapToolContext) {
  * for thematic queries (Natura 2000, CLC, ISPRA, etc.).
  */
 export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
-  const {dispatch, getCurrentVisState, turfBuffer} = ctx;
+  const {
+    dispatch,
+    getCurrentVisState,
+    turfBuffer,
+    turfCentroid,
+    resolveDatasetByName,
+    resolveGeojsonFieldName,
+    resolveDatasetFieldName,
+    getDatasetIndexes,
+    parseGeoJsonLike,
+    geometryToBbox,
+    yieldToMainThread,
+    defaultChunkSize
+  } = ctx;
 
   return {
     description:
-      'Create a circular buffer polygon dataset from a geographic point and radius. ' +
-      'Use this after centroidOfDataset to draw a search area, then clip or query thematic datasets within it.',
+      'Create a circular buffer polygon dataset from a point and radius. ' +
+      'Provide explicit longitude/latitude OR a datasetName to auto-compute the centroid ' +
+      'of that dataset (or all visible layers when datasetName is omitted and lon/lat are omitted). ' +
+      'Use the resulting buffer dataset as clip geometry for spatial queries on thematic datasets.',
     parameters: z.object({
-      longitude: z.number().describe('Center longitude (WGS84).'),
-      latitude: z.number().describe('Center latitude (WGS84).'),
+      longitude: z.number().optional().describe('Center longitude (WGS84). Omit to auto-compute from datasetName or visible layers.'),
+      latitude: z.number().optional().describe('Center latitude (WGS84). Omit to auto-compute from datasetName or visible layers.'),
+      datasetName: z
+        .string()
+        .optional()
+        .describe('Dataset name or datasetRef to compute centroid from. If omitted and lon/lat omitted, uses all visible layers.'),
       radiusKm: z
         .number()
         .min(0.01)
@@ -169,13 +237,15 @@ export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
     execute: async ({
       longitude,
       latitude,
+      datasetName,
       radiusKm,
       radiusM,
       showOnMap,
       newDatasetName
     }: {
-      longitude: number;
-      latitude: number;
+      longitude?: number;
+      latitude?: number;
+      datasetName?: string;
       radiusKm?: number;
       radiusM?: number;
       showOnMap?: boolean;
@@ -183,11 +253,94 @@ export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
     }) => {
       const effectiveRadiusKm = radiusM ? radiusM / 1000 : radiusKm || 10;
       const units = 'kilometers';
+      let centerLon = longitude;
+      let centerLat = latitude;
+
+      // Auto-compute centroid when lon/lat not provided.
+      if (centerLon == null || centerLat == null) {
+        const currentVisState = getCurrentVisState();
+        const datasets = currentVisState?.datasets || {};
+        const loopYield = Math.max(100, defaultChunkSize);
+        const bounds = {minLon: Infinity, minLat: Infinity, maxLon: -Infinity, maxLat: -Infinity};
+
+        if (datasetName) {
+          // Single dataset centroid.
+          const ds = resolveDatasetByName(datasets, datasetName);
+          if (!ds?.id) {
+            return {llmResult: {success: false, details: `Dataset "${datasetName}" not found.`}};
+          }
+          const gf = resolveGeojsonFieldName(ds, '') || resolveDatasetFieldName(ds, '_geojson') || null;
+          if (!gf) {
+            return {llmResult: {success: false, details: `No geometry field in "${ds.label || ds.id}".`}};
+          }
+          const idx = getDatasetIndexes(ds).slice(0, 100000);
+          for (let i = 0; i < idx.length; i++) {
+            const parsed = parseGeoJsonLike(ds.getValue(gf, idx[i]));
+            const geom = parsed?.type === 'Feature' ? parsed.geometry : parsed;
+            const bbox = geometryToBbox(geom);
+            if (bbox) {
+              bounds.minLon = Math.min(bounds.minLon, bbox[0]);
+              bounds.minLat = Math.min(bounds.minLat, bbox[1]);
+              bounds.maxLon = Math.max(bounds.maxLon, bbox[2]);
+              bounds.maxLat = Math.max(bounds.maxLat, bbox[3]);
+            }
+            if (i > 0 && i % loopYield === 0) await yieldToMainThread();
+          }
+        } else {
+          // All visible layers centroid.
+          const layers = (currentVisState?.layers || []) as any[];
+          const visibleDsIds = new Set<string>();
+          for (const l of layers) {
+            if (l?.config?.isVisible && l?.config?.dataId) visibleDsIds.add(l.config.dataId);
+          }
+          if (!visibleDsIds.size) {
+            return {llmResult: {success: false, details: 'No visible layers found to compute centroid.'}};
+          }
+          for (const dsId of visibleDsIds) {
+            const ds = datasets[dsId];
+            if (!ds) continue;
+            const gf = resolveGeojsonFieldName(ds, '') || resolveDatasetFieldName(ds, '_geojson') || null;
+            if (!gf) continue;
+            const idx = getDatasetIndexes(ds).slice(0, 100000);
+            for (let i = 0; i < idx.length; i++) {
+              const parsed = parseGeoJsonLike(ds.getValue(gf, idx[i]));
+              const geom = parsed?.type === 'Feature' ? parsed.geometry : parsed;
+              const bbox = geometryToBbox(geom);
+              if (bbox) {
+                bounds.minLon = Math.min(bounds.minLon, bbox[0]);
+                bounds.minLat = Math.min(bounds.minLat, bbox[1]);
+                bounds.maxLon = Math.max(bounds.maxLon, bbox[2]);
+                bounds.maxLat = Math.max(bounds.maxLat, bbox[3]);
+              }
+              if (i > 0 && i % loopYield === 0) await yieldToMainThread();
+            }
+          }
+        }
+
+        if (!Number.isFinite(bounds.minLon)) {
+          return {llmResult: {success: false, details: 'Could not compute centroid: no valid geometries found.'}};
+        }
+        const bboxPoly = {
+          type: 'Feature' as const,
+          properties: {},
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [[
+              [bounds.minLon, bounds.minLat], [bounds.maxLon, bounds.minLat],
+              [bounds.maxLon, bounds.maxLat], [bounds.minLon, bounds.maxLat],
+              [bounds.minLon, bounds.minLat]
+            ]]
+          }
+        };
+        const c = turfCentroid(bboxPoly);
+        centerLon = c.geometry.coordinates[0];
+        centerLat = c.geometry.coordinates[1];
+      }
 
       const point = {
         type: 'Feature' as const,
         properties: {},
-        geometry: {type: 'Point' as const, coordinates: [longitude, latitude]}
+        geometry: {type: 'Point' as const, coordinates: [centerLon, centerLat]}
       };
 
       let buffered: any;
@@ -208,17 +361,19 @@ export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
       const radiusLabel = effectiveRadiusKm >= 1 ? `${effectiveRadiusKm}km` : `${Math.round(effectiveRadiusKm * 1000)}m`;
       const dsName = (newDatasetName || `Buffer_${radiusLabel}`).trim();
 
-      const datasets = getCurrentVisState()?.datasets || {};
+      const currentDatasets = getCurrentVisState()?.datasets || {};
+      const centroidSource = (longitude != null && latitude != null) ? 'explicit' : (datasetName || 'visible_layers');
       upsertDerivedDatasetRows(
         dispatch,
-        datasets,
+        currentDatasets,
         dsName,
         [
           {
             _geojson: buffered.geometry,
-            center_lon: longitude,
-            center_lat: latitude,
+            center_lon: centerLon,
+            center_lat: centerLat,
             radius_km: effectiveRadiusKm,
+            centroid_source: centroidSource,
             label: dsName
           }
         ],
@@ -230,10 +385,11 @@ export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
         llmResult: {
           success: true,
           datasetName: dsName,
-          center: [longitude, latitude],
+          center: [centerLon, centerLat],
+          centroidSource: centroidSource,
           radiusKm: effectiveRadiusKm,
           showOnMap: showOnMap !== false,
-          details: `Created circular buffer "${dsName}" (${radiusLabel} radius around [${longitude.toFixed(4)}, ${latitude.toFixed(4)}]). Use this dataset as clip geometry for spatial queries.`
+          details: `Created circular buffer "${dsName}" (${radiusLabel} radius around [${centerLon!.toFixed(4)}, ${centerLat!.toFixed(4)}], centroid from ${centroidSource}). Use this dataset as clip geometry for spatial queries.`
         }
       };
     }

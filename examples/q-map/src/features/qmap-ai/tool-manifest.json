@@ -152,7 +152,10 @@
         "addComputedField",
         "computeQMapHotspotAnalysis",
         "computeQMapCompositeIndex",
-        "interpolateIDW"
+        "interpolateIDW",
+        "centroidOfDataset",
+        "circleBufferFromPoint",
+        "drawGeometryToDataset"
       ]
     },
     {

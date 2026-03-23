@@ -42,7 +42,9 @@ export const DATASET_VALIDATION_MUTATING_TOOLS = new Set([
   'drawQMapBoundingBox',
   'paintQMapH3Cell',
   'paintQMapH3Cells',
-  'paintQMapH3Ring'
+  'paintQMapH3Ring',
+  'circleBufferFromPoint',
+  'drawGeometryToDataset'
 ]);
 
 function isDatasetValidationTool(toolName: string): boolean {

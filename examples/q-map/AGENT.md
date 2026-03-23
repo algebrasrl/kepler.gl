@@ -873,6 +873,17 @@ detectors in `objective_intent.py` to gate transitions.
     - use `error => loadCloudMapError({error, provider, onError})`
     - do not return updater state objects inside task `.bimap` action mapping.
 
+## Adding a New AI Tool (Checklist)
+1. Create factory function in `src/features/qmap-ai/tool-builders/<domain>.ts` following the `create{Name}Tool(ctx: QMapToolContext)` naming convention.
+2. Import and instantiate in `src/features/qmap-ai/hooks/use-tool-registry.ts`.
+3. Add to appropriate group in `src/features/qmap-ai/runtime-tool-groups.ts` (`QMapRuntimeToolInput` type + group assignment).
+4. Add tool name to `src/features/qmap-ai/tool-manifest.json` in the correct category.
+5. If the tool mutates datasets (creates/replaces), add to `DATASET_VALIDATION_MUTATING_TOOLS` in `src/features/qmap-ai/services/post-validation.ts`.
+6. Add args schema to `STRICT_TOOL_ARGS_OVERRIDES` in `scripts/generate-tool-contracts.mjs` (optional: response contract in `RESPONSE_CONTRACT_OVERRIDES`).
+7. Run `make tool-contract-sync` to regenerate `artifacts/tool-contracts/qmap-tool-contracts.json` and its backend mirror. **Without this step, the tool will be blocked at runtime by the contract policy gate.**
+8. Run `yarn build` to verify no TS errors.
+9. Update `AGENT.md` tool list and `CHANGELOG.md`.
+
 ## Adding a New Cloud Provider
 - Add provider class extending `Provider` from `@kepler.gl/cloud-providers`.
 - Implement methods at minimum:

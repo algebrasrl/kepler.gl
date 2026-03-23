@@ -265,6 +265,37 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
       newDatasetName: {type: 'string'}
     },
     ['sourceDatasetName', 'targetDatasetName', 'radiusKm']
+  ),
+  centroidOfDataset: buildStrictArgsSchema(
+    {
+      datasetName: {type: 'string'},
+      geometryField: {type: 'string'}
+    },
+    []
+  ),
+  circleBufferFromPoint: buildStrictArgsSchema(
+    {
+      longitude: {type: 'number'},
+      latitude: {type: 'number'},
+      datasetName: {type: 'string'},
+      radiusKm: {type: 'number'},
+      radiusM: {type: 'number'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    []
+  ),
+  drawGeometryToDataset: buildStrictArgsSchema(
+    {
+      type: {type: 'string', enum: ['point', 'line', 'polygon', 'circle']},
+      coordinates: {type: 'array'},
+      radiusKm: {type: 'number'},
+      radiusM: {type: 'number'},
+      label: {type: 'string'},
+      showOnMap: {type: 'boolean'},
+      newDatasetName: {type: 'string'}
+    },
+    ['coordinates', 'type']
   )
 };
 
