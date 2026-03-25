@@ -4,6 +4,10 @@ All notable changes to `examples/q-map` should be documented in this file.
 
 ## Unreleased
 
+### Changed
+- **q-assistant `/me` resolves profile from JWT claims:** when `Q_ASSISTANT_JWT_AUTH_ENABLED=true`, the endpoint decodes the bearer token (shared secret with q_hive) and extracts real user identity (`sub`, `name`, `email`, `registered_at`, `country`). Falls back to `Q_ASSISTANT_PROFILE_*` env defaults when JWT is absent or invalid.
+- **q-cumber `CloudUser` and `AuthContext` aligned to q-storage structure:** `/me` now returns `{id, name, email, registeredAt, country}` (was `{name, email}`). JWT resolution extracts `registered_at` and `country` from token claims.
+
 ### Refactored
 - **Split `cloud-tools.tsx` (3363 LOC) into `cloud/` submodules:** 10 focused modules (constants, cache, providers, schemas, dataset-identity, catalog, query-core, tool-factories, components, index barrel). Original file is now a thin re-export barrel for backward compatibility. Updated `audit-tool-coverage.mjs` and `audit-ai-matrix.mjs` to read cloud tools from `cloud/components.tsx`.
 - **Removed `tool-shim.ts` identity function:** eliminated no-op `extendedTool()` wrapper from 31 files (~38 import lines removed). Added `: any` type annotations to execute callback parameters to preserve strict-mode compatibility.

@@ -19,6 +19,8 @@ try:
 except Exception:  # pragma: no cover - runtime dependency handled by container image
     AsyncOpenAI = None  # type: ignore[assignment]
 
+from q_backends_shared.jwt_auth import JwtValidationError, decode_and_validate_jwt
+
 from .audit_logging import (
     _CHAT_ID_HEADER,
     _REQUEST_ID_HEADER,
@@ -224,19 +226,47 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         }
 
     @app.get("/me")
-    async def me() -> dict[str, Any]:
+    async def me(
+        authorization: str | None = Header(default=None),
+    ) -> dict[str, Any]:
         """
         Lightweight profile endpoint used by q-map Profile panel.
+        Extracts user identity from JWT when available, falls back to env defaults.
         """
-        return {
-            "success": True,
-            "profile": {
-                "name": app_settings.profile_name,
-                "email": app_settings.profile_email,
-                "registeredAt": app_settings.profile_registered_at,
-                "country": app_settings.profile_country,
-            },
+        profile: dict[str, str] = {
+            "id": "",
+            "name": app_settings.profile_name,
+            "email": app_settings.profile_email,
+            "registeredAt": app_settings.profile_registered_at,
+            "country": app_settings.profile_country,
         }
+        if app_settings.jwt_auth_enabled and app_settings.jwt_hs256_secrets:
+            token = ""
+            raw = str(authorization or "").strip()
+            if raw.lower().startswith("bearer "):
+                token = raw[7:].strip()
+            if token:
+                try:
+                    claims = decode_and_validate_jwt(
+                        token,
+                        hs256_secrets=app_settings.jwt_hs256_secrets,
+                        allowed_issuers=app_settings.jwt_allowed_issuers,
+                        allowed_audiences=app_settings.jwt_allowed_audiences,
+                        require_audience=app_settings.jwt_require_audience,
+                    )
+                    if claims.get("sub"):
+                        profile["id"] = str(claims["sub"])
+                    if claims.get("name"):
+                        profile["name"] = str(claims["name"])
+                    if claims.get("email"):
+                        profile["email"] = str(claims["email"])
+                    if claims.get("registered_at"):
+                        profile["registeredAt"] = str(claims["registered_at"])
+                    if claims.get("country"):
+                        profile["country"] = str(claims["country"])
+                except JwtValidationError:
+                    pass  # fall back to env defaults
+        return {"success": True, "profile": profile}
 
     @app.get("/qmap/mcp/list-cloud-maps", operation_id="list_qmap_cloud_maps")
     async def list_qmap_cloud_maps(

@@ -467,7 +467,7 @@ Working rule:
   - `http://localhost:3004`
 - Endpoints:
   - `GET /health`
-  - `GET /me` (profile payload for q-map Profile panel)
+  - `GET /me` (profile payload for q-map Profile panel; JWT-aware — extracts `sub`, `name`, `email`, `registered_at`, `country` from bearer token when `Q_ASSISTANT_JWT_AUTH_ENABLED=true`, falls back to `Q_ASSISTANT_PROFILE_*` env defaults)
   - `POST /chat` (non-streaming JSON endpoint; useful for direct backend integration/tests)
   - `POST /chat/completions` (OpenAI-compatible endpoint used by q-map frontend runtime; `parallel_tool_calls: false` is enforced in payload coercion to prevent batch tool chains with stale dataset IDs)
   - `GET/POST/DELETE /mcp` (real MCP server endpoint via `fastapi-mcp`, HTTP transport)
@@ -487,6 +487,12 @@ Working rule:
     - `x-q-assistant-chat-id` (stable chat/session id across multiple requests in the same conversation)
   - Request headers (chat endpoints):
     - `x-q-assistant-session-id` (frontend tab/session id used for per-session audit file split)
+- JWT auth env (for `/me` profile resolution from q_hive-issued tokens):
+  - `Q_ASSISTANT_JWT_AUTH_ENABLED` (default `false`; set `true` to decode bearer JWT on `/me`)
+  - `Q_ASSISTANT_JWT_HS256_SECRETS` (comma-separated; must match `QH_QMAP_JWT_SECRET` in Django)
+  - `Q_ASSISTANT_JWT_ALLOWED_ISSUERS` (comma-separated; must match `QH_QMAP_JWT_ISSUER`)
+  - `Q_ASSISTANT_JWT_ALLOWED_AUDIENCES` (comma-separated; must match `QH_QMAP_JWT_AUDIENCE`)
+  - `Q_ASSISTANT_JWT_REQUIRE_AUDIENCE` (default `false`)
 - Supports provider forwarding for:
   - `openai`, `openrouter`, `ollama`
   - Q-cumber cloud env for MCP helper endpoints:

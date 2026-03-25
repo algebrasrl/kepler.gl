@@ -67,8 +67,11 @@ DEFAULT_SUPPORTED_FILTER_OPS = [
 
 @dataclass(frozen=True)
 class AuthContext:
-    name: str
-    email: str
+    id: str = ""
+    name: str = ""
+    email: str = ""
+    registered_at: str = ""
+    country: str = ""
     roles: tuple[str, ...] = ()
     subject: str = ""
 
@@ -1075,22 +1078,31 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
         subject = str(claims.get("sub") or "").strip()
         return AuthContext(
+            id=subject,
             name=str(claims.get("name") or claims.get("preferred_username") or app_settings.user_name),
             email=str(claims.get("email") or app_settings.user_email),
+            registered_at=str(claims.get("registered_at") or claims.get("registeredAt") or ""),
+            country=str(claims.get("country") or ""),
             roles=extract_roles(claims, app_settings.jwt_auth.roles_claim_paths),
             subject=subject,
+        )
+
+    def _default_auth_context() -> AuthContext:
+        return AuthContext(
+            name=app_settings.user_name,
+            email=app_settings.user_email,
         )
 
     def resolve_auth(credentials: HTTPAuthorizationCredentials | None = Depends(auth_scheme)) -> AuthContext:
         if app_settings.jwt_auth.enabled:
             return _resolve_jwt_context(credentials)
         if not app_settings.api_token:
-            return AuthContext(name=app_settings.user_name, email=app_settings.user_email)
+            return _default_auth_context()
         if not credentials:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing bearer token")
         if credentials.credentials != app_settings.api_token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid bearer token")
-        return AuthContext(name=app_settings.user_name, email=app_settings.user_email)
+        return _default_auth_context()
 
     def require_read_access(auth: AuthContext = Depends(resolve_auth)) -> AuthContext:
         required = app_settings.jwt_auth.read_roles
@@ -1107,7 +1119,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/me", response_model=CloudUser)
     async def me(auth: AuthContext = Depends(require_read_access)) -> CloudUser:
-        return CloudUser(name=auth.name, email=auth.email)
+        return CloudUser(
+            id=auth.id or auth.subject,
+            name=auth.name,
+            email=auth.email,
+            registeredAt=auth.registered_at,
+            country=auth.country,
+        )
 
     @app.get("/maps", response_model=MapListResponse)
     async def list_maps(_: AuthContext = Depends(require_read_access)) -> MapListResponse:

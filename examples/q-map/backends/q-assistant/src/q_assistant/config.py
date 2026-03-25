@@ -135,6 +135,11 @@ class Settings:
     profile_email: str
     profile_registered_at: str
     profile_country: str
+    jwt_auth_enabled: bool
+    jwt_hs256_secrets: tuple[str, ...]
+    jwt_allowed_issuers: tuple[str, ...]
+    jwt_allowed_audiences: tuple[str, ...]
+    jwt_require_audience: bool
     explicit_tool_routing_enabled: bool
     qmap_context_enabled: bool
     qmap_context_max_chars: int
@@ -253,6 +258,27 @@ def load_settings() -> Settings:
         profile_email=os.getenv("Q_ASSISTANT_PROFILE_EMAIL", "user@q-hive.local"),
         profile_registered_at=os.getenv("Q_ASSISTANT_PROFILE_REGISTERED_AT", "2025-01-01"),
         profile_country=os.getenv("Q_ASSISTANT_PROFILE_COUNTRY", "IT"),
+        jwt_auth_enabled=parse_bool(
+            os.getenv("Q_ASSISTANT_JWT_AUTH_ENABLED"), default=False
+        ),
+        jwt_hs256_secrets=tuple(
+            s.strip()
+            for s in os.getenv("Q_ASSISTANT_JWT_HS256_SECRETS", "").split(",")
+            if s.strip()
+        ),
+        jwt_allowed_issuers=tuple(
+            s.strip()
+            for s in os.getenv("Q_ASSISTANT_JWT_ALLOWED_ISSUERS", "").split(",")
+            if s.strip()
+        ),
+        jwt_allowed_audiences=tuple(
+            s.strip()
+            for s in os.getenv("Q_ASSISTANT_JWT_ALLOWED_AUDIENCES", "").split(",")
+            if s.strip()
+        ),
+        jwt_require_audience=parse_bool(
+            os.getenv("Q_ASSISTANT_JWT_REQUIRE_AUDIENCE"), default=False
+        ),
         explicit_tool_routing_enabled=parse_bool(
             os.getenv("Q_ASSISTANT_EXPLICIT_TOOL_ROUTING"), default=True
         ),

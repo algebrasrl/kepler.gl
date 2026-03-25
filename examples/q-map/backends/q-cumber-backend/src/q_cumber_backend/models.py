@@ -6,8 +6,11 @@ from pydantic import BaseModel, Field
 
 
 class CloudUser(BaseModel):
+    id: str
     name: str
     email: str
+    registeredAt: str = ""
+    country: str = ""
 
 
 class SaveMapRequest(BaseModel):
