@@ -39,6 +39,7 @@ from .agent_chain import (
 from .chat_response_normalization import _normalize
 from .chat_payload_compaction import (
     _compact_chat_completions_payload,
+    _compact_repeated_failed_tool_results,
     _deduplicate_discovery_tool_turns,
     _sanitize_openai_tools_for_gemini_model,
     _serialize_tool_call_args_for_signature,
@@ -730,6 +731,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             base_payload,
             discovery_tools=_DISCOVERY_TOOLS,
         )
+        base_payload = _compact_repeated_failed_tool_results(base_payload)
         base_payload = _prune_repeated_discovery_tools(
             base_payload,
             extract_request_tool_results=_extract_request_tool_results,

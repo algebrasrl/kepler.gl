@@ -2526,17 +2526,17 @@
     "grounded_required_tools_all": [
       "queryQCumberTerritorialUnits",
       "rankQMapDatasetRows",
-      "createDatasetFromFilter",
-      "fitQMapToDataset"
+      "createDatasetFromFilter"
     ],
     "user_prompt": "Mostra il comune piu piccolo della provincia di Treviso e mostrami direttamente il risultato sulla mappa.",
     "required_tools_all": [
       "queryQCumberTerritorialUnits",
       "rankQMapDatasetRows",
-      "createDatasetFromFilter",
-      "fitQMapToDataset"
+      "createDatasetFromFilter"
     ],
     "expected_tools_any": [
+      "listQCumberDatasets",
+      "fitQMapToDataset",
       "createDatasetWithGeometryArea",
       "waitForQMapDataset",
       "countQMapRows",
@@ -2581,17 +2581,17 @@
     "grounded_required_tools_all": [
       "queryQCumberTerritorialUnits",
       "rankQMapDatasetRows",
-      "createDatasetFromFilter",
-      "fitQMapToDataset"
+      "createDatasetFromFilter"
     ],
     "user_prompt": "Mostra il comune piu piccolo della provincia di Parma e mostrami direttamente il risultato sulla mappa.",
     "required_tools_all": [
       "queryQCumberTerritorialUnits",
       "rankQMapDatasetRows",
-      "createDatasetFromFilter",
-      "fitQMapToDataset"
+      "createDatasetFromFilter"
     ],
     "expected_tools_any": [
+      "listQCumberDatasets",
+      "fitQMapToDataset",
       "createDatasetWithGeometryArea",
       "waitForQMapDataset",
       "countQMapRows",
@@ -2881,6 +2881,8 @@
       "countQMapRows"
     ],
     "expected_tools_any": [
+      "listQCumberDatasets",
+      "getQCumberDatasetHelp",
       "setQMapLayerColorByField",
       "showOnlyQMapLayer"
     ],
@@ -3039,6 +3041,7 @@
     ],
     "expected_tools_any": [
       "listQMapDatasets",
+      "computeQMapHotspotAnalysis",
       "waitForQMapDataset",
       "countQMapRows",
       "fitQMapToDataset"
@@ -3046,10 +3049,8 @@
     "expected_keywords_any": [
       "Moran",
       "autocorrelazione",
-      "cluster",
       "LISA",
-      "HH",
-      "LL",
+      "cluster",
       "spaziale"
     ],
     "forbidden_tools": [

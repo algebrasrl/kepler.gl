@@ -826,10 +826,16 @@ def enforce_runtime_tool_loop_limits(
                 ),
                 (
                     f"{_RUNTIME_GUARDRAIL_PREFIX} Avoid default provider listing when discovery is not explicitly requested. "
-                    "Use listQCumberDatasets/query tools directly and keep provider inventory only for explicit source-selection requests."
+                    "Provider inventory is only needed for explicit source-selection requests."
                 ),
                 (
-                    f"{_RUNTIME_NEXT_STEP_PREFIX} Continue with listQCumberDatasets/queryQCumber* and proceed to the first operational step."
+                    f"{_RUNTIME_GUARDRAIL_PREFIX} MANDATORY: call listQCumberDatasets(providerId=...) BEFORE any "
+                    "queryQCumber* tool. Never call queryQCumberTerritorialUnits/queryQCumberDataset/queryQCumberDatasetSpatial "
+                    "without a validated datasetId from a prior listQCumberDatasets response."
+                ),
+                (
+                    f"{_RUNTIME_NEXT_STEP_PREFIX} First call listQCumberDatasets to resolve valid datasetId, "
+                    "then use exact datasetId from response in queryQCumber* tools."
                 ),
             ]
         )
@@ -963,7 +969,9 @@ def enforce_runtime_tool_loop_limits(
         request_tool_names=request_tool_names,
         results=results,
     ):
-        remove_tool_names.add("fitQMapToDataset")
+        # NOTE: do NOT remove fitQMapToDataset from the registry — removing tools
+        # mid-session creates inconsistency when the model has already seen the tool
+        # in prior turns and may call it from cached context. Use guidance-only steering.
         guidance_lines.extend(
             [
                 (
@@ -978,6 +986,50 @@ def enforce_runtime_tool_loop_limits(
                     ),
                 ]
             )
+
+    # ─── Tessellation + population enrichment guardrail ───────────────────
+    # When the objective requests population-based coloring and a tassellateDatasetLayer
+    # has succeeded but populateTassellationFromAdminUnits has not yet been called,
+    # inject guidance to force the enrichment step before coloring.
+    _POPULATE_TASSELLATION_TOOLS = {
+        "populateTassellationFromAdminUnits",
+        "populateTassellationFromAdminUnitsAreaWeighted",
+        "populateTassellationFromAdminUnitsDiscrete",
+    }
+    _objective_lower = str(objective_text or "").strip().lower()
+    _population_markers = ("population", "popolazione", "abitanti", "residenti", "per capita", "pro capite")
+    _objective_mentions_population = any(m in _objective_lower for m in _population_markers)
+    if _objective_mentions_population and results:
+        _has_successful_tassellate = any(
+            row.get("success") is True
+            and str(row.get("toolName") or "").strip() == "tassellateDatasetLayer"
+            for row in results
+        )
+        _has_successful_populate = any(
+            row.get("success") is True
+            and str(row.get("toolName") or "").strip() in _POPULATE_TASSELLATION_TOOLS
+            for row in results
+        )
+        if _has_successful_tassellate and not _has_successful_populate:
+            _populate_available = request_tool_names.intersection(_POPULATE_TASSELLATION_TOOLS)
+            if _populate_available:
+                guidance_lines.extend(
+                    [
+                        (
+                            f"{_RUNTIME_GUARDRAIL_PREFIX} Selected rule `tessellation_requires_population_enrichment` "
+                            "(tessellation created but population data not yet enriched)."
+                        ),
+                        (
+                            f"{_RUNTIME_GUARDRAIL_PREFIX} The tessellation cells do not contain population data by default. "
+                            "You MUST call populateTassellationFromAdminUnits to enrich the H3 cells with population "
+                            "values from the administrative dataset before applying color/styling."
+                        ),
+                        (
+                            f"{_RUNTIME_NEXT_STEP_PREFIX} Call populateTassellationFromAdminUnits now with the tessellation "
+                            "dataset and administrative source, then wait/count/color."
+                        ),
+                    ]
+                )
 
     forced_tool_choice_name, _ = _apply_runtime_loop_rule_decision(
         remove_tool_names=remove_tool_names,

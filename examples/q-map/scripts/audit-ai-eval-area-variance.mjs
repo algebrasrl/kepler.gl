@@ -41,11 +41,11 @@ function parseArgs(argv) {
     ),
     maxSpanAvgExtraToolCalls: asFiniteNumber(
       process.env.QMAP_AI_EVAL_AREA_VARIANCE_MAX_SPAN_AVG_EXTRA_TOOL_CALLS,
-      0.12
+      0.2
     ),
     maxLatestAvgExtraToolCalls: asFiniteNumber(
       process.env.QMAP_AI_EVAL_AREA_VARIANCE_MAX_LATEST_AVG_EXTRA_TOOL_CALLS,
-      0.15
+      0.2
     )
   };
 

@@ -4,6 +4,7 @@ import unittest
 from q_assistant.chat_payload_compaction import (
     _compact_chat_completions_payload,
     _compact_openai_tool_schema,
+    _compact_repeated_failed_tool_results,
     _compact_tool_message_content,
     _deduplicate_discovery_tool_turns,
     _repair_openai_tool_message_sequence,
@@ -459,6 +460,147 @@ class ChatPayloadCompactionTests(unittest.TestCase):
         tool_call_ids = [m.get("tool_call_id") for m in messages if isinstance(m, dict) and m.get("role") == "tool"]
         self.assertIn("call_fail", tool_call_ids)
         self.assertIn("call_ok", tool_call_ids)
+
+
+    # -- _compact_repeated_failed_tool_results tests --
+
+    def _make_failed_tool_turn(self, call_id, tool_name, args=None):
+        """Helper: returns (assistant_msg, tool_msg) for a failed tool call."""
+        return (
+            {
+                "role": "assistant",
+                "tool_calls": [
+                    {
+                        "id": call_id,
+                        "type": "function",
+                        "function": {
+                            "name": tool_name,
+                            "arguments": json.dumps(args or {}),
+                        },
+                    }
+                ],
+            },
+            {
+                "role": "tool",
+                "tool_call_id": call_id,
+                "content": json.dumps(
+                    {"qmapToolResult": {"schema": "qmap.tool_result.v1", "success": False, "error": "test error"}}
+                ),
+            },
+        )
+
+    def test_compact_repeated_failed_keeps_first_and_last(self):
+        """With 4 failures for same tool, keep first and last, drop middle 2."""
+        msgs = [{"role": "system", "content": "sys"}, {"role": "user", "content": "query"}]
+        for i in range(4):
+            asst, tool = self._make_failed_tool_turn(f"call_{i}", "queryQCumberTerritorialUnits")
+            msgs.extend([asst, tool])
+
+        out = _compact_repeated_failed_tool_results({"messages": msgs})
+        tool_ids = [m["tool_call_id"] for m in out["messages"] if isinstance(m, dict) and m.get("role") == "tool"]
+        self.assertEqual(tool_ids, ["call_0", "call_3"])
+        # Total messages: system + user + 2*(asst+tool) = 6
+        self.assertEqual(len(out["messages"]), 6)
+
+    def test_compact_repeated_failed_no_op_below_threshold(self):
+        """With only 2 failures, nothing is dropped (default max_kept=2)."""
+        msgs = [{"role": "system", "content": "sys"}, {"role": "user", "content": "query"}]
+        for i in range(2):
+            asst, tool = self._make_failed_tool_turn(f"call_{i}", "queryQCumberTerritorialUnits")
+            msgs.extend([asst, tool])
+
+        out = _compact_repeated_failed_tool_results({"messages": msgs})
+        self.assertEqual(len(out["messages"]), len(msgs))
+
+    def test_compact_repeated_failed_preserves_successful_results(self):
+        """Successful tool results are never dropped even if same tool."""
+        msgs = [{"role": "system", "content": "sys"}, {"role": "user", "content": "query"}]
+        # 3 failed
+        for i in range(3):
+            asst, tool = self._make_failed_tool_turn(f"fail_{i}", "queryQCumberTerritorialUnits")
+            msgs.extend([asst, tool])
+        # 1 success
+        msgs.append(
+            {
+                "role": "assistant",
+                "tool_calls": [
+                    {"id": "success_0", "type": "function", "function": {"name": "queryQCumberTerritorialUnits", "arguments": "{}"}},
+                ],
+            }
+        )
+        msgs.append(
+            {
+                "role": "tool",
+                "tool_call_id": "success_0",
+                "content": json.dumps({"qmapToolResult": {"schema": "qmap.tool_result.v1", "success": True}}),
+            }
+        )
+
+        out = _compact_repeated_failed_tool_results({"messages": msgs})
+        tool_ids = [m["tool_call_id"] for m in out["messages"] if isinstance(m, dict) and m.get("role") == "tool"]
+        # first fail + last fail + success = 3
+        self.assertIn("fail_0", tool_ids)
+        self.assertIn("fail_2", tool_ids)
+        self.assertNotIn("fail_1", tool_ids)
+        self.assertIn("success_0", tool_ids)
+
+    def test_compact_repeated_failed_multiple_tools_independent(self):
+        """Compaction is per-tool: 3 failures of tool A and 3 of tool B each get compacted."""
+        msgs = [{"role": "system", "content": "sys"}, {"role": "user", "content": "query"}]
+        for i in range(3):
+            asst, tool = self._make_failed_tool_turn(f"a_{i}", "toolA")
+            msgs.extend([asst, tool])
+        for i in range(3):
+            asst, tool = self._make_failed_tool_turn(f"b_{i}", "toolB")
+            msgs.extend([asst, tool])
+
+        out = _compact_repeated_failed_tool_results({"messages": msgs})
+        tool_ids = [m["tool_call_id"] for m in out["messages"] if isinstance(m, dict) and m.get("role") == "tool"]
+        self.assertEqual(sorted(tool_ids), ["a_0", "a_2", "b_0", "b_2"])
+
+    def test_compact_repeated_failed_assistant_with_mixed_calls_preserved(self):
+        """If assistant message has both dropped and kept tool calls, keep it."""
+        msgs = [
+            {"role": "system", "content": "sys"},
+            {"role": "user", "content": "query"},
+        ]
+        # 3 solo-call failed turns for toolX
+        for i in range(3):
+            asst, tool = self._make_failed_tool_turn(f"x_{i}", "toolX")
+            msgs.extend([asst, tool])
+        # assistant with 2 calls: one is toolX (failed), one is toolY (failed)
+        msgs.append(
+            {
+                "role": "assistant",
+                "tool_calls": [
+                    {"id": "mixed_x", "type": "function", "function": {"name": "toolX", "arguments": "{}"}},
+                    {"id": "mixed_y", "type": "function", "function": {"name": "toolY", "arguments": "{}"}},
+                ],
+            }
+        )
+        msgs.append(
+            {
+                "role": "tool",
+                "tool_call_id": "mixed_x",
+                "content": json.dumps({"qmapToolResult": {"success": False}}),
+            }
+        )
+        msgs.append(
+            {
+                "role": "tool",
+                "tool_call_id": "mixed_y",
+                "content": json.dumps({"qmapToolResult": {"success": False}}),
+            }
+        )
+
+        out = _compact_repeated_failed_tool_results({"messages": msgs})
+        # toolX has 4 failures total (x_0..x_2 + mixed_x), keep first (x_0) and last (mixed_x)
+        # toolY has only 1 failure (mixed_y), kept as-is
+        tool_ids = [m["tool_call_id"] for m in out["messages"] if isinstance(m, dict) and m.get("role") == "tool"]
+        self.assertIn("x_0", tool_ids)
+        self.assertIn("mixed_x", tool_ids)
+        self.assertIn("mixed_y", tool_ids)
+        self.assertNotIn("x_1", tool_ids)
 
 
 if __name__ == "__main__":

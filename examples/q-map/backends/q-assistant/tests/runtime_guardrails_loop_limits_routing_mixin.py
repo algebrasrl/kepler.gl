@@ -283,7 +283,8 @@ class RuntimeGuardrailLoopLimitsRoutingMixin:
 
         out = _enforce_runtime_tool_loop_limits(payload)
         names = [tool.get("function", {}).get("name") for tool in out.get("tools", [])]
-        self.assertNotIn("fitQMapToDataset", names)
+        # fitQMapToDataset is kept in registry (guidance-only steering, no removal)
+        self.assertIn("fitQMapToDataset", names)
         self.assertIn("loadData", names)
         content = str(out["messages"][0]["content"])
         self.assertIn("fit_requires_explicit_map_focus", content)
@@ -539,6 +540,8 @@ class RuntimeGuardrailLoopLimitsRoutingMixin:
         self.assertIn("listQCumberDatasets", names)
         content = str(out["messages"][0]["content"])
         self.assertIn("provider_listing_not_required_for_current_objective", content)
+        self.assertIn("MANDATORY: call listQCumberDatasets", content)
+        self.assertIn("First call listQCumberDatasets to resolve valid datasetId", content)
 
     def test_loop_limits_keep_qcumber_providers_for_explicit_provider_discovery(self):
         payload = {

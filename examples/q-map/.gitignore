@@ -54,6 +54,7 @@ meta.json
 
 # AI eval artifacts
 tests/ai-eval/results/
+production_audits/
 docs/KPI_WEEKLY_SUMMARY.md
 
 # Playwright artifacts

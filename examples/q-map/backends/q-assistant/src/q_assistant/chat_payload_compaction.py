@@ -709,6 +709,140 @@ def _deduplicate_discovery_tool_turns(
     return outgoing
 
 
+def _compact_repeated_failed_tool_results(
+    payload: dict[str, Any],
+    *,
+    max_kept_per_tool: int = 2,
+) -> dict[str, Any]:
+    """Compact duplicate failed tool results from the same tool.
+
+    When the model retries the same tool multiple times and each attempt fails,
+    the conversation accumulates many identical (tool_call + tool_result) pairs.
+    This function keeps at most *max_kept_per_tool* failed result pairs per tool name
+    (the first and the last), dropping intermediate duplicates.
+
+    This prevents context bloat that can cause provider empty-completion issues
+    (observed with Gemini Flash on conversations with >15 repeated tool results).
+
+    Only failed results are compacted — successful results are preserved as-is.
+    The assistant message that requested the dropped tool call is also dropped
+    when ALL its tool calls are being compacted.
+    """
+    outgoing = dict(payload or {})
+    messages = outgoing.get("messages")
+    if not isinstance(messages, list) or len(messages) < 4:
+        return outgoing
+
+    # Build index of (tool_name -> [(assistant_idx, tool_msg_idx, tool_call_id)])
+    # for failed tool results only.
+    failed_by_tool: dict[str, list[tuple[int, int, str]]] = {}
+
+    # Map tool_call_id -> (assistant_msg_idx, tool_name)
+    call_id_to_assistant: dict[str, tuple[int, str]] = {}
+
+    for idx, msg in enumerate(messages):
+        if not isinstance(msg, dict):
+            continue
+        role = str(msg.get("role") or "").strip().lower()
+        if role == "assistant":
+            tool_calls = msg.get("tool_calls")
+            if isinstance(tool_calls, list):
+                for tc in tool_calls:
+                    if not isinstance(tc, dict):
+                        continue
+                    call_id = str(tc.get("id") or "").strip()
+                    fn = tc.get("function")
+                    if isinstance(fn, dict):
+                        name = str(fn.get("name") or "").strip()
+                    else:
+                        name = ""
+                    if call_id and name:
+                        call_id_to_assistant[call_id] = (idx, name)
+        elif role == "tool":
+            tool_call_id = str(msg.get("tool_call_id") or "").strip()
+            if tool_call_id not in call_id_to_assistant:
+                continue
+            assistant_idx, tool_name = call_id_to_assistant[tool_call_id]
+
+            # Determine if this result is a failure.
+            content_raw = msg.get("content")
+            is_failed = False
+            if isinstance(content_raw, str):
+                try:
+                    parsed = json.loads(content_raw)
+                except Exception:
+                    parsed = None
+                if isinstance(parsed, dict):
+                    qr = parsed.get("qmapToolResult")
+                    if isinstance(qr, dict) and qr.get("success") is False:
+                        is_failed = True
+                    lr = parsed.get("llmResult")
+                    if not is_failed and isinstance(lr, dict) and lr.get("success") is False:
+                        is_failed = True
+                    if not is_failed and parsed.get("success") is False:
+                        is_failed = True
+                elif parsed is None:
+                    # Non-JSON content: treat as failure if it looks like error text.
+                    lower = content_raw.lower()
+                    if "error" in lower or "failed" in lower or "invalid" in lower:
+                        is_failed = True
+
+            if is_failed:
+                failed_by_tool.setdefault(tool_name, []).append(
+                    (assistant_idx, idx, tool_call_id)
+                )
+
+    # For each tool with more than max_kept_per_tool failures, mark intermediate ones for drop.
+    to_drop_tool_msgs: set[int] = set()
+    to_drop_assistant_msgs: set[int] = set()
+    dropped_call_ids: set[str] = set()
+
+    for tool_name, entries in failed_by_tool.items():
+        if len(entries) <= max_kept_per_tool:
+            continue
+        # Keep first and last, drop the rest.
+        to_keep = {0, len(entries) - 1}
+        for i, (assistant_idx, tool_msg_idx, call_id) in enumerate(entries):
+            if i not in to_keep:
+                to_drop_tool_msgs.add(tool_msg_idx)
+                to_drop_assistant_msgs.add(assistant_idx)
+                dropped_call_ids.add(call_id)
+
+    if not to_drop_tool_msgs:
+        return outgoing
+
+    # Only drop assistant messages if ALL their tool_calls are being dropped.
+    confirmed_drop_assistant: set[int] = set()
+    for asst_idx in to_drop_assistant_msgs:
+        msg = messages[asst_idx]
+        if not isinstance(msg, dict):
+            continue
+        tool_calls = msg.get("tool_calls")
+        if not isinstance(tool_calls, list):
+            confirmed_drop_assistant.add(asst_idx)
+            continue
+        all_dropped = True
+        for tc in tool_calls:
+            call_id = str(tc.get("id") or "").strip() if isinstance(tc, dict) else ""
+            if call_id not in dropped_call_ids:
+                all_dropped = False
+                break
+        if all_dropped:
+            confirmed_drop_assistant.add(asst_idx)
+
+    all_drops = to_drop_tool_msgs | confirmed_drop_assistant
+    compacted: list[Any] = []
+    for idx, msg in enumerate(messages):
+        if idx in all_drops:
+            continue
+        if isinstance(msg, dict):
+            compacted.append(dict(msg))
+        else:
+            compacted.append(msg)
+    outgoing["messages"] = compacted
+    return outgoing
+
+
 def _sanitize_google_schema(schema: Any) -> Any:
     if isinstance(schema, list):
         return [_sanitize_google_schema(item) for item in schema]

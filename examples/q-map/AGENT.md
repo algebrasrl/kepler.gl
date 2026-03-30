@@ -453,6 +453,15 @@ Working rule:
   - q-cumber frontend query timeout is configurable with `VITE_QCUMBER_BACKEND_TIMEOUT_MS` (default `45000` ms) to fail fast instead of hanging indefinitely.
   - `queryQCumberDataset` uses geometry-first loading: automatic point inference from lat/lon is disabled by default; enable only with `inferPointsFromLatLon=true` (or env `VITE_QMAP_AI_QUERY_INCLUDE_LATLON_FALLBACK=true`).
   - For ambiguous administrative names (e.g. `Brescia`), disambiguate administrative level first and query using `name + lv` before `loadToMap`.
+  - When `provider_listing_not_required` guardrail prunes `listQCumberProviders`, `listQCumberDatasets` remains mandatory as minimum discovery step before any `queryQCumber*` call. Never call query tools without a validated `datasetId` from a prior `listQCumberDatasets` response.
+  - `fitQMapToDataset` is never removed from the tool registry mid-session; the `fit_requires_explicit_map_focus` rule uses guidance-only steering. Removing tools mid-session creates inconsistency when the model references them from cached context.
+  - `_compact_repeated_failed_tool_results` runs in the chat payload pipeline before upstream calls: keeps at most first + last failed result per tool name, dropping intermediate duplicates to prevent context bloat from retry cascades.
+  - `circleBufferFromPoint` rejects buffers with effective radius < 10m with a hint suggesting unit confusion (meters vs kilometers).
+  - Single-case eval pattern for stabilizing flaky cases:
+    ```bash
+    python3 -c "import json; cases=json.load(open('tests/ai-eval/cases.functional.json')); json.dump([c for c in cases if c['id']=='<CASE_ID>'], open('/tmp/case.json','w'), indent=2)"
+    docker run --rm --network backends_default -v $(pwd)/../..:/repo -v /tmp/case.json:/tmp/case.json -w /repo/examples/q-map node:20 bash -c 'node scripts/run-ai-eval.mjs --cases /tmp/case.json --run-id <tag> --run-type debug --base-url http://q-assistant:3004 --output /dev/null --output-md /dev/null'
+    ```
 
 ## q-assistant Backend (AI Proxy)
 - Backend package path:

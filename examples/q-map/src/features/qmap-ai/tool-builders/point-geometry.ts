@@ -252,6 +252,22 @@ export function createCircleBufferFromPointTool(ctx: QMapToolContext) {
       newDatasetName?: string;
     }) => {
       const effectiveRadiusKm = radiusM ? radiusM / 1000 : radiusKm || 10;
+
+      // Sanity check: warn when effective radius is suspiciously small (<10m).
+      // Common user error: saying "1.5m" when meaning "1.5km".
+      if (effectiveRadiusKm < 0.01) {
+        const effectiveM = Math.round(effectiveRadiusKm * 1000);
+        return {
+          llmResult: {
+            success: false,
+            details:
+              `Radius ${effectiveM}m is very small (< 10m). Did the user mean ${effectiveM > 0 ? effectiveM : effectiveRadiusKm * 1000}km instead? ` +
+              `If meters are intended use radiusM=${effectiveM}; for kilometers use radiusKm=${effectiveM}. ` +
+              `Re-call with the corrected parameter.`
+          }
+        };
+      }
+
       const units = 'kilometers';
       let centerLon = longitude;
       let centerLat = latitude;
