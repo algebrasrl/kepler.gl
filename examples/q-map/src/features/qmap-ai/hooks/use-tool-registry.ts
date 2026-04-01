@@ -102,6 +102,15 @@ import {createCentroidOfDatasetTool, createCircleBufferFromPointTool, createDraw
 
 import type {QMapToolContext} from '../context/tool-context';
 
+// Module-level cache — allowlist never changes at runtime.
+let _cachedBaseToolAllowlist: Set<string> | null = null;
+function getCachedBaseToolAllowlist(): Set<string> {
+  if (!_cachedBaseToolAllowlist) {
+    _cachedBaseToolAllowlist = getQMapBaseToolAllowlistSet();
+  }
+  return _cachedBaseToolAllowlist;
+}
+
 /**
  * Hook that creates the complete q-map tool registry from a QMapToolContext.
  *
@@ -109,6 +118,19 @@ import type {QMapToolContext} from '../context/tool-context';
  * qmap-ai-assistant-component.tsx (lines 755–1957).
  */
 export function useToolRegistry(ctx: QMapToolContext): Record<string, any> {
+  const {visState, aiAssistant, dispatch, activeMode, assistantBaseUrl} = ctx;
+  const datasets = visState?.datasets;
+
+  // Memoize the entire tool registry build. The heavy work (~80 tool builders,
+  // setupLLMTools, chart/mode policies) only reruns when data-bearing state
+  // actually changes — not on every hoverInfo / viewport tick.
+  return React.useMemo(() => {
+    return _buildToolRegistry(ctx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasets, aiAssistant, dispatch, activeMode, assistantBaseUrl]);
+}
+
+function _buildToolRegistry(ctx: QMapToolContext): Record<string, any> {
   const {visState, aiAssistant, dispatch, activeMode, assistantBaseUrl} = ctx;
 
   // ─── 1. Instantiate all tool builders from context ──────────────────────────
@@ -207,7 +229,7 @@ export function useToolRegistry(ctx: QMapToolContext): Record<string, any> {
   // ─── 2. Base tools from kepler.gl AI assistant ──────────────────────────────
 
   const baseToolsRaw = setupLLMTools({visState, aiAssistant, dispatch}) as Record<string, any>;
-  const baseToolAllowlist = React.useMemo(() => getQMapBaseToolAllowlistSet(), []);
+  const baseToolAllowlist = getCachedBaseToolAllowlist();
   const baseTools = Object.fromEntries(
     Object.entries(baseToolsRaw).filter(([toolName]) => baseToolAllowlist.has(toolName))
   ) as Record<string, any>;

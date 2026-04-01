@@ -28,7 +28,7 @@ import {
   H3_PAINT_DATASET_LABEL_PREFIX,
   readH3PaintRows
 } from '../features/h3-paint/utils';
-import {selectQMapDatasets} from '../state/qmap-selectors';
+import {selectQMapDatasetsObj} from '../state/qmap-selectors';
 
 const SELECTABLE_LAYERS: string[] = [LAYER_TYPES.hexagonId, LAYER_TYPES.geojson];
 const MAX_WIDTH = 500;
@@ -181,7 +181,7 @@ export default function QMapMapPopoverFactory(MapPopoverContent: any) {
     featureCollection
   }) => {
     const dispatch = useDispatch<any>();
-    const datasets = useSelector((state: any) => selectQMapDatasets(state));
+    const datasets = useSelector(selectQMapDatasetsObj);
     const [horizontalPlacement, setHorizontalPlacement] = useState('start');
     const moveLeft = () => setHorizontalPlacement('end');
     const moveRight = () => setHorizontalPlacement('start');

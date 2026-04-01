@@ -78,6 +78,10 @@ import {resolveQMapAuthorizationHeader} from '../../utils/auth-token';
 import {
   selectQMapAiAssistantConfig,
   selectQMapAiAssistantState,
+  selectQMapDatasetsObj,
+  selectQMapFiltersArray,
+  selectQMapLayersArray,
+  selectQMapMapState,
   selectQMapUiState,
   selectQMapVisState
 } from '../../state/qmap-selectors';
@@ -339,7 +343,21 @@ function buildObjectiveCoverageLine(objectiveText: string): string {
 export default function QMapAiAssistantComponent() {
   const dispatch = useDispatch<any>();
   const store = useStore<RootState>();
-  const visState = useSelector(selectQMapVisState);
+  // Use stable sub-selectors instead of the full visState to avoid rerenders on
+  // every hoverInfo / viewport / interaction change (critical for large datasets).
+  const datasets = useSelector(selectQMapDatasetsObj);
+  const layers = useSelector(selectQMapLayersArray);
+  const filters = useSelector(selectQMapFiltersArray);
+  const mapState = useSelector(selectQMapMapState);
+  // Build a stable visState proxy that only changes when its sub-trees change.
+  // Tool builders that need live visState use getCurrentVisState() from context.
+  const visState = React.useMemo(
+    () => {
+      const full = selectQMapVisState(store.getState());
+      return full ? {...full, datasets, layers, filters} : {datasets, layers, filters};
+    },
+    [store, datasets, layers, filters]
+  );
   const uiLocale = useSelector((state: RootState) => selectQMapUiState(state)?.locale || 'en');
   const activeMode = useSelector((state: RootState) => resolveQMapModeFromUiState(selectQMapUiState(state)));
   const aiAssistant = useSelector(selectQMapAiAssistantState);
@@ -380,7 +398,6 @@ export default function QMapAiAssistantComponent() {
   // Guardrail: repair malformed color ranges that can crash layer rendering/UI.
   const repairedLayerIdsRef = React.useRef<Set<string>>(new Set());
   useEffect(() => {
-    const layers = (visState?.layers || []) as any[];
     layers.forEach((layer: any) => {
       const layerId = String(layer?.id || '');
       if (!layerId) return;
@@ -400,20 +417,26 @@ export default function QMapAiAssistantComponent() {
       };
       dispatch(wrapTo('map', layerConfigChange(layer, {visConfig: nextVisConfig})));
     });
-  }, [dispatch, visState?.layers]);
+  }, [dispatch, layers]);
 
-  const toolContext = buildQMapToolContext({
-    dispatch,
-    store,
-    visState,
-    aiAssistant,
-    aiAssistantConfig,
-    activeMode,
-    lastRankContextRef,
-    scheduleMergedMapFit,
-    WordCloudToolComponent,
-    CategoryBarsToolComponent
-  });
+  const toolContext = React.useMemo(
+    () =>
+      buildQMapToolContext({
+        dispatch,
+        store,
+        visState,
+        aiAssistant,
+        aiAssistantConfig,
+        activeMode,
+        lastRankContextRef,
+        scheduleMergedMapFit,
+        WordCloudToolComponent,
+        CategoryBarsToolComponent
+      }),
+    // Rebuild only when the data-bearing slices change, not on every interaction.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dispatch, store, datasets, layers, aiAssistant, aiAssistantConfig, activeMode]
+  );
   const modeScopedToolsWithCategoryIntrospection = useToolRegistry(toolContext);
 
   const upsertRuntimeStep = React.useCallback((step: QMapRuntimeStep) => {
@@ -923,7 +946,7 @@ export default function QMapAiAssistantComponent() {
   }, [dispatch, e2eEnabled, getCurrentVisState]);
 
   const strictMode = String(import.meta.env.VITE_QMAP_AI_STRICT_MODE || 'true').toLowerCase() !== 'false';
-  const runtimeHints = React.useMemo(() => buildRuntimeDatasetHints(visState), [visState?.datasets, visState?.layers]);
+  const runtimeHints = React.useMemo(() => buildRuntimeDatasetHints(visState), [datasets, layers]);
   const qMapSessionId = React.useMemo(() => {
     if (typeof window === 'undefined') return '';
     try {
@@ -954,7 +977,7 @@ export default function QMapAiAssistantComponent() {
     if (!contextHeader) return headers;
     headers[QMAP_CONTEXT_HEADER] = contextHeader;
     return headers;
-  }, [qMapSessionId, visState?.datasets, visState?.layers, visState?.filters, visState?.mapState]);
+  }, [qMapSessionId, datasets, layers, filters, mapState]);
 
   // Use a fixed OpenAI-compatible provider on the client and proxy through q-assistant.
   // q-assistant overrides the model/provider upstream; client values are placeholders only.

@@ -10,7 +10,7 @@ import {addDataToMap, replaceDataInMap, wrapTo} from '@kepler.gl/actions';
 import {Icons} from '@kepler.gl/components';
 import {isValidCell, cellToBoundary} from 'h3-js-v4';
 import {resolveQMapAuthorizationHeader} from '../utils/auth-token';
-import {selectQMapAiAssistantConfig, selectQMapDatasets} from '../state/qmap-selectors';
+import {selectQMapAiAssistantConfig, selectQMapDatasetsObj} from '../state/qmap-selectors';
 import {resolveQMapAssistantBaseUrl} from '../utils/assistant-config';
 import {
   booleanContains as turfBooleanContains,
@@ -319,7 +319,7 @@ function QMapCustomPanelsFactory() {
   const ProfileInfoPanel = () => {
     const aiAssistantConfig = useSelector(selectQMapAiAssistantConfig);
     const aiBaseUrl = resolveQMapAssistantBaseUrl(aiAssistantConfig);
-    const datasets = useSelector(selectQMapDatasets);
+    const datasets = useSelector(selectQMapDatasetsObj);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const [profile, setProfile] = React.useState<{
@@ -463,7 +463,7 @@ function QMapCustomPanelsFactory() {
 
   const OperationsPanel = ({activeSidePanel}: {activeSidePanel: string | null}) => {
     const dispatch = useDispatch<any>();
-    const datasets = useSelector((state: any) => selectQMapDatasets(state));
+    const datasets = useSelector((state: any) => selectQMapDatasetsObj(state));
     const [status, setStatus] = React.useState<string>('');
     const datasetList = React.useMemo(
       () =>

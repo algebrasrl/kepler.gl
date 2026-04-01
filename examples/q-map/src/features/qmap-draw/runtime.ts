@@ -161,7 +161,21 @@ function countGeometryVertices(geometry: any): number | null {
   return null;
 }
 
+// Weak cache: same geometry object reference → skip Turf recomputation.
+const _metricsCache = new WeakMap<object, ReturnType<typeof _computeFeatureSpatialMetrics>>();
+
 function computeFeatureSpatialMetrics(geometry: any) {
+  if (geometry && typeof geometry === 'object') {
+    const cached = _metricsCache.get(geometry);
+    if (cached) return cached;
+    const result = _computeFeatureSpatialMetrics(geometry);
+    _metricsCache.set(geometry, result);
+    return result;
+  }
+  return _computeFeatureSpatialMetrics(geometry);
+}
+
+function _computeFeatureSpatialMetrics(geometry: any) {
   const geometryType = String(geometry?.type || '');
   const feature = {
     type: 'Feature',
@@ -424,6 +438,23 @@ function syncDrawDatasetByTool(
 }
 
 export function syncAllDrawDatasets(store: QMapDrawRuntimeStore, keplerInstanceId: string) {
+  const state = store.getState();
+  const features = selectQMapEditorFeatures(state);
+  const datasets = selectQMapDatasets(state);
+
+  // Fast path: skip the 2×5 loop when there are no draw features AND no draw datasets.
+  const hasDrawFeature = features.some(
+    (f: any) => isQMapDrawTarget(getDrawTargetFromFeature(f))
+  );
+  const hasDrawDataset = !hasDrawFeature && Object.keys(datasets || {}).some(
+    id => parseQMapDrawDatasetId(id) !== null
+  );
+
+  if (!hasDrawFeature && !hasDrawDataset) {
+    syncDrawDatasetLayerVisibility(store, keplerInstanceId);
+    return;
+  }
+
   (['stressor', 'operations'] as QMapDrawTarget[]).forEach(target => {
     (['point', 'line', 'polygon', 'rectangle', 'radius'] as QMapDrawTool[]).forEach(tool => {
       syncDrawDatasetByTool(store, target, tool, keplerInstanceId);

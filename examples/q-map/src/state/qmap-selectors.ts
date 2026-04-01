@@ -35,6 +35,25 @@ export function selectQMapEditorFeatures(state: QMapRootState): any[] {
   return Array.isArray(features) ? features : [];
 }
 
+/** Stable sub-selectors — return the same reference when the sub-tree hasn't changed. */
+export function selectQMapDatasetsObj(state: QMapRootState): Record<string, any> {
+  return selectQMapVisState(state)?.datasets || _EMPTY_DATASETS;
+}
+export function selectQMapLayersArray(state: QMapRootState): any[] {
+  const layers = selectQMapVisState(state)?.layers;
+  return Array.isArray(layers) ? layers : _EMPTY_LAYERS;
+}
+export function selectQMapFiltersArray(state: QMapRootState): any[] {
+  const filters = selectQMapVisState(state)?.filters;
+  return Array.isArray(filters) ? filters : _EMPTY_FILTERS;
+}
+export function selectQMapMapState(state: QMapRootState): any {
+  return selectQMapKeplerMapState(state)?.mapState || null;
+}
+const _EMPTY_DATASETS: Record<string, any> = {};
+const _EMPTY_LAYERS: any[] = [];
+const _EMPTY_FILTERS: any[] = [];
+
 export function selectQMapFilters(state: QMapRootState): any[] {
   const filters = selectQMapVisState(state)?.filters;
   return Array.isArray(filters) ? filters : [];

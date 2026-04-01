@@ -13,7 +13,7 @@ import {
   H3_PAINT_DATASET_LABEL_PREFIX
 } from '../features/h3-paint/utils';
 import {getQMapModeConfig, isQMapCustomControlEnabled, resolveQMapModeFromUiState} from '../mode/qmap-mode';
-import {selectQMapDatasets, selectQMapUiState} from '../state/qmap-selectors';
+import {selectQMapDatasetsObj, selectQMapUiState} from '../state/qmap-selectors';
 
 QMapH3PaintControlFactory.deps = [MapControlTooltipFactory];
 
@@ -91,7 +91,7 @@ function getCanvasElement() {
 function QMapH3PaintControlFactory(MapControlTooltip: any) {
   const QMapH3PaintControl = React.memo(() => {
     const dispatch = useDispatch<any>();
-    const datasets = useSelector((state: any) => selectQMapDatasets(state));
+    const datasets = useSelector(selectQMapDatasetsObj);
     const isPaintActive = useSelector((state: any) => Boolean(state?.demo?.h3Paint?.active));
     const resolution = useSelector((state: any) => Number(state?.demo?.h3Paint?.resolution || 7));
     const activeMode = useSelector((state: any) => resolveQMapModeFromUiState(selectQMapUiState(state)));
