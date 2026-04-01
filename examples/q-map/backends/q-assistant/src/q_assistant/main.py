@@ -194,6 +194,49 @@ def _resolve_cloud_authorization_header(
     return f"Bearer {token}"
 
 
+def _filter_tool_calls_from_sse_chunk(chunk: bytes) -> bytes | None:
+    """Strip tool_call deltas from an SSE chunk when tool_choice was 'none'.
+
+    Returns the sanitized chunk, or None if the chunk becomes empty
+    (i.e. it only contained tool_call data with no text content).
+    """
+    text = (chunk or b"").decode("utf-8", errors="ignore")
+    out_lines: list[str] = []
+    has_meaningful_data = False
+    for raw_line in text.split("\n"):
+        line = raw_line.strip()
+        if not line.startswith("data:"):
+            out_lines.append(raw_line)
+            continue
+        data = line[5:].strip()
+        if not data or data == "[DONE]":
+            out_lines.append(raw_line)
+            has_meaningful_data = True
+            continue
+        try:
+            obj = json.loads(data)
+        except Exception:
+            out_lines.append(raw_line)
+            has_meaningful_data = True
+            continue
+        modified = False
+        choices = obj.get("choices")
+        if isinstance(choices, list):
+            for choice in choices:
+                delta = choice.get("delta") if isinstance(choice, dict) else None
+                if isinstance(delta, dict) and "tool_calls" in delta:
+                    del delta["tool_calls"]
+                    modified = True
+        if modified:
+            out_lines.append(f"data: {json.dumps(obj, separators=(',', ':'))}")
+        else:
+            out_lines.append(raw_line)
+        has_meaningful_data = True
+    if not has_meaningful_data:
+        return None
+    return "\n".join(out_lines).encode("utf-8")
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     app_settings = settings or load_settings()
     app = FastAPI(title="q-assistant", version="0.1.0")
@@ -920,6 +963,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     }
                                 )
 
+                            # Guard: strip tool_calls when tool_choice was "none"
+                            # (some providers like Gemini ignore the constraint).
+                            stripped_tool_call_count = 0
+                            if upstream_payload.get("tool_choice") == "none" and tool_calls_out:
+                                stripped_tool_call_count = len(tool_calls_out)
+                                tool_calls_out = []
+
                             _raw_response_text = "".join(stream_state["text_parts"]).strip()
                             # Strip literal <ctrlNN> escape sequences leaked by some providers.
                             response_text = re.sub(r"<ctrl\d+>", "", _raw_response_text).strip() or None
@@ -1007,9 +1057,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
                         prelude_chunk = _build_openai_stream_request_id_chunk(request_id, agent.model)
 
+                        _strip_stream_tool_calls = upstream_payload.get("tool_choice") == "none"
+
                         async def _prepend_request_id_chunk():
                             yield prelude_chunk
                             async for chunk in _sanitize_openai_stream_chunks(response.body_iterator):
+                                if _strip_stream_tool_calls:
+                                    chunk = _filter_tool_calls_from_sse_chunk(chunk)
+                                    if chunk is None:
+                                        continue
                                 yield chunk
 
                         forwarded_headers: dict[str, str] = {
@@ -1089,6 +1145,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                             body,
                             objective_text=_extract_prompt_from_messages(upstream_payload.get("messages")),
                         )
+                        # Guard: strip tool_calls when tool_choice was "none"
+                        # (some providers like Gemini ignore the constraint).
+                        if upstream_payload.get("tool_choice") == "none":
+                            choices = body.get("choices")
+                            if isinstance(choices, list):
+                                for _choice in choices:
+                                    msg = _choice.get("message") if isinstance(_choice, dict) else None
+                                    if isinstance(msg, dict) and msg.get("tool_calls"):
+                                        msg.pop("tool_calls", None)
+
                         response_message = {}
                         choices = body.get("choices")
                         if isinstance(choices, list) and choices:

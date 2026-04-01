@@ -154,7 +154,7 @@ Working rule:
   - **Always run via `docker exec` on running containers** — do NOT use local venv or run `python`/`python3` directly; the local environment may be missing shared dependencies (e.g. `q_backends_shared`). Code is bind-mounted so changes are reflected without rebuild; after Python-only source changes use `docker compose restart <service>` (no rebuild needed).
   - Containerized (preferred; after `docker compose up -d --build q-cumber-backend q-assistant q-storage-backend`):
     - `docker exec q-map-q-cumber-backend python -m unittest -q tests/test_provider_registry_and_storage.py tests/test_dataset_adapters.py tests/test_api_routing_metadata.py tests/test_jwt_auth.py`
-    - `docker exec q-map-q-assistant python -m unittest -q tests/test_explicit_tool_routing.py tests/test_agent_skip_policy.py tests/test_chat_audit_utils.py tests/test_request_coercion.py tests/test_chat_payload_compaction.py tests/test_token_budget_compaction.py tests/test_objective_anchor.py tests/test_runtime_guardrails.py tests/test_openai_stream_normalization.py tests/test_openrouter_provider.py`
+    - `docker exec q-map-q-assistant python -m unittest -q tests/test_explicit_tool_routing.py tests/test_agent_skip_policy.py tests/test_chat_audit_utils.py tests/test_request_coercion.py tests/test_chat_payload_compaction.py tests/test_token_budget_compaction.py tests/test_objective_anchor.py tests/test_runtime_guardrails.py tests/test_openai_stream_normalization.py tests/test_openrouter_provider.py tests/test_tool_choice_none_guard.py`
     - `docker exec q-map-q-storage-backend python -m unittest -q tests/test_config_and_storage.py tests/test_jwt_auth.py`
 - Mapbox token for geocoder/base map:
   - Set `VITE_MAPBOX_TOKEN` in `.env.development.local`
