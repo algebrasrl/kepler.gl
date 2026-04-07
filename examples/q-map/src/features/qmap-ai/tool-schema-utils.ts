@@ -387,7 +387,7 @@ export type WrapToolRuntimeOptions = {
   /** Per-tool call counter for cross-turn circuit breaker. Reset each turn. */
   toolCallCounter?: Map<string, number>;
   /** Batch tracker for single-tool-per-response enforcement. Reset on each LLM response. */
-  responseBatchTracker?: { current: { batchId: number; callsInBatch: number } };
+  responseBatchTracker?: { current: { batchId: number; callsInBatch: number; batchToolNames: Set<string> } };
 };
 
 export type StatelessToolCallCacheEntry = {

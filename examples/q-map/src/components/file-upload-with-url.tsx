@@ -1,6 +1,12 @@
 import React, {useCallback, useMemo, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import styled from 'styled-components';
+import {addDataToMap, wrapTo} from '@kepler.gl/actions';
+import {processGeojson} from '@kepler.gl/processors';
 import {FileUpload as CoreFileUpload} from '@kepler.gl/components/common/file-uploader/file-upload';
+
+/** Must match the KeplerGl instance id in main.tsx. */
+const KEPLER_INSTANCE_ID = 'map';
 
 type DuckDbModule = typeof import('@duckdb/duckdb-wasm');
 
@@ -360,18 +366,39 @@ async function extractShapefileZipEntries(
   }
 }
 
+/** Yield control to the browser event loop so it can repaint (spinner, progress). */
+function yieldToMain(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
+
 function sqlEscapeLiteral(value: string): string {
   return String(value || '').replace(/'/g, "''");
 }
 
+/** Default geometry simplification tolerance in WGS84 degrees.
+ *  0.0001° ≈ 11m at the equator — invisible at typical map zoom levels
+ *  but dramatically reduces vertex count for complex polygons.
+ *  Set VITE_QMAP_UPLOAD_SIMPLIFY_TOLERANCE=0 to disable. */
+const UPLOAD_SIMPLIFY_TOLERANCE = Number(import.meta.env.VITE_QMAP_UPLOAD_SIMPLIFY_TOLERANCE ?? 0.0001);
+
 function buildGeoJsonExpression(geometryColumn: string, sourceCrs: string | null): string {
   const baseGeometryExpression = geometryColumn === 'wkb_geometry' ? `ST_GeomFromWKB(${geometryColumn})` : geometryColumn;
+
+  // Build the geometry pipeline: optionally reproject, then simplify, then serialize.
+  // ST_Simplify runs AFTER ST_Transform so tolerance is always in WGS84 degrees.
+  let geomExpr: string;
   if (!sourceCrs || sourceCrs.toUpperCase() === 'EPSG:4326') {
-    return `ST_AsGeoJSON(${baseGeometryExpression})`;
+    geomExpr = baseGeometryExpression;
+  } else {
+    const sourceCrsLiteral = sqlEscapeLiteral(sourceCrs);
+    geomExpr = `ST_Transform(${baseGeometryExpression}, '${sourceCrsLiteral}', 'EPSG:4326', true)`;
   }
 
-  const sourceCrsLiteral = sqlEscapeLiteral(sourceCrs);
-  return `ST_AsGeoJSON(ST_Transform(${baseGeometryExpression}, '${sourceCrsLiteral}', 'EPSG:4326', true))`;
+  if (UPLOAD_SIMPLIFY_TOLERANCE > 0) {
+    geomExpr = `ST_Simplify(${geomExpr}, ${UPLOAD_SIMPLIFY_TOLERANCE})`;
+  }
+
+  return `ST_AsGeoJSON(${geomExpr})`;
 }
 
 function parseGeoJSONGeometry(value: unknown): any | null {
@@ -681,7 +708,11 @@ async function loadSpatialRowsWithDuckDb(file: File): Promise<{rows: Record<stri
   }
 }
 
-async function convertSpatialFileToGeoJSON(file: File): Promise<File> {
+/** Convert a spatial archive to a GeoJSON FeatureCollection **object** (no JSON
+ *  serialization).  Callers that need a File for the legacy Kepler upload path
+ *  can stringify themselves; callers that dispatch addDataToMap directly can
+ *  skip the round-trip entirely. */
+async function convertSpatialFileToFeatureCollection(file: File): Promise<{featureCollection: any; label: string}> {
   const {rows, sourcePrj} = await loadSpatialRowsWithDuckDb(file);
   let featureCollection = buildFeatureCollection(rows);
   if (getFileExtension(file?.name || '') === 'zip' && sourcePrj) {
@@ -690,9 +721,15 @@ async function convertSpatialFileToGeoJSON(file: File): Promise<File> {
   if (hasOutOfBoundsLonLat(featureCollection)) {
     throw new Error('Spatial file CRS is not compatible with EPSG:4326. Reproject to WGS84 or include a valid .prj definition.');
   }
-  const baseName = String(file?.name || 'dataset').replace(/\.(zip|gpkg)$/i, '');
-  const outputName = `${baseName || 'dataset'}.geojson`;
-  return new File([JSON.stringify(featureCollection)], outputName, {type: 'application/geo+json'});
+  const label = String(file?.name || 'dataset').replace(/\.(zip|gpkg)$/i, '') || 'dataset';
+  return {featureCollection, label};
+}
+
+/** Legacy wrapper — serialises to GeoJSON File for the standard Kepler upload
+ *  pipeline.  Only used as fallback (small files, non-spatial). */
+async function convertSpatialFileToGeoJSON(file: File): Promise<File> {
+  const {featureCollection, label} = await convertSpatialFileToFeatureCollection(file);
+  return new File([JSON.stringify(featureCollection)], `${label}.geojson`, {type: 'application/geo+json'});
 }
 
 function inferFilename(url: string, contentType: string | null): string {
@@ -750,9 +787,11 @@ function inferFilename(url: string, contentType: string | null): string {
 
 function QMapFileUploadFactory() {
   const QMapFileUpload: React.FC<any> = props => {
+    const dispatch = useDispatch();
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [processingFiles, setProcessingFiles] = useState(false);
+    const [processingPhase, setProcessingPhase] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const fileExtensions = useMemo(
@@ -770,23 +809,59 @@ function QMapFileUploadFactory() {
         setError(null);
         setProcessingFiles(true);
         try {
+          const directLoaded: boolean[] = [];
           const processedFiles: File[] = [];
+
           for (const file of files || []) {
             if (isSpatialArchiveFile(file)) {
-              processedFiles.push(await convertSpatialFileToGeoJSON(file));
+              // ── Fast path: convert with DuckDB and dispatch addDataToMap
+              // directly, skipping the JSON.stringify → File → Kepler JSON.parse
+              // round-trip.  For a 110MB GPKG this saves ~10-15 seconds.
+              // Yield between phases so the browser can repaint (spinner, progress).
+              setProcessingPhase('Lettura file spaziale…');
+              await yieldToMain();
+              const {featureCollection, label} = await convertSpatialFileToFeatureCollection(file);
+
+              setProcessingPhase('Preparazione dataset…');
+              await yieldToMain();
+              const processedData = processGeojson(featureCollection);
+              if (!processedData) {
+                throw new Error('Failed to process GeoJSON data from spatial file.');
+              }
+
+              setProcessingPhase('Caricamento mappa…');
+              await yieldToMain();
+              dispatch(wrapTo(KEPLER_INSTANCE_ID, addDataToMap({
+                datasets: {
+                  info: {label, id: label},
+                  data: processedData
+                },
+                options: {centerMap: true, autoCreateLayers: true}
+              })));
+              directLoaded.push(true);
             } else {
               processedFiles.push(await normalizeJsonUploadFile(file));
+              directLoaded.push(false);
             }
           }
 
-          props.onFileUpload?.(processedFiles);
+          // Forward non-spatial files through the standard Kepler upload path.
+          if (processedFiles.length) {
+            props.onFileUpload?.(processedFiles);
+          }
+          // If all files were loaded directly, close the modal by calling
+          // onFileUpload with an empty array (triggers the modal close path).
+          if (processedFiles.length === 0 && directLoaded.length > 0) {
+            props.onFileUpload?.([]);
+          }
         } catch (err: any) {
           setError(err?.message || 'Failed to process uploaded spatial file.');
         } finally {
           setProcessingFiles(false);
+          setProcessingPhase(null);
         }
       },
-      [props]
+      [props, dispatch]
     );
 
     const onLoadFromUrl = async () => {
@@ -834,6 +909,7 @@ function QMapFileUploadFactory() {
             Example: `http://localhost:3003/h3/registry?output=geojson&bbox=6,36,19,48&limit=5000`
           </UrlHint>
           {error ? <UrlError>{error}</UrlError> : null}
+          {processingPhase ? <UrlHint>{processingPhase}</UrlHint> : null}
         </UrlImportCard>
 
         <CoreFileUpload

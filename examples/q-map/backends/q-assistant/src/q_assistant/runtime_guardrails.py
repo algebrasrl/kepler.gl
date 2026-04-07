@@ -1339,9 +1339,20 @@ def enforce_runtime_tool_loop_limits(
         ),
     )
 
+    # Post-mutation validation is safety-critical: if a dataset-creating tool
+    # succeeded but wait+count hasn't run yet, the hard-cap / watchdog must NOT
+    # override forced_tool_choice_name.  Let the validation step through even
+    # when force_finalize_without_tools was set by downstream rules.
+    _POST_CREATE_CRITICAL_TOOLS = {"waitForQMapDataset", "countQMapRows"}
+    if force_finalize_without_tools and forced_tool_choice_name in _POST_CREATE_CRITICAL_TOOLS:
+        force_finalize_without_tools = False
+
     if force_finalize_without_tools:
-        outgoing["tools"] = []
-        outgoing["tool_choice"] = "none"
+        # Remove the tools key entirely instead of setting tools=[] so that
+        # providers like Gemini (via OpenRouter) produce a text response.
+        # With tools=[] + tool_choice="none" some providers emit 0 tokens.
+        outgoing.pop("tools", None)
+        outgoing.pop("tool_choice", None)
     elif remove_tool_names:
         filtered: list[dict[str, Any]] = []
         removed_count = 0

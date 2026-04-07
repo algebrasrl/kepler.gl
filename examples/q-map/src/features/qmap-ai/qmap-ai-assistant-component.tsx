@@ -376,7 +376,7 @@ export default function QMapAiAssistantComponent() {
   const toolMutationRevisionRef = React.useRef(0);
   const mutationMutexRef = React.useRef(new AsyncMutex());
   const toolCallCounterRef = React.useRef<Map<string, number>>(new Map());
-  const responseBatchTrackerRef = React.useRef({batchId: 0, callsInBatch: 0});
+  const responseBatchTrackerRef = React.useRef({batchId: 0, callsInBatch: 0, batchToolNames: new Set<string>()});
   const nonActionableFailureCacheRef = React.useRef<Map<string, {toolName: string; details: string; failedAtMs: number}>>(
     new Map()
   );
@@ -1157,7 +1157,8 @@ export default function QMapAiAssistantComponent() {
           // are skipped by the pipeline's batch truncation gate.
           responseBatchTrackerRef.current = {
             batchId: responseBatchTrackerRef.current.batchId + 1,
-            callsInBatch: 0
+            callsInBatch: 0,
+            batchToolNames: new Set<string>()
           };
           const requestId = response.headers.get('x-q-assistant-request-id');
           const chatId = response.headers.get(Q_ASSISTANT_CHAT_HEADER);

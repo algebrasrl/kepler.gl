@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright contributors to the kepler.gl project
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import {Provider, useDispatch} from 'react-redux';
 import './app.css';
@@ -206,6 +206,15 @@ const QMAP_AI_TOP_P = Number.isFinite(Number(import.meta.env.VITE_QMAP_AI_TOP_P)
 const QMAP_HASH_UI_PRESET = getQMapUiPresetFromHash();
 const QMAP_HASH_MAP_PRESET = getQMapMapPresetFromHash();
 const QMAP_INITIAL_MAP_VIEWPORT = buildQMapInitialMapViewport(QMAP_HASH_MAP_PRESET);
+/** deck.gl performance props — applied via KeplerGl deckGlProps. */
+const QMAP_DECKGL_PROPS = {
+  /** Render at CSS pixel resolution instead of native device pixels.
+   *  On Retina/HiDPI (devicePixelRatio=2) this renders 4× fewer pixels,
+   *  roughly doubling the frame rate with negligible quality loss at map scale. */
+  useDevicePixels: false,
+  /** Tighter picking radius (default 3) reduces hover-picking work on dense scenes. */
+  pickingRadius: 1
+};
 const QMAP_INITIAL_USER_CONTEXT = {userType: 'user', groupSlug: null};
 const QMAP_INITIAL_MODE = resolveQMapModeForUser(
   QMAP_HASH_UI_PRESET?.qmapMode || import.meta.env.VITE_QMAP_MODE,
@@ -472,23 +481,30 @@ const App = () => {
     };
   }, [dispatch]);
 
+  // Debounce setMapBoundary to avoid Redux state churn during drag/pan.
+  // Without this, every frame dispatches a state update that re-renders
+  // MapContainer and recreates all deck.gl layer instances.
+  const mapBoundaryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onViewStateChange = useCallback(
     (viewState: any, width: number, height: number) => {
-      const nextViewport = {
-        latitude: viewState?.latitude,
-        longitude: viewState?.longitude,
-        zoom: viewState?.zoom,
-        width: viewState?.width ?? width,
-        height: viewState?.height ?? height
-      };
-      try {
-        const viewport = new WebMercatorViewport(nextViewport);
-        const nw = viewport.unproject([0, 0]);
-        const se = viewport.unproject([viewport.width, viewport.height]);
-        dispatch(setMapBoundary(nw, se));
-      } catch {
-        // Ignore invalid transition states while viewport is settling.
-      }
+      if (mapBoundaryTimerRef.current) clearTimeout(mapBoundaryTimerRef.current);
+      mapBoundaryTimerRef.current = setTimeout(() => {
+        const nextViewport = {
+          latitude: viewState?.latitude,
+          longitude: viewState?.longitude,
+          zoom: viewState?.zoom,
+          width: viewState?.width ?? width,
+          height: viewState?.height ?? height
+        };
+        try {
+          const viewport = new WebMercatorViewport(nextViewport);
+          const nw = viewport.unproject([0, 0]);
+          const se = viewport.unproject([viewport.width, viewport.height]);
+          dispatch(setMapBoundary(nw, se));
+        } catch {
+          // Ignore invalid transition states while viewport is settling.
+        }
+      }, 200);
     },
     [dispatch]
   );
@@ -570,6 +586,7 @@ const App = () => {
             theme={qMapTheme}
             cloudProviders={CLOUD_PROVIDERS}
             localeMessages={QMAP_LOCALE_MESSAGES}
+            deckGlProps={QMAP_DECKGL_PROPS}
             onViewStateChange={(viewState: any) => onViewStateChange(viewState, width, height)}
           />
         )}

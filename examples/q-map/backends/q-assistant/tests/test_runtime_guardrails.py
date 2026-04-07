@@ -414,8 +414,8 @@ class RuntimeGuardrailInjectionTests(
             "tool_choice": "auto",
         }
         out = _enforce_runtime_tool_loop_limits(payload)
-        self.assertEqual(out.get("tools"), [])
-        self.assertEqual(out.get("tool_choice"), "none")
+        self.assertNotIn("tools", out)
+        self.assertNotIn("tool_choice", out)
         content = str(out["messages"][0]["content"])
         self.assertIn("clarification_required_finalize", content)
         self.assertIn("Vuoi provincia, comune, regione o stato?", content)
@@ -1389,9 +1389,9 @@ class RuntimeToolPolicySummaryTests(unittest.TestCase):
             ],
         }
         result = _enforce_runtime_tool_loop_limits(payload)
-        # Should force finalization (tools=[], tool_choice=none)
-        self.assertEqual(result.get("tools"), [])
-        self.assertEqual(result.get("tool_choice"), "none")
+        # Should force finalization (tools and tool_choice removed from payload)
+        self.assertNotIn("tools", result)
+        self.assertNotIn("tool_choice", result)
         # Should contain guidance about zero matches
         messages = result.get("messages", [])
         system_msgs = [m for m in messages if m.get("role") == "system"]

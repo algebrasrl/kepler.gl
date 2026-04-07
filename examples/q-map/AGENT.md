@@ -316,6 +316,12 @@ Working rule:
   - `VITE_QMAP_AI_TOP_P` (optional numeric string)
   - `VITE_QMAP_AI_TURN_SNAPSHOT_TTL_MS` (optional; dataset snapshot TTL for hard turn-state enforcement, default `180000`)
   - `VITE_QMAP_MODE` (`kepler` | `draw-stressor` | `draw-on-map`, default/fallback `kepler`)
+  - `VITE_QMAP_UPLOAD_SIMPLIFY_TOLERANCE` (optional; DuckDB `ST_Simplify` tolerance in WGS84 degrees for GPKG/ZIP uploads, default `0.0001` ≈ 11m; set `0` to disable)
+- Performance (deck.gl):
+  - `deckGlProps` applied via `<KeplerGl>` in `src/main.tsx`: `useDevicePixels: false` (halves pixel count on Retina), `pickingRadius: 1`
+  - `setMapBoundary` dispatch debounced to 200ms to avoid Redux state churn during drag/pan
+  - GPKG/ZIP uploads use direct `addDataToMap` dispatch (no JSON.stringify round-trip) with `processGeojson` from `@kepler.gl/processors`
+  - Bundle split: `deck-engine`, `charts`, `turf`, `color-scale` chunks in `vite.config.ts`
 - Runtime/tool model:
   - Frontend AI panel uses OpenAssistant runtime (`AiAssistant`) with provider config from Redux (`demo.aiAssistant`).
   - Runtime prompt includes an auto-generated dataset/layer context snapshot (exact dataset names + field names + inferred role hints) to reduce tool-call ambiguity.

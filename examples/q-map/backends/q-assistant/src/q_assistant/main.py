@@ -963,10 +963,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                                     }
                                 )
 
-                            # Guard: strip tool_calls when tool_choice was "none"
-                            # (some providers like Gemini ignore the constraint).
+                            # Guard: strip tool_calls when the upstream request had
+                            # no tools (finalization) or tool_choice was "none".
+                            # Some providers (e.g. Gemini) emit tool_calls even when
+                            # the constraint should prevent it.
                             stripped_tool_call_count = 0
-                            if upstream_payload.get("tool_choice") == "none" and tool_calls_out:
+                            _no_tools_in_payload = "tools" not in upstream_payload or upstream_payload.get("tool_choice") == "none"
+                            if _no_tools_in_payload and tool_calls_out:
                                 stripped_tool_call_count = len(tool_calls_out)
                                 tool_calls_out = []
 
@@ -1145,9 +1148,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                             body,
                             objective_text=_extract_prompt_from_messages(upstream_payload.get("messages")),
                         )
-                        # Guard: strip tool_calls when tool_choice was "none"
-                        # (some providers like Gemini ignore the constraint).
-                        if upstream_payload.get("tool_choice") == "none":
+                        # Guard: strip tool_calls when the upstream request had
+                        # no tools (finalization) or tool_choice was "none".
+                        _no_tools_in_payload_ns = "tools" not in upstream_payload or upstream_payload.get("tool_choice") == "none"
+                        if _no_tools_in_payload_ns:
                             choices = body.get("choices")
                             if isinstance(choices, list):
                                 for _choice in choices:

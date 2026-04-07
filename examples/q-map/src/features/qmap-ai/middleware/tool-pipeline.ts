@@ -41,8 +41,18 @@ const TOOL_CALL_CIRCUIT_BREAKER_OVERRIDES: Record<string, number> = {
 /** Max total tool calls per turn (all tools combined) before hard abort. */
 const TOOL_CALL_TURN_HARD_CAP = 15;
 /** Max tool calls per single LLM response (batch cap). Allows legitimate batches
- *  (e.g. showOnly + fit + tooltip = 3) but blocks pathological ones (4+ wait, 16 count). */
+ *  (e.g. showOnly + fit + tooltip = 3) but blocks pathological ones (4+ wait, 16 count).
+ *  Discovery/metadata tools may legitimately exceed this when the backend forces
+ *  a batch (e.g. getQCumberDatasetHelp for each provider); use
+ *  TOOL_CALL_RESPONSE_BATCH_CAP_OVERRIDES to allow them through. */
 const TOOL_CALL_RESPONSE_BATCH_CAP = 3;
+/** Per-tool overrides for the response batch cap.  When all calls in a batch
+ *  share the same tool name AND that name has an override here, the override
+ *  value is used instead of the default TOOL_CALL_RESPONSE_BATCH_CAP. */
+const TOOL_CALL_RESPONSE_BATCH_CAP_OVERRIDES: Record<string, number> = {
+  getQCumberDatasetHelp: 8,
+  listQCumberDatasets: 6
+};
 /** Frozen singleton result for silent batch-overflow calls.
  *  Avoids allocating 300+ identical objects when Gemini emits pathological batches. */
 const BATCH_OVERFLOW_RESULT = Object.freeze({
@@ -167,11 +177,20 @@ export function wrapToolsWithPipeline(
             if (responseBatchTracker && !isInternalValidationRun) {
               const batch = responseBatchTracker.current;
               batch.callsInBatch += 1;
-              if (batch.callsInBatch > TOOL_CALL_RESPONSE_BATCH_CAP) {
+              batch.batchToolNames.add(toolName);
+              // When all calls in the batch share a single tool name that has
+              // a per-tool override, use that override instead of the default.
+              // This lets forced discovery batches (e.g. 4x getQCumberDatasetHelp)
+              // execute fully instead of being truncated at the default cap.
+              const effectiveBatchCap =
+                batch.batchToolNames.size === 1 && TOOL_CALL_RESPONSE_BATCH_CAP_OVERRIDES[toolName] != null
+                  ? TOOL_CALL_RESPONSE_BATCH_CAP_OVERRIDES[toolName]
+                  : TOOL_CALL_RESPONSE_BATCH_CAP;
+              if (batch.callsInBatch > effectiveBatchCap) {
                 // Beyond 2x cap: return frozen singleton immediately — no object
                 // allocation, no events, no state updates. This keeps 300+ overflow
                 // calls nearly free (<0.01ms each).
-                if (batch.callsInBatch > TOOL_CALL_RESPONSE_BATCH_CAP * 2) {
+                if (batch.callsInBatch > effectiveBatchCap * 2) {
                   return BATCH_OVERFLOW_RESULT;
                 }
                 // Between cap and 2x cap: normal skip with events for diagnostics.
@@ -179,7 +198,7 @@ export function wrapToolsWithPipeline(
                   llmResult: {
                     success: false,
                     details:
-                      `Skipped: max ${TOOL_CALL_RESPONSE_BATCH_CAP} tool calls per model response. ` +
+                      `Skipped: max ${effectiveBatchCap} tool calls per model response. ` +
                       `This call was #${batch.callsInBatch} in the batch. ` +
                       `Wait for results, then call remaining tools in a new response.`
                   }

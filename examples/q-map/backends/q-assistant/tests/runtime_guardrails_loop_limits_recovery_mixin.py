@@ -352,8 +352,8 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
             "tool_choice": "auto",
         }
         out = _enforce_runtime_tool_loop_limits(payload)
-        self.assertEqual(out.get("tools"), [])
-        self.assertEqual(out.get("tool_choice"), "none")
+        self.assertNotIn("tools", out)
+        self.assertNotIn("tool_choice", out)
         content = str(out["messages"][0]["content"])
         self.assertIn("tool_call_hard_cap", content)
         self.assertIn("Do not emit further tool calls", content)
@@ -394,8 +394,8 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
             "tool_choice": "auto",
         }
         out = _enforce_runtime_tool_loop_limits(payload)
-        self.assertEqual(out.get("tools"), [])
-        self.assertEqual(out.get("tool_choice"), "none")
+        self.assertNotIn("tools", out)
+        self.assertNotIn("tool_choice", out)
         content = str(out["messages"][0]["content"])
         self.assertIn("tool_only_no_final_text_watchdog", content)
         self.assertIn("Return final text now", content)
@@ -709,8 +709,8 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
         }
 
         out = _enforce_runtime_tool_loop_limits(payload)
-        self.assertEqual(out.get("tools"), [])
-        self.assertEqual(out.get("tool_choice"), "none")
+        self.assertNotIn("tools", out)
+        self.assertNotIn("tool_choice", out)
         content = str(out["messages"][0]["content"])
         self.assertIn("cloud_no_validated_fallback_finalize", content)
         self.assertIn("[RUNTIME_RESPONSE_MODE] limitation", content)
@@ -763,8 +763,8 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
         }
 
         out = _enforce_runtime_tool_loop_limits(payload)
-        self.assertEqual(out.get("tools"), [])
-        self.assertEqual(out.get("tool_choice"), "none")
+        self.assertNotIn("tools", out)
+        self.assertNotIn("tool_choice", out)
         content = str(out["messages"][0]["content"])
         self.assertIn("admin_level_validation_failure_finalize", content)
         self.assertIn("[RUNTIME_RESPONSE_MODE] limitation", content)

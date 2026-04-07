@@ -167,6 +167,7 @@ export default defineConfig(({mode}) => {
         },
         output: {
           manualChunks(id) {
+            // Map base libraries (~2.5MB)
             if (
               id.includes('maplibre-gl') ||
               id.includes('mapbox-gl') ||
@@ -174,6 +175,26 @@ export default defineConfig(({mode}) => {
               id.includes('react-map-gl/maplibre')
             ) {
               return 'map-engine';
+            }
+            // deck.gl / luma.gl / math.gl rendering engine (~3MB)
+            if (
+              id.includes('deck.gl') ||
+              id.includes('luma.gl') ||
+              id.includes('math.gl')
+            ) {
+              return 'deck-engine';
+            }
+            // Chart libraries (~1.5MB)
+            if (id.includes('echarts') || id.includes('zrender')) {
+              return 'charts';
+            }
+            // Geospatial processing (turf.js) (~0.5MB)
+            if (id.includes('@turf/') || id.includes('/turf/')) {
+              return 'turf';
+            }
+            // Color scale / D3 utilities (~0.3MB)
+            if (id.includes('d3-') || id.includes('chroma-js')) {
+              return 'color-scale';
             }
             return undefined;
           }
