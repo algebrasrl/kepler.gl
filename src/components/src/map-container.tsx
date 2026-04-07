@@ -397,6 +397,30 @@ export default function MapContainerFactory(
       showBaseMapAttribution: true
     };
 
+    /**
+     * Skip re-render when only mapState (viewport) changes.
+     * deck.gl manages viewport internally — re-rendering the React component
+     * on every pan/zoom frame recreates all DeckGLGeoJsonLayer instances and
+     * forces expensive layer diffing.  This is the primary cause of jank on
+     * large datasets (~500K features).
+     *
+     * We still re-render when visState, mapStyle, mapControls or any other
+     * prop changes, since those affect layer data, styling, or UI controls.
+     */
+    shouldComponentUpdate(
+      nextProps: Readonly<MapContainerProps>,
+      nextState: Readonly<typeof this.state>
+    ) {
+      if (this.state !== nextState) return true;
+
+      const keys = Object.keys(nextProps) as Array<keyof MapContainerProps>;
+      for (const key of keys) {
+        if (key === 'mapState') continue;
+        if (this.props[key] !== nextProps[key]) return true;
+      }
+      return false;
+    }
+
     componentDidMount() {
       if (!this._ref.current) {
         return;
