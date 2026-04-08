@@ -131,8 +131,9 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
   return {
     description:
       'Tessellate geometries from a dataset/layer into H3 cells (intersection-based) and upsert dataset Tassellation. ' +
-      'IMPORTANT: tessellation output contains only h3_id/h3_resolution — it does NOT include population or thematic data. ' +
-      'To color cells by population or any admin metric, you MUST call populateTassellationFromAdminUnits after tessellation to enrich cells with data from the administrative source dataset.',
+      'IMPORTANT: tessellation output contains only h3_id/h3_resolution — it does NOT include measurement values or thematic data. ' +
+      'To color cells by population or any admin metric, you MUST call populateTassellationFromAdminUnits after tessellation. ' +
+      'To estimate continuous values from point measurements (e.g. PM10/NO2 from air quality stations), use interpolateIDW instead — NOT this tool.',
     parameters: z.preprocess((raw: any) => {
       if (!raw || typeof raw !== 'object') return raw;
       const args = {...raw};

@@ -146,6 +146,26 @@ def apply_payload_token_budget(
         "aggressive_tool_schema_compaction": False,
     }
 
+    # Message-count trigger: force compaction when the payload has too many
+    # messages, even if the token budget is not exceeded.  Large-context models
+    # like Gemini (1M tokens) never trip the token-budget ratio, but degrade
+    # with 100+ messages (empty completions, lost context).
+    _MAX_MESSAGES_BEFORE_FORCED_COMPACT = 50
+    messages = working_payload.get("messages")
+    msg_count = len(messages) if isinstance(messages, list) else 0
+    if msg_count > _MAX_MESSAGES_BEFORE_FORCED_COMPACT:
+        working_payload = compact_chat_completions_payload(
+            working_payload,
+            max_messages=int(compact_profile["max_messages"]),
+            max_tool_messages=int(compact_profile["max_tool_messages"]),
+            max_message_content_chars=int(compact_profile["max_message_content_chars"]),
+            compact_tool_messages=bool(compact_profile["compact_tool_messages"]),
+            max_tool_content_chars=int(compact_profile["max_tool_content_chars"]),
+            compact_tool_schemas=bool(compact_profile["compact_tool_schemas"]),
+            aggressive_tool_schema_compaction=bool(compact_profile["aggressive_tool_schema_compaction"]),
+        )
+        actions.append(f"apply:message-count-compact(msgs={msg_count})")
+
     initial = evaluate_payload_token_budget(settings, working_payload, model_hint=model_hint)
     checks.append({"stage": "initial", **initial})
 

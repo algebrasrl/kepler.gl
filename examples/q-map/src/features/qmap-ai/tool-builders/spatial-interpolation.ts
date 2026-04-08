@@ -87,9 +87,10 @@ export function createInterpolateIDWTool(ctx: QMapToolContext) {
 
   return {
     description:
-      '[PREFERRED for spatial interpolation] Inverse Distance Weighting (IDW) interpolation from point measurements ' +
-      'to an H3 hexagonal grid. Creates a continuous surface estimate from sparse point data ' +
-      '(e.g. air quality stations -> regional coverage).',
+      '[PREFERRED for spatial interpolation / "interpola spazialmente"] Inverse Distance Weighting (IDW) interpolation from point measurements ' +
+      'to an H3 hexagonal grid. Creates a continuous surface estimate with interpolated values from sparse point data ' +
+      '(e.g. PM10/NO2 values from air quality stations -> regional H3 grid with estimated values). ' +
+      'Use this instead of tassellateDatasetLayer when the goal is estimating values across space, not just creating an empty H3 grid.',
     parameters: z.object({
       sourceDatasetName: z.string().describe('Dataset with point measurements'),
       valueField: z.string().describe('Numeric field to interpolate'),

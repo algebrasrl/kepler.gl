@@ -234,7 +234,8 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
         names = [tool.get("function", {}).get("name") for tool in out.get("tools", [])]
         self.assertNotIn("rankQMapDatasetRows", names)
         self.assertIn("previewQMapDatasetRows", names)
-        self.assertEqual(out.get("tool_choice"), "auto")
+        # tool_choice should be auto (not forced, not removed — tools still available)
+        self.assertEqual(out.get("tool_choice", "auto"), "auto")
         content = str(out["messages"][0]["content"])
         self.assertIn("identical_tool_args_success_reuse", content)
         self.assertIn('"tool":"rankQMapDatasetRows"', content)

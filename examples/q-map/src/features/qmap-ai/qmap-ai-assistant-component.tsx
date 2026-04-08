@@ -950,13 +950,12 @@ export default function QMapAiAssistantComponent() {
   const qMapSessionId = React.useMemo(() => {
     if (typeof window === 'undefined') return '';
     try {
-      const existing = String(window.sessionStorage.getItem(QMAP_AI_SESSION_STORAGE_KEY) || '').trim();
-      if (existing) return existing;
+      // Generate a fresh session ID on every page load so that each
+      // browser refresh produces an isolated audit file on the backend.
       const generated =
         typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
           ? crypto.randomUUID()
           : `qmap-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-      window.sessionStorage.setItem(QMAP_AI_SESSION_STORAGE_KEY, generated);
       return generated;
     } catch (error) {
       console.warn('Failed to initialize q-map AI session id', error);

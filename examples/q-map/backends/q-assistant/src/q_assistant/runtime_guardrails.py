@@ -1357,9 +1357,11 @@ def enforce_runtime_tool_loop_limits(
         force_finalize_without_tools = False
 
     if force_finalize_without_tools:
-        # Remove the tools key entirely instead of setting tools=[] so that
-        # providers like Gemini (via OpenRouter) produce a text response.
-        # With tools=[] + tool_choice="none" some providers emit 0 tokens.
+        # Remove tools from the payload to force text-only response.
+        # Gemini Flash may produce empty_completion (0 tokens) in this mode,
+        # but the streaming transport retry (provider_transport.py) handles it
+        # by retrying once without tools. Keeping tools with tool_choice="auto"
+        # is worse — the model ignores guidance text and keeps calling tools.
         outgoing.pop("tools", None)
         outgoing.pop("tool_choice", None)
     elif remove_tool_names:
