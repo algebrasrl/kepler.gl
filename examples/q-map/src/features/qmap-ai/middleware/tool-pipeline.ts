@@ -38,8 +38,10 @@ const TOOL_CALL_CIRCUIT_BREAKER_OVERRIDES: Record<string, number> = {
   getQCumberDatasetHelp: 8,
   listQCumberDatasets: 6
 };
-/** Max total tool calls per turn (all tools combined) before hard abort. */
-const TOOL_CALL_TURN_HARD_CAP = 15;
+/** Max total tool calls per turn (all tools combined) before hard abort.
+ *  Complex multi-dataset workflows (discovery + query + wait + count per dataset)
+ *  can legitimately reach 15-20 tool calls in a single turn. */
+const TOOL_CALL_TURN_HARD_CAP = 20;
 /** Max tool calls per single LLM response (batch cap). Allows legitimate batches
  *  (e.g. showOnly + fit + tooltip = 3) but blocks pathological ones (4+ wait, 16 count).
  *  Discovery/metadata tools may legitimately exceed this when the backend forces

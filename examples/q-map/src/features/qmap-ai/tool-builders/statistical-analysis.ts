@@ -24,13 +24,23 @@ export function createRegressQMapFieldsTool(ctx: QMapToolContext) {
   return {
     description:
       '[PREFERRED for regression] OLS linear regression Y~X between two numeric fields. Returns slope, intercept, R², equation. NOT spatial — use this instead of computeQMapBivariateCorrelation when the question is about regression/prediction/R².',
-    parameters: z.object({
+    parameters: z.preprocess((raw: any) => {
+      if (!raw || typeof raw !== 'object') return raw;
+      const args = {...raw};
+      if (!args.dependentField) {
+        args.dependentField = args.targetFieldName || args.targetField || args.yField;
+      }
+      if (!args.independentField) {
+        args.independentField = args.independentFieldName || args.xField;
+      }
+      return args;
+    }, z.object({
       datasetName: z.string().describe('Dataset name from listQMapDatasets'),
       dependentField: z.string().describe('Y field (numeric)'),
       independentField: z.string().describe('X field (numeric)'),
       newDatasetName: z.string().optional().describe('Name for derived dataset'),
       showOnMap: z.boolean().optional().describe('Create derived dataset on map. Default false.')
-    }),
+    })),
     execute: async ({datasetName, dependentField, independentField, newDatasetName, showOnMap}: any) => {
       const currentVisState = getCurrentVisState();
       const dataset = resolveDatasetByName(currentVisState?.datasets || {}, datasetName);

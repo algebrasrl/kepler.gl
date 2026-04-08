@@ -85,7 +85,8 @@ function parseArgs(argv) {
     minAreaPassRate: undefined,
     minAreaAvgCaseScore: undefined,
     minAreaP25CaseScore: undefined,
-    minAreaMinCaseScore: undefined
+    minAreaMinCaseScore: undefined,
+    verbose: false
   };
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -136,6 +137,7 @@ function parseArgs(argv) {
     if (a === '--min-area-min-case-score' && v) out.minAreaMinCaseScore = Number(v);
     if (a === '--create-branch') out.createBranch = true;
     if (a === '--dry-run') out.dryRun = true;
+    if (a === '--verbose') out.verbose = true;
   }
 
   const envGateValues = {
@@ -3384,6 +3386,28 @@ async function main() {
     process.stdout.write(
       `[ai-eval] ${outcome.id} status=${outcome.status} pass=${outcome.pass} score=${outcome.metrics.caseScore} precision=${outcome.metrics.toolPrecision} extra=${outcome.extraToolCalls.length}\n`
     );
+    if (opts.verbose) {
+      process.stdout.write(`[ai-eval][verbose] prompt="${casePrompt.replace(/\s+/g, ' ').trim().slice(0, 120)}"\n`);
+      process.stdout.write(`[ai-eval][verbose] toolCalls=${outcome.toolCalls.join(', ') || '-'}\n`);
+      if (outcome.requiredToolsAll?.length) {
+        process.stdout.write(`[ai-eval][verbose] requiredAll=${outcome.requiredToolsAll.join(', ')}\n`);
+      }
+      if (outcome.requiredToolsAny?.length) {
+        process.stdout.write(`[ai-eval][verbose] requiredAny=${outcome.requiredToolsAny.join(', ')}\n`);
+      }
+      const toolArgs = (outcome.toolCallDetails || [])
+        .filter(t => t && t.args && Object.keys(t.args).length)
+        .map(t => `${t.name}(${JSON.stringify(t.args).slice(0, 120)})`)
+        .join(' → ');
+      if (toolArgs) {
+        process.stdout.write(`[ai-eval][verbose] args=${toolArgs}\n`);
+      }
+      const text = String(outcome.content || '').replace(/\s+/g, ' ').trim();
+      if (text) {
+        process.stdout.write(`[ai-eval][verbose] text="${text.slice(0, 200)}"\n`);
+      }
+      process.stdout.write(`[ai-eval][verbose] scores: recall=${outcome.metrics.toolRecall} precision=${outcome.metrics.toolPrecision} argScore=${outcome.metrics.toolArgumentScore} keywords=${outcome.metrics.keywordScore}\n`);
+    }
     if (!outcome.pass) {
       process.stdout.write(
         `[ai-eval][fail] ${outcome.id} prompt="${casePrompt.replace(/\s+/g, ' ').trim()}"\n`

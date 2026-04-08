@@ -1310,14 +1310,21 @@ def build_force_statistical_tool_routing_decision(
         target_tool = "listRegulatoryThresholds"
         intent_label = "regulatory_listing"
     elif objective_requests_regulatory_compliance(objective_text):
-        # Only force after data is loaded (at least one query succeeded)
-        has_query = any(
+        # Only force after measurement data is loaded — not after any query.
+        # Check that at least one successful query loaded a dataset with
+        # measurement-like fields (parameter_name, measure_value).
+        has_measurement_dataset = any(
             str(row.get("toolName") or "").strip() in {
-                "queryQCumberDatasetSpatial", "queryQCumberDataset", "queryQCumberTerritorialUnits"
-            } and row.get("success") is True
+                "queryQCumberDatasetSpatial", "queryQCumberDataset",
+            }
+            and row.get("success") is True
+            and any(
+                f in (row.get("fieldCatalog") or [])
+                for f in ("parameter_name", "measure_value")
+            )
             for row in results
         )
-        if has_query:
+        if has_measurement_dataset:
             target_tool = "checkRegulatoryCompliance"
             intent_label = "regulatory_compliance"
     elif objective_requests_linear_regression(objective_text):

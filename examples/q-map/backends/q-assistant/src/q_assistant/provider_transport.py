@@ -281,6 +281,7 @@ async def stream_openrouter_chat_completions_via_openai_sdk(
 
     async def _iter_stream() -> AsyncIterator[bytes]:
         try:
+            content_chunks = 0
             async for chunk in stream:
                 chunk_dict = openai_sdk_model_to_dict(chunk)
                 raw = f"data: {json.dumps(chunk_dict, ensure_ascii=False)}\n\n".encode("utf-8")
@@ -288,7 +289,54 @@ async def stream_openrouter_chat_completions_via_openai_sdk(
                     maybe = on_chunk(raw)
                     if asyncio.iscoroutine(maybe):
                         await maybe
+                # Count chunks that have actual content (text or tool_calls)
+                choices = chunk_dict.get("choices") if isinstance(chunk_dict, dict) else None
+                if isinstance(choices, list):
+                    for choice in choices:
+                        delta = choice.get("delta") if isinstance(choice, dict) else None
+                        if isinstance(delta, dict) and (delta.get("content") or delta.get("tool_calls")):
+                            content_chunks += 1
                 yield raw
+
+            # Empty completion retry: if the provider returned 0 content chunks
+            # (known Gemini issue with large tool schemas), retry once without
+            # tools to force a text response.
+            if content_chunks == 0 and "tools" in stream_payload:
+                retry_payload = dict(stream_payload)
+                retry_payload.pop("tools", None)
+                retry_payload.pop("tool_choice", None)
+                retry_payload["stream"] = False
+                try:
+                    retry_client = async_openai_cls(
+                        api_key=api_key,
+                        base_url=base_url,
+                        timeout=timeout_seconds,
+                        max_retries=0,
+                        default_headers=default_headers or None,
+                    )
+                    retry_response = await retry_client.chat.completions.create(**retry_payload)
+                    retry_dict = openai_sdk_model_to_dict(retry_response)
+                    retry_text = ""
+                    retry_choices = retry_dict.get("choices") if isinstance(retry_dict, dict) else None
+                    if isinstance(retry_choices, list) and retry_choices:
+                        msg = retry_choices[0].get("message") if isinstance(retry_choices[0], dict) else None
+                        if isinstance(msg, dict):
+                            retry_text = str(msg.get("content") or "").strip()
+                    if retry_text:
+                        # Inject retry text as a synthetic SSE chunk
+                        synthetic = {
+                            "choices": [{"index": 0, "delta": {"content": retry_text}, "finish_reason": "stop"}]
+                        }
+                        raw_synthetic = f"data: {json.dumps(synthetic, ensure_ascii=False)}\n\n".encode("utf-8")
+                        if on_chunk is not None:
+                            maybe = on_chunk(raw_synthetic)
+                            if asyncio.iscoroutine(maybe):
+                                await maybe
+                        yield raw_synthetic
+                    await close_async_resource(retry_client)
+                except Exception:
+                    pass  # retry failed silently — original empty response stands
+
             done = b"data: [DONE]\n\n"
             if on_chunk is not None:
                 maybe = on_chunk(done)
