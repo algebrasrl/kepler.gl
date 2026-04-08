@@ -201,3 +201,74 @@ test('assistant live: treviso smallest municipality flow completes without faile
     'utf-8'
   );
 });
+
+test('assistant live: multi-analysis Lombardia stress test (regression + LISA + overlay + histogram + compliance + H3)', async ({
+  page
+}) => {
+  test.setTimeout(480_000);
+
+  await page.goto('/');
+  await openAssistant(page);
+
+  const prompt =
+    'Sui comuni della Lombardia, calcola la regressione lineare tra popolazione e superficie, ' +
+    'poi esegui un\'analisi di autocorrelazione spaziale LISA, confronta con un overlay ' +
+    'delle aree Natura 2000, crea un istogramma della distribuzione della popolazione, ' +
+    'verifica la conformità NO2 rispetto ai limiti del D.Lgs. 155/2010, ' +
+    'e interpola spazialmente i valori di PM10 su griglia H3 a risoluzione 7';
+
+  await sendAssistantMessage(page, prompt);
+  await waitForExecutionSummaryCount(page, 1);
+  await waitForAssistantComposerEnabled(page);
+
+  const extracted = await page.evaluate(() => {
+    const text = document.body.innerText || '';
+    const requestIds = [...text.matchAll(/\[requestId:\s*([^\]]+)\]/g)].map(match => String(match[1] || '').trim());
+    const executionSummaries = [...text.matchAll(/\[executionSummary\]\s*(\{[^\n]+\})/g)].map(match => {
+      try {
+        return JSON.parse(match[1]);
+      } catch {
+        return {parseError: true};
+      }
+    });
+    return {requestIds, executionSummaries};
+  });
+
+  const summary = extracted.executionSummaries[0] as any;
+
+  expect(summary).toBeDefined();
+  expect(summary?.parseError).toBeUndefined();
+
+  // At least some steps should succeed
+  const completedSteps = Number(summary?.steps?.completed || 0);
+  const failedSteps = Number(summary?.steps?.failed || 0);
+  expect(completedSteps).toBeGreaterThanOrEqual(10);
+  // Allow some failures (empty completions, batch limits) but not too many
+  // Gemini Flash intermittently produces empty completions on finalization;
+  // allow up to 8 failed steps (mostly empty_completion retries).
+  expect(failedSteps).toBeLessThanOrEqual(8);
+
+  // Verify the response mentions key analysis results
+  const responseText = await page.evaluate(() => document.body.innerText || '');
+  const expectedKeywords = ['regressione', 'LISA', 'Natura 2000', 'NO2'];
+  for (const kw of expectedKeywords) {
+    expect(responseText.toLowerCase(), `Expected keyword "${kw}" in response`).toContain(kw.toLowerCase());
+  }
+
+  const outputDir = path.resolve(process.cwd(), 'test-results/assistant-live');
+  await fs.mkdir(outputDir, {recursive: true});
+  await fs.writeFile(
+    path.join(outputDir, 'lombardia-multi-analysis.json'),
+    JSON.stringify(
+      {
+        capturedAt: new Date().toISOString(),
+        prompt,
+        requestIds: extracted.requestIds,
+        executionSummaries: extracted.executionSummaries
+      },
+      null,
+      2
+    ),
+    'utf-8'
+  );
+});
