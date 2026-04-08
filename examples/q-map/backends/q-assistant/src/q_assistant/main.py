@@ -49,6 +49,7 @@ from .objective_anchor import (
     _inject_objective_anchor_message,
     _normalize_openai_response_final_text,
 )
+from .intent_tool_selection import apply_intent_tool_selection as _apply_intent_tool_selection
 from .objective_intent import (
     _extract_objective_required_focus_phrases,
     _objective_mentions_cloud_or_saved_maps,
@@ -728,6 +729,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         base_payload = _prune_forbidden_qmap_runtime_tools(
             base_payload,
             forbidden_qmap_runtime_tools=_FORBIDDEN_QMAP_RUNTIME_TOOLS,
+        )
+        base_payload = _apply_intent_tool_selection(
+            base_payload,
+            objective_text=_extract_prompt_from_messages(base_payload.get("messages")),
         )
         base_payload = _prune_open_panel_only_chart_navigation(
             base_payload,

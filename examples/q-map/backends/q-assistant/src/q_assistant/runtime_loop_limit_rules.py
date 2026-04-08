@@ -191,8 +191,14 @@ def build_post_create_validation_decision(
     post_create_validation_deferred_tools: set[str],
     runtime_guardrail_prefix: str,
     runtime_next_step_prefix: str,
+    latest_conditional_load_index: Callable[[list[dict[str, Any]]], int] | None = None,
 ) -> RuntimeLoopRuleDecision:
     latest_create_idx = latest_successful_tool_index(results, dataset_create_or_update_tools)
+    # Fallback: q-cumber query tools with loadedToMap=true also create datasets
+    # in the map but are not in the unconditional set (they may also run with
+    # loadToMap=false, which does NOT create a dataset).
+    if latest_create_idx < 0 and latest_conditional_load_index is not None:
+        latest_create_idx = latest_conditional_load_index(results)
     wait_after_create_idx = (
         _first_successful_tool_index(results, {"waitForQMapDataset"}, start_idx=latest_create_idx + 1)
         if latest_create_idx >= 0

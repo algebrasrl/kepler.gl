@@ -68,6 +68,7 @@ _RUNTIME_RESPONSE_MODE_PREFIX = "[RUNTIME_RESPONSE_MODE]"
 @dataclass(frozen=True)
 class RuntimeToolLoopLimitBindings:
     _extract_recent_tool_results_since_last_user: Callable[..., list[dict[str, Any]]]
+    _count_tool_results_since_last_workflow_boundary: Callable[[dict[str, Any]], int]
     _extract_prompt_from_messages: Callable[[Any], str]
     _extract_request_tool_names: Callable[[dict[str, Any]], list[str]]
     _should_prune_qcumber_discovery_for_bridge: Callable[..., bool]
@@ -109,6 +110,7 @@ class RuntimeToolLoopLimitBindings:
     _TOOL_CALL_WORKFLOW_HARD_CAP: int
     _TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS: int
     _ERROR_CLASS_MAX_RETRIES: int
+    _latest_qcumber_load_index: Callable[[list[dict[str, Any]]], int] | None
 
 
 def objective_requests_charts(objective_text: str) -> bool:
@@ -697,6 +699,7 @@ def enforce_runtime_tool_loop_limits(
     bindings: RuntimeToolLoopLimitBindings,
 ) -> dict[str, Any]:
     _extract_recent_tool_results_since_last_user = bindings._extract_recent_tool_results_since_last_user
+    _count_tool_results_since_last_workflow_boundary = bindings._count_tool_results_since_last_workflow_boundary
     _extract_prompt_from_messages = bindings._extract_prompt_from_messages
     _extract_request_tool_names = bindings._extract_request_tool_names
     _should_prune_qcumber_discovery_for_bridge = bindings._should_prune_qcumber_discovery_for_bridge
@@ -744,6 +747,7 @@ def enforce_runtime_tool_loop_limits(
     _TOOL_CALL_WORKFLOW_HARD_CAP = bindings._TOOL_CALL_WORKFLOW_HARD_CAP
     _TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS = bindings._TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS
     _ERROR_CLASS_MAX_RETRIES = bindings._ERROR_CLASS_MAX_RETRIES
+    _latest_qcumber_load_index = getattr(bindings, "_latest_qcumber_load_index", None)
 
     outgoing = dict(payload or {})
     tools = outgoing.get("tools")
@@ -1044,6 +1048,7 @@ def enforce_runtime_tool_loop_limits(
             post_create_validation_deferred_tools=_POST_CREATE_VALIDATION_DEFERRED_TOOLS,
             runtime_guardrail_prefix=_RUNTIME_GUARDRAIL_PREFIX,
             runtime_next_step_prefix=_RUNTIME_NEXT_STEP_PREFIX,
+            latest_conditional_load_index=_latest_qcumber_load_index,
         ),
     )
 
@@ -1149,7 +1154,11 @@ def enforce_runtime_tool_loop_limits(
             outgoing = append_runtime_guidance_lines(outgoing, guidance_lines)
         return outgoing
 
-    tool_call_count = len(results)
+    # Use boundary-scoped count for hard cap / watchdog: only count tool
+    # results since the last workflow boundary (assistant text without
+    # tool_calls) so that completed workflow steps don't exhaust the cap
+    # in multi-turn sessions.
+    tool_call_count_since_boundary = _count_tool_results_since_last_workflow_boundary(outgoing)
     has_assistant_text = _has_assistant_text_since_last_user(outgoing)
     force_finalize_without_tools = False
 
@@ -1159,7 +1168,7 @@ def enforce_runtime_tool_loop_limits(
         forced_tool_choice_name=forced_tool_choice_name,
         force_finalize_without_tools=force_finalize_without_tools,
         decision=_build_tool_call_finalize_decision(
-            tool_call_count=tool_call_count,
+            tool_call_count=tool_call_count_since_boundary,
             has_assistant_text=has_assistant_text,
             tool_call_workflow_hard_cap=_TOOL_CALL_WORKFLOW_HARD_CAP,
             tool_only_no_text_watchdog_min_calls=_TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS,

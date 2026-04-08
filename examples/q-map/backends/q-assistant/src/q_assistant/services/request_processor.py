@@ -29,6 +29,7 @@ from ..objective_intent import (
 )
 from ..qmap_context import _sanitize_qmap_context_payload
 from ..request_tool_results import (
+    _count_tool_results_since_last_workflow_boundary,
     _extract_recent_tool_results_since_last_user,
     _extract_request_tool_results,
     _has_assistant_text_since_last_user,
@@ -244,10 +245,10 @@ def _read_env_int(name: str, default: int) -> int:
         return int(default)
 
 
-_TOOL_CALL_WORKFLOW_HARD_CAP = max(6, _read_env_int("Q_ASSISTANT_TOOL_CALL_HARD_CAP", 20))
+_TOOL_CALL_WORKFLOW_HARD_CAP = max(6, _read_env_int("Q_ASSISTANT_TOOL_CALL_HARD_CAP", 25))
 _TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS = max(
     4,
-    _read_env_int("Q_ASSISTANT_TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS", 8),
+    _read_env_int("Q_ASSISTANT_TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS", 12),
 )
 _ERROR_CLASS_MAX_RETRIES = max(0, _read_env_int("Q_ASSISTANT_ERROR_CLASS_MAX_RETRIES", 1))
 _IDENTICAL_TOOL_ARGS_MAX_RETRIES = max(
@@ -1803,6 +1804,7 @@ def _runtime_guardrail_injection_bindings() -> dict[str, Any]:
 def _runtime_tool_loop_limit_bindings() -> RuntimeToolLoopLimitBindings:
     return RuntimeToolLoopLimitBindings(
         _extract_recent_tool_results_since_last_user=_extract_recent_tool_results_since_last_user,
+        _count_tool_results_since_last_workflow_boundary=_count_tool_results_since_last_workflow_boundary,
         _extract_prompt_from_messages=_extract_prompt_from_messages,
         _extract_request_tool_names=_extract_request_tool_names,
         _should_prune_qcumber_discovery_for_bridge=_should_prune_qcumber_discovery_for_bridge,
@@ -1844,6 +1846,7 @@ def _runtime_tool_loop_limit_bindings() -> RuntimeToolLoopLimitBindings:
         _TOOL_CALL_WORKFLOW_HARD_CAP=_TOOL_CALL_WORKFLOW_HARD_CAP,
         _TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS=_TOOL_ONLY_NO_TEXT_WATCHDOG_MIN_CALLS,
         _ERROR_CLASS_MAX_RETRIES=_ERROR_CLASS_MAX_RETRIES,
+        _latest_qcumber_load_index=_latest_qcumber_load_index,
     )
 
 

@@ -321,7 +321,7 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
             {"role": "system", "content": "System"},
             {"role": "user", "content": "workflow lungo"},
         ]
-        for idx in range(1, 23):
+        for idx in range(1, 28):
             call_id = f"call_preview_{idx}"
             messages.extend(
                 [
@@ -363,7 +363,7 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
             {"role": "system", "content": "System"},
             {"role": "user", "content": "workflow senza risposta finale"},
         ]
-        for idx in range(1, 10):
+        for idx in range(1, 14):
             call_id = f"call_wait_{idx}"
             messages.extend(
                 [
@@ -399,6 +399,176 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
         content = str(out["messages"][0]["content"])
         self.assertIn("tool_only_no_final_text_watchdog", content)
         self.assertIn("Return final text now", content)
+
+    def test_hard_cap_does_not_fire_when_previous_workflow_step_completed(self):
+        """Tool calls before an assistant text boundary (completed workflow step)
+        should NOT count toward the hard cap.  This prevents multi-turn sessions
+        from exhausting the cap on the second query."""
+        messages = [
+            {"role": "system", "content": "System"},
+            {"role": "user", "content": "workflow multi-step"},
+        ]
+        # First workflow step: 15 tool calls + finalization text
+        for idx in range(1, 16):
+            call_id = f"call_step1_{idx}"
+            messages.extend(
+                [
+                    {
+                        "role": "assistant",
+                        "tool_calls": [
+                            {
+                                "id": call_id,
+                                "type": "function",
+                                "function": {"name": "previewQMapDatasetRows", "arguments": "{}"},
+                            }
+                        ],
+                    },
+                    {
+                        "role": "tool",
+                        "tool_call_id": call_id,
+                        "content": _qmap_tool_result(success=True, details="Preview ok."),
+                    },
+                ]
+            )
+        # Text-only finalization = workflow boundary
+        messages.append({"role": "assistant", "content": "Step 1 completed."})
+        # Second workflow step: only 3 tool calls
+        for idx in range(1, 4):
+            call_id = f"call_step2_{idx}"
+            messages.extend(
+                [
+                    {
+                        "role": "assistant",
+                        "tool_calls": [
+                            {
+                                "id": call_id,
+                                "type": "function",
+                                "function": {"name": "previewQMapDatasetRows", "arguments": "{}"},
+                            }
+                        ],
+                    },
+                    {
+                        "role": "tool",
+                        "tool_call_id": call_id,
+                        "content": _qmap_tool_result(success=True, details="Preview ok."),
+                    },
+                ]
+            )
+
+        payload = {
+            "messages": messages,
+            "tools": [
+                {"type": "function", "function": {"name": "previewQMapDatasetRows"}},
+                {"type": "function", "function": {"name": "fitQMapToDataset"}},
+            ],
+            "tool_choice": "auto",
+        }
+        out = _enforce_runtime_tool_loop_limits(payload)
+        # Should NOT fire hard cap: only 3 tool calls since boundary,
+        # even though total since user message is 18.
+        self.assertIn("tools", out, "Hard cap should not fire — only 3 calls since workflow boundary")
+
+    def test_post_create_validation_fires_for_qcumber_query_with_loaded_to_map(self):
+        """q-cumber query tools with loadedToMap=true should trigger post-create
+        validation (wait gate) even though they are not in
+        _DATASET_CREATE_OR_UPDATE_TOOLS."""
+        payload = {
+            "messages": [
+                {"role": "system", "content": "System"},
+                {"role": "user", "content": "mostra siti natura 2000 in provincia di treviso"},
+                {
+                    "role": "assistant",
+                    "tool_calls": [
+                        {
+                            "id": "call_query",
+                            "type": "function",
+                            "function": {
+                                "name": "queryQCumberDatasetSpatial",
+                                "arguments": json.dumps({"loadToMap": True}),
+                            },
+                        }
+                    ],
+                },
+                {
+                    "role": "tool",
+                    "tool_call_id": "call_query",
+                    "content": json.dumps({
+                        "loadedToMap": True,
+                        "loadedDatasetRef": "id:natura2000-query-abc123",
+                        "loadedDatasetName": "Natura 2000 (query) [abc123]",
+                        "datasetId": "natura2000-siti",
+                        "qmapToolResult": {
+                            "schema": "qmap.tool_result.v1",
+                            "success": True,
+                            "details": "Query completed."
+                        }
+                    }),
+                },
+            ],
+            "tools": [
+                {"type": "function", "function": {"name": "queryQCumberDatasetSpatial"}},
+                {"type": "function", "function": {"name": "waitForQMapDataset"}},
+                {"type": "function", "function": {"name": "countQMapRows"}},
+                {"type": "function", "function": {"name": "fitQMapToDataset"}},
+            ],
+            "tool_choice": "auto",
+        }
+        out = _enforce_runtime_tool_loop_limits(payload)
+        # Should force waitForQMapDataset (post-create wait gate via qcumber load fallback)
+        tool_choice = out.get("tool_choice")
+        self.assertIsInstance(tool_choice, dict, "tool_choice should be forced to a specific tool")
+        self.assertEqual(tool_choice["function"]["name"], "waitForQMapDataset")
+        content = str(out["messages"][0]["content"])
+        self.assertIn("post_create_validation_wait_gate", content)
+
+    def test_post_create_validation_does_not_fire_for_qcumber_query_without_loaded_to_map(self):
+        """q-cumber query tools with loadedToMap absent or false should NOT
+        trigger post-create validation."""
+        payload = {
+            "messages": [
+                {"role": "system", "content": "System"},
+                {"role": "user", "content": "quante regioni ci sono?"},
+                {
+                    "role": "assistant",
+                    "tool_calls": [
+                        {
+                            "id": "call_query",
+                            "type": "function",
+                            "function": {
+                                "name": "queryQCumberTerritorialUnits",
+                                "arguments": json.dumps({"loadToMap": False}),
+                            },
+                        }
+                    ],
+                },
+                {
+                    "role": "tool",
+                    "tool_call_id": "call_query",
+                    "content": json.dumps({
+                        "qmapToolResult": {
+                            "schema": "qmap.tool_result.v1",
+                            "success": True,
+                            "details": "Query returned 20 rows."
+                        }
+                    }),
+                },
+            ],
+            "tools": [
+                {"type": "function", "function": {"name": "queryQCumberTerritorialUnits"}},
+                {"type": "function", "function": {"name": "waitForQMapDataset"}},
+                {"type": "function", "function": {"name": "countQMapRows"}},
+            ],
+            "tool_choice": "auto",
+        }
+        out = _enforce_runtime_tool_loop_limits(payload)
+        # Should NOT force wait — no dataset was loaded
+        tool_choice = out.get("tool_choice")
+        if isinstance(tool_choice, dict):
+            self.assertNotEqual(
+                tool_choice.get("function", {}).get("name"),
+                "waitForQMapDataset",
+                "Should not force wait when loadedToMap is absent"
+            )
 
     def test_loop_limits_prune_operational_tools_after_turn_state_discovery_failures(self):
         gate_error = (

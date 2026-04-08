@@ -244,6 +244,77 @@ def _objective_requests_spatial_interpolation(objective_text: str) -> bool:
     )
 
 
+def _objective_requests_chart_visualization(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(
+        re.search(r"grafic|chart|istogramm|histogram|plot|scatter|boxplot|word.?cloud|diagramm|barre|bars", text)
+    )
+
+
+def _objective_requests_mobility(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(
+        re.search(r"percors|routing|isocron|isochrone|geocod|indirizzo|address|stradale|road", text)
+    )
+
+
+def _objective_requests_geospatial_analysis(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(
+        re.search(
+            r"clip|taglia|ritaglia|overlay|intersezione|intersect|join.*spazial|spatial.*join"
+            r"|buffer|zonal|dissolve|unisci.*geometr|merge.*geometr|sovrapposi"
+            r"|tassell|h3|esagon|tessellat|popola.*tassell|popola.*h3"
+            r"|autocorrelaz|moran|lisa|hotspot|getis|equity|gini|theil"
+            r"|centroid|baricentro|raggio|circle.*buffer|bounding.?box",
+            text,
+        )
+    )
+
+
+def _objective_requests_h3_tessellation(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(re.search(r"tassell|h3|esagon|tessellat|popola.*tassell|popola.*h3|risoluzion.*\d", text))
+
+
+def _objective_requests_time_series(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(re.search(r"serie\s+(?:orar|temporal|storic)|trend|temporal|time.?series|mann.?kendall", text))
+
+
+def _objective_requests_styling_full(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(
+        re.search(r"colora|choropleth|threshold|soglia|altezza|height|3d|estrus|preset|stile", text)
+    )
+
+
+def _objective_requests_load_save(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(re.search(r"carica.*dato|load.*data|salva|save|importa|esporta|export", text))
+
+
+def _objective_requests_h3_editing(objective_text: str) -> bool:
+    text = str(objective_text or "").strip().lower()
+    if not text:
+        return False
+    return bool(re.search(r"paint|dipingi|colora.*cell|edit.*h3|modifica.*h3|ring.*h3|h3.*ring", text))
+
+
 def _objective_requests_regulatory_listing(objective_text: str) -> bool:
     text = str(objective_text or "").strip().lower()
     if _objective_requests_regulatory_compliance(text):

@@ -264,6 +264,7 @@ def _extract_request_tool_results(payload: Any, *, max_items: int = 48) -> list[
         content = message.get("content")
         details = ""
         success: bool | None = None
+        loaded_to_map: bool | None = None
         result_schema = ""
         dataset_ref = ""
         dataset_name = ""
@@ -460,6 +461,10 @@ def _extract_request_tool_results(payload: Any, *, max_items: int = 48) -> list[
                 )
             if not result_schema and parsed.get("schema") == _QMAP_TOOL_RESULT_SCHEMA:
                 result_schema = _QMAP_TOOL_RESULT_SCHEMA
+            # q-cumber query tools set loadedToMap=true at root level when the
+            # query result was materialized as a dataset on the map.
+            if isinstance(parsed.get("loadedToMap"), bool):
+                loaded_to_map = bool(parsed["loadedToMap"])
             if contract_validation_payload is None:
                 contract_validation_payload = dict(parsed)
 
@@ -502,6 +507,7 @@ def _extract_request_tool_results(payload: Any, *, max_items: int = 48) -> list[
                 "contractSchemaMismatch": contract_schema_mismatch,
                 "contractResponseMismatch": contract_response_mismatch,
                 "contractResponseValidationErrors": contract_response_validation_errors or None,
+                "loadedToMap": loaded_to_map,
                 "datasetRef": dataset_ref or None,
                 "datasetName": dataset_name or None,
                 "clarificationRequired": clarification_required,
@@ -568,3 +574,45 @@ def _has_assistant_text_since_last_user(payload: dict[str, Any]) -> bool:
         if content_text.strip():
             return True
     return False
+
+
+def _find_last_workflow_boundary_index(messages: list[dict[str, Any]]) -> int:
+    """Find the index of the last assistant message that contains text
+    but no tool_calls within the current user-message scope.
+
+    A text-only assistant message is the natural boundary of a completed
+    workflow step.  Tool results before this boundary belong to a previous
+    step and should not count toward the hard cap or watchdog."""
+    for idx in range(len(messages) - 1, -1, -1):
+        msg = messages[idx]
+        if not isinstance(msg, dict):
+            continue
+        if str(msg.get("role") or "").strip().lower() != "assistant":
+            continue
+        has_text = bool(_text_from_message_content(msg.get("content")).strip())
+        has_tool_calls = bool(msg.get("tool_calls"))
+        if has_text and not has_tool_calls:
+            return idx
+    return -1
+
+
+def _count_tool_results_since_last_workflow_boundary(payload: dict[str, Any]) -> int:
+    """Count tool results since the last workflow boundary (assistant text
+    without tool_calls) within the current user-message scope.
+
+    Used by the hard cap and watchdog rules to avoid counting tool results
+    from completed previous workflow steps in multi-turn sessions."""
+    messages_since_user = _messages_since_last_user(payload.get("messages"))
+    if not messages_since_user:
+        return 0
+    boundary_idx = _find_last_workflow_boundary_index(messages_since_user)
+    if boundary_idx < 0:
+        # No boundary found — count all results since user message
+        tail = messages_since_user
+    else:
+        tail = messages_since_user[boundary_idx + 1:]
+    count = 0
+    for msg in tail:
+        if isinstance(msg, dict) and str(msg.get("role") or "").strip().lower() == "tool":
+            count += 1
+    return count
