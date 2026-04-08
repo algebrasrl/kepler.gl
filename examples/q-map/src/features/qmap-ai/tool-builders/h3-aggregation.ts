@@ -39,7 +39,15 @@ export function createAggregateDatasetToH3Tool(ctx: QMapToolContext) {
   return {
     description:
       'Aggregate dataset geometries into H3 cells with clipping mode and statistical metrics.',
-    parameters: z.object({
+    parameters: z.preprocess((raw: any) => {
+      if (!raw || typeof raw !== 'object') return raw;
+      const args = {...raw};
+      if (!args.sourceDatasetName && typeof args.datasetName === 'string') {
+        args.sourceDatasetName = args.datasetName;
+        delete args.datasetName;
+      }
+      return args;
+    }, z.object({
       sourceDatasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
       resolution: z.number().min(4).max(11),
       valueField: z.string().optional().describe('Numeric field used for sum/avg/min/max'),
@@ -69,7 +77,7 @@ export function createAggregateDatasetToH3Tool(ctx: QMapToolContext) {
         .boolean()
         .optional()
         .describe('Default true. Set false for intermediate technical datasets kept off-map.')
-    }),
+    })),
     execute: async (rawArgs: any) => {
       const datasetName = rawArgs.sourceDatasetName || rawArgs.datasetName;
       const {

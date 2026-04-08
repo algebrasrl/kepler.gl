@@ -133,7 +133,15 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
       'Tessellate geometries from a dataset/layer into H3 cells (intersection-based) and upsert dataset Tassellation. ' +
       'IMPORTANT: tessellation output contains only h3_id/h3_resolution — it does NOT include population or thematic data. ' +
       'To color cells by population or any admin metric, you MUST call populateTassellationFromAdminUnits after tessellation to enrich cells with data from the administrative source dataset.',
-    parameters: z.object({
+    parameters: z.preprocess((raw: any) => {
+      if (!raw || typeof raw !== 'object') return raw;
+      const args = {...raw};
+      if (!args.sourceDatasetName && typeof args.datasetName === 'string') {
+        args.sourceDatasetName = args.datasetName;
+        delete args.datasetName;
+      }
+      return args;
+    }, z.object({
       sourceDatasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
       resolution: z.number().min(4).max(11),
       targetDatasetName: z.string().optional(),
@@ -151,7 +159,7 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
         .boolean()
         .optional()
         .describe('Default true with active filters: create intermediate filtered dataset before tessellation')
-    }),
+    })),
     execute: async (rawArgs: any) => {
       const datasetName = rawArgs.sourceDatasetName || rawArgs.datasetName;
       const {

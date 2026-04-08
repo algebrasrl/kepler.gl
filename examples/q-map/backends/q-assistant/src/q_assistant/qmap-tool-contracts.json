@@ -729,9 +729,9 @@
       ],
       "inputKeys": [
         "sourceDatasetName",
-        "clipDatasetName",
+        "targetDatasetName",
         "sourceGeometryField",
-        "clipGeometryField",
+        "targetGeometryField",
         "mode",
         "useActiveFilters",
         "maxSourceFeatures",
@@ -748,13 +748,13 @@
           "sourceDatasetName": {
             "type": "string"
           },
-          "clipDatasetName": {
+          "targetDatasetName": {
             "type": "string"
           },
           "sourceGeometryField": {
             "type": "string"
           },
-          "clipGeometryField": {
+          "targetGeometryField": {
             "type": "string"
           },
           "mode": {
@@ -791,8 +791,8 @@
           }
         },
         "required": [
-          "clipDatasetName",
-          "sourceDatasetName"
+          "sourceDatasetName",
+          "targetDatasetName"
         ],
         "additionalProperties": false
       },
@@ -2382,50 +2382,50 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "datasetAName",
-        "datasetBName",
-        "geometryFieldA",
-        "geometryFieldB",
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
         "includeIntersection",
-        "includeADifference",
-        "includeBDifference",
+        "includeSourceDifference",
+        "includeTargetDifference",
         "useActiveFilters",
-        "maxFeaturesA",
-        "maxFeaturesB",
+        "maxSourceFeatures",
+        "maxTargetFeatures",
         "showOnMap",
         "newDatasetName"
       ],
       "argsSchema": {
         "type": "object",
         "properties": {
-          "datasetAName": {
+          "sourceDatasetName": {
             "type": "string"
           },
-          "datasetBName": {
+          "targetDatasetName": {
             "type": "string"
           },
-          "geometryFieldA": {
+          "sourceGeometryField": {
             "type": "string"
           },
-          "geometryFieldB": {
+          "targetGeometryField": {
             "type": "string"
           },
           "includeIntersection": {
             "type": "boolean"
           },
-          "includeADifference": {
+          "includeSourceDifference": {
             "type": "boolean"
           },
-          "includeBDifference": {
+          "includeTargetDifference": {
             "type": "boolean"
           },
           "useActiveFilters": {
             "type": "boolean"
           },
-          "maxFeaturesA": {
+          "maxSourceFeatures": {
             "type": "number"
           },
-          "maxFeaturesB": {
+          "maxTargetFeatures": {
             "type": "number"
           },
           "showOnMap": {
@@ -2436,8 +2436,8 @@
           }
         },
         "required": [
-          "datasetAName",
-          "datasetBName"
+          "sourceDatasetName",
+          "targetDatasetName"
         ],
         "additionalProperties": false
       },
@@ -3085,13 +3085,7 @@
       "categories": [
         "statistical-analysis"
       ],
-      "inputKeys": [
-        "datasetName",
-        "dependentField",
-        "independentField",
-        "newDatasetName",
-        "showOnMap"
-      ],
+      "inputKeys": [],
       "flags": {
         "mutatesDataset": false,
         "discovery": false,
@@ -3381,33 +3375,33 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "leftDatasetName",
-        "rightDatasetName",
-        "leftGeometryField",
-        "rightGeometryField",
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
         "predicate",
-        "rightValueField",
+        "targetValueField",
         "aggregations",
-        "includeRightFields",
+        "includeTargetFields",
         "useActiveFilters",
-        "maxLeftFeatures",
-        "maxRightFeatures",
+        "maxSourceFeatures",
+        "maxTargetFeatures",
         "showOnMap",
         "newDatasetName"
       ],
       "argsSchema": {
         "type": "object",
         "properties": {
-          "leftDatasetName": {
+          "sourceDatasetName": {
             "type": "string"
           },
-          "rightDatasetName": {
+          "targetDatasetName": {
             "type": "string"
           },
-          "leftGeometryField": {
+          "sourceGeometryField": {
             "type": "string"
           },
-          "rightGeometryField": {
+          "targetGeometryField": {
             "type": "string"
           },
           "predicate": {
@@ -3419,7 +3413,7 @@
               "touches"
             ]
           },
-          "rightValueField": {
+          "targetValueField": {
             "type": "string"
           },
           "aggregations": {
@@ -3428,7 +3422,7 @@
               "type": "string"
             }
           },
-          "includeRightFields": {
+          "includeTargetFields": {
             "type": "array",
             "items": {
               "type": "string"
@@ -3437,10 +3431,10 @@
           "useActiveFilters": {
             "type": "boolean"
           },
-          "maxLeftFeatures": {
+          "maxSourceFeatures": {
             "type": "number"
           },
-          "maxRightFeatures": {
+          "maxTargetFeatures": {
             "type": "number"
           },
           "showOnMap": {
@@ -3451,8 +3445,8 @@
           }
         },
         "required": [
-          "leftDatasetName",
-          "rightDatasetName"
+          "sourceDatasetName",
+          "targetDatasetName"
         ],
         "additionalProperties": false
       },
@@ -3669,16 +3663,16 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "adminDatasetName",
-        "valueDatasetName",
-        "adminGeometryField",
-        "valueGeometryField",
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
         "valueField",
         "aggregation",
         "weightMode",
         "useActiveFilters",
-        "maxAdminFeatures",
-        "maxValueFeatures",
+        "maxSourceFeatures",
+        "maxTargetFeatures",
         "outputFieldName",
         "outputAreaField",
         "showOnMap",
@@ -3687,16 +3681,16 @@
       "argsSchema": {
         "type": "object",
         "properties": {
-          "adminDatasetName": {
+          "sourceDatasetName": {
             "type": "string"
           },
-          "valueDatasetName": {
+          "targetDatasetName": {
             "type": "string"
           },
-          "adminGeometryField": {
+          "sourceGeometryField": {
             "type": "string"
           },
-          "valueGeometryField": {
+          "targetGeometryField": {
             "type": "string"
           },
           "valueField": {
@@ -3723,10 +3717,10 @@
           "useActiveFilters": {
             "type": "boolean"
           },
-          "maxAdminFeatures": {
+          "maxSourceFeatures": {
             "type": "number"
           },
-          "maxValueFeatures": {
+          "maxTargetFeatures": {
             "type": "number"
           },
           "outputFieldName": {
@@ -3743,8 +3737,8 @@
           }
         },
         "required": [
-          "adminDatasetName",
-          "valueDatasetName"
+          "sourceDatasetName",
+          "targetDatasetName"
         ],
         "additionalProperties": false
       },

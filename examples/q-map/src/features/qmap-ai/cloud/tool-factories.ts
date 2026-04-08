@@ -448,6 +448,8 @@ export function createQueryQCumberDatasetTool(policyMode: QcumberQueryPolicy = '
     .tuple([z.number(), z.number(), z.number(), z.number()])
     .optional()
     .describe('Optional bbox [minLon,minLat,maxLon,maxLat] in EPSG:4326 for backend prefilter.');
+  // Use .strip() instead of .strict() so LLMs that pass extra keys
+  // (e.g. filter values as top-level params) don't get rejected.
   const parameters = isTerritorialOnly
     ? z
         .object({

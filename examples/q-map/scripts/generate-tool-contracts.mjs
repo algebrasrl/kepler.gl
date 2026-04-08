@@ -179,9 +179,9 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
   clipQMapDatasetByGeometry: buildStrictArgsSchema(
     {
       sourceDatasetName: {type: 'string'},
-      clipDatasetName: {type: 'string'},
+      targetDatasetName: {type: 'string'},
       sourceGeometryField: {type: 'string'},
-      clipGeometryField: {type: 'string'},
+      targetGeometryField: {type: 'string'},
       mode: {type: 'string', enum: ['intersects', 'centroid', 'within']},
       useActiveFilters: {type: 'boolean'},
       maxSourceFeatures: {type: 'number'},
@@ -192,61 +192,61 @@ const STRICT_TOOL_ARGS_OVERRIDES = {
       showOnMap: {type: 'boolean'},
       newDatasetName: {type: 'string'}
     },
-    ['sourceDatasetName', 'clipDatasetName']
+    ['sourceDatasetName', 'targetDatasetName']
   ),
   zonalStatsByAdmin: buildStrictArgsSchema(
     {
-      adminDatasetName: {type: 'string'},
-      valueDatasetName: {type: 'string'},
-      adminGeometryField: {type: 'string'},
-      valueGeometryField: {type: 'string'},
+      sourceDatasetName: {type: 'string'},
+      targetDatasetName: {type: 'string'},
+      sourceGeometryField: {type: 'string'},
+      targetGeometryField: {type: 'string'},
       valueField: {type: 'string'},
       aggregation: {type: 'string', enum: ['sum', 'avg', 'min', 'max', 'count']},
       weightMode: {type: 'string', enum: ['area_weighted', 'intersects', 'centroid']},
       useActiveFilters: {type: 'boolean'},
-      maxAdminFeatures: {type: 'number'},
-      maxValueFeatures: {type: 'number'},
+      maxSourceFeatures: {type: 'number'},
+      maxTargetFeatures: {type: 'number'},
       outputFieldName: {type: 'string'},
       outputAreaField: {type: 'string'},
       showOnMap: {type: 'boolean'},
       newDatasetName: {type: 'string'}
     },
-    ['adminDatasetName', 'valueDatasetName']
+    ['sourceDatasetName', 'targetDatasetName']
   ),
   spatialJoinByPredicate: buildStrictArgsSchema(
     {
-      leftDatasetName: {type: 'string'},
-      rightDatasetName: {type: 'string'},
-      leftGeometryField: {type: 'string'},
-      rightGeometryField: {type: 'string'},
+      sourceDatasetName: {type: 'string'},
+      targetDatasetName: {type: 'string'},
+      sourceGeometryField: {type: 'string'},
+      targetGeometryField: {type: 'string'},
       predicate: {type: 'string', enum: ['intersects', 'within', 'contains', 'touches']},
-      rightValueField: {type: 'string'},
+      targetValueField: {type: 'string'},
       aggregations: {type: 'array', items: {type: 'string'}},
-      includeRightFields: {type: 'array', items: {type: 'string'}},
+      includeTargetFields: {type: 'array', items: {type: 'string'}},
       useActiveFilters: {type: 'boolean'},
-      maxLeftFeatures: {type: 'number'},
-      maxRightFeatures: {type: 'number'},
+      maxSourceFeatures: {type: 'number'},
+      maxTargetFeatures: {type: 'number'},
       showOnMap: {type: 'boolean'},
       newDatasetName: {type: 'string'}
     },
-    ['leftDatasetName', 'rightDatasetName']
+    ['sourceDatasetName', 'targetDatasetName']
   ),
   overlayDifference: buildStrictArgsSchema(
     {
-      datasetAName: {type: 'string'},
-      datasetBName: {type: 'string'},
-      geometryFieldA: {type: 'string'},
-      geometryFieldB: {type: 'string'},
+      sourceDatasetName: {type: 'string'},
+      targetDatasetName: {type: 'string'},
+      sourceGeometryField: {type: 'string'},
+      targetGeometryField: {type: 'string'},
       includeIntersection: {type: 'boolean'},
-      includeADifference: {type: 'boolean'},
-      includeBDifference: {type: 'boolean'},
+      includeSourceDifference: {type: 'boolean'},
+      includeTargetDifference: {type: 'boolean'},
       useActiveFilters: {type: 'boolean'},
-      maxFeaturesA: {type: 'number'},
-      maxFeaturesB: {type: 'number'},
+      maxSourceFeatures: {type: 'number'},
+      maxTargetFeatures: {type: 'number'},
       showOnMap: {type: 'boolean'},
       newDatasetName: {type: 'string'}
     },
-    ['datasetAName', 'datasetBName']
+    ['sourceDatasetName', 'targetDatasetName']
   ),
   bufferAndSummarize: buildStrictArgsSchema(
     {

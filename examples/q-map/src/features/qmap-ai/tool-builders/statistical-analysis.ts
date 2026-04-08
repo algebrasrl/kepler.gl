@@ -28,10 +28,10 @@ export function createRegressQMapFieldsTool(ctx: QMapToolContext) {
       if (!raw || typeof raw !== 'object') return raw;
       const args = {...raw};
       if (!args.dependentField) {
-        args.dependentField = args.targetFieldName || args.targetField || args.yField;
+        args.dependentField = args.targetFieldName || args.targetField || args.yField || args.yFieldName || args.dependentFieldName;
       }
       if (!args.independentField) {
-        args.independentField = args.independentFieldName || args.xField;
+        args.independentField = args.independentFieldName || args.xField || args.xFieldName || args.predictorField || args.predictorFieldName;
       }
       return args;
     }, z.object({

@@ -181,7 +181,9 @@ export function preprocessClipDatasetArgs(raw: unknown): unknown {
       (typeof args.maskDatasetName === 'string' && args.maskDatasetName) ||
       (typeof args.boundaryDatasetName === 'string' && args.boundaryDatasetName) ||
       (typeof args.clipGeometryDatasetName === 'string' && args.clipGeometryDatasetName) ||
-      (typeof args.maskGeometryDatasetName === 'string' && args.maskGeometryDatasetName);
+      (typeof args.maskGeometryDatasetName === 'string' && args.maskGeometryDatasetName) ||
+      (typeof args.maskGeometry === 'string' && args.maskGeometry) ||
+      (typeof args.clipGeometry === 'string' && args.clipGeometry);
     if (alias) {
       args.targetDatasetName = alias;
       delete args.clipDatasetName;
@@ -189,6 +191,8 @@ export function preprocessClipDatasetArgs(raw: unknown): unknown {
       delete args.boundaryDatasetName;
       delete args.clipGeometryDatasetName;
       delete args.maskGeometryDatasetName;
+      delete args.maskGeometry;
+      delete args.clipGeometry;
     }
   }
   if (!args.targetGeometryField && typeof args.clipGeometryField === 'string') {

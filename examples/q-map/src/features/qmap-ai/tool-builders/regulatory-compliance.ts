@@ -71,7 +71,14 @@ export function createCheckRegulatoryComplianceTool(ctx: QMapToolContext) {
     description:
       '[PREFERRED for regulatory compliance] Check air quality measurements against D.Lgs. 155/2010 limits and WHO AQG 2021. ' +
       'Returns per-station exceedance counts, compliance rate %. Use this when the question mentions "limiti di legge", "superamenti", "normativa", "155/2010", "conforme".',
-    parameters: z.object({
+    parameters: z.preprocess((raw: any) => {
+      if (!raw || typeof raw !== 'object') return raw;
+      const args = {...raw};
+      if (!args.parameterName) {
+        args.parameterName = args.parameterField || args.pollutant || args.pollutantName || args.inquinante;
+      }
+      return args;
+    }, z.object({
       datasetName: z.string().describe('Dataset with measurement data'),
       parameterName: z
         .string()
@@ -89,7 +96,7 @@ export function createCheckRegulatoryComplianceTool(ctx: QMapToolContext) {
         .boolean()
         .optional()
         .describe('Also check against WHO AQG 2021 guidelines. Default false')
-    }),
+    })),
     execute: async (rawArgs: any) => {
       const {datasetName, parameterName} = rawArgs;
       const includeEu2030 = rawArgs.includeEu2030 === true;
