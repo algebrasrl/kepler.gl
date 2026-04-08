@@ -239,6 +239,7 @@ const IT_PRIORITY_LINES = [
   '[MUST] Non cambiare mai il nome del luogo target nella risposta finale; usa il luogo richiesto dall utente (o il nome risolto dal risultato tool).',
   '[MUST] Dopo aver completato l operazione richiesta con tool andati a buon fine, invia sempre una conferma finale concisa per l utente; non terminare con un turno che contiene solo tool call.',
   '[MUST] Per richieste composte che includono selezione dati e stile (es. "trova ... e colora ..."), completa entrambi nello stesso turno. Non fermarti a ricerca/conteggio e non chiedere follow-up prima di aver applicato lo stile o riportato un errore di stile.',
+  '[MUST] Per richieste multi-analisi (es. regressione + LISA + overlay + istogramma + conformita + interpolazione), esegui TUTTI i passaggi richiesti senza chiedere conferma intermedia. Non dire "Procedo con..." e aspettare — completa ogni analisi e riporta i risultati in un unico turno finale.',
   '[MUST] Per luoghi amministrativi nominati, se il livello e ignoto o incerto fai prima discovery per nome senza lv prima di ogni query finale vincolata.',
   '[MUST] Prima di populateTassellationFromAdminUnits* valida la qualita sorgente: presenza lv=9, numero righe non banale e sourceDatasetName diverso dal dataset confine.',
   '[FORBIDDEN] Non usare name-contains sui nomi dei comuni per derivare appartenenza provinciale.',
