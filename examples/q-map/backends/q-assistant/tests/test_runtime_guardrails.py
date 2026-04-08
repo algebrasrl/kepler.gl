@@ -814,8 +814,8 @@ class RuntimeGuardrailInjectionTests(
                                 "name": "zonalStatsByAdmin",
                                 "arguments": json.dumps(
                                     {
-                                        "adminDatasetName": "Kontur Boundaries Italia (query) [prov]",
-                                        "valueDatasetName": "Boschi_H3_r6",
+                                        "sourceDatasetName": "Kontur Boundaries Italia (query) [prov]",
+                                        "targetDatasetName": "Boschi_H3_r6",
                                         "valueField": "sum",
                                         "aggregation": "sum",
                                     }
@@ -886,8 +886,8 @@ class RuntimeGuardrailInjectionTests(
                                 "name": "zonalStatsByAdmin",
                                 "arguments": json.dumps(
                                     {
-                                        "adminDatasetName": "Kontur Boundaries Italia (query) [lombardia]",
-                                        "valueDatasetName": "CLC 2018 Italia (query) [forest]",
+                                        "sourceDatasetName": "Kontur Boundaries Italia (query) [lombardia]",
+                                        "targetDatasetName": "CLC 2018 Italia (query) [forest]",
                                         "aggregation": "sum",
                                     }
                                 ),
@@ -1186,7 +1186,7 @@ class RuntimeGuardrailInjectionTests(
         out = _inject_runtime_guardrail_message(payload)
         content = str(out["messages"][0]["content"])
         self.assertIn("For zonalStatsByAdmin use canonical args", content)
-        self.assertIn("valueDatasetName", content)
+        self.assertIn("targetDatasetName", content)
         self.assertIn("Do not use non-canonical keys like targetDatasetName", content)
 
     def test_preflight_hint_discourages_default_dataset_discovery_call(self):

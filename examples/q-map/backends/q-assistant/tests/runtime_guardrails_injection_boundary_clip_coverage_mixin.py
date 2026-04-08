@@ -99,7 +99,7 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "arguments": json.dumps(
                                     {
                                         "sourceDatasetName": "Stressor Events",
-                                        "boundaryDatasetName": "Kontur Boundaries Italia",
+                                        "targetDatasetName": "Kontur Boundaries Italia",
                                         "newDatasetName": "Stressor Clipped",
                                     }
                                 ),
@@ -118,8 +118,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "name": "overlayIntersection",
                                 "arguments": json.dumps(
                                     {
-                                        "datasetAName": "Stressor Clipped",
-                                        "datasetBName": "Kontur Boundaries Italia",
+                                        "sourceDatasetName": "Stressor Clipped",
+                                        "targetDatasetName": "Kontur Boundaries Italia",
                                         "newDatasetName": "Intersection Result",
                                     }
                                 ),
@@ -139,8 +139,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
         content = str(out["messages"][0]["content"])
         self.assertIn("perimeter_overlay_coverage_required", content)
         self.assertIn("coverageQualityReport", content)
-        self.assertIn('leftDatasetName="Intersection Result"', content)
-        self.assertIn('rightDatasetName="Kontur Boundaries Italia"', content)
+        self.assertIn('sourceDatasetName="Intersection Result"', content)
+        self.assertIn('targetDatasetName="Kontur Boundaries Italia"', content)
         self.assertIn("coveragePct", content)
 
     def test_skips_perimeter_coverage_guardrail_when_coverage_already_done(self):
@@ -162,7 +162,7 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "arguments": json.dumps(
                                     {
                                         "sourceDatasetName": "Stressor Events",
-                                        "boundaryDatasetName": "Kontur Boundaries Italia",
+                                        "targetDatasetName": "Kontur Boundaries Italia",
                                         "newDatasetName": "Stressor Clipped",
                                     }
                                 ),
@@ -181,8 +181,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "name": "overlayIntersection",
                                 "arguments": json.dumps(
                                     {
-                                        "datasetAName": "Stressor Clipped",
-                                        "datasetBName": "Kontur Boundaries Italia",
+                                        "sourceDatasetName": "Stressor Clipped",
+                                        "targetDatasetName": "Kontur Boundaries Italia",
                                         "newDatasetName": "Intersection Result",
                                     }
                                 ),
@@ -205,8 +205,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "name": "coverageQualityReport",
                                 "arguments": json.dumps(
                                     {
-                                        "leftDatasetName": "Intersection Result",
-                                        "rightDatasetName": "Kontur Boundaries Italia",
+                                        "sourceDatasetName": "Intersection Result",
+                                        "targetDatasetName": "Kontur Boundaries Italia",
                                     }
                                 ),
                             },
@@ -251,8 +251,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "arguments": json.dumps(
                                     {
                                         "sourceDatasetName": "stressor_events_h3",
-                                        "clipDatasetName": "h3_grid_treviso_r8",
-                                        "boundaryDatasetName": "provincia_treviso",
+                                        "targetDatasetName": "h3_grid_treviso_r8",
+                                        "targetDatasetName": "provincia_treviso",
                                         "newDatasetName": "stressor_events_h3_clipped",
                                     }
                                 ),
@@ -268,8 +268,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
         content = str(out["messages"][0]["content"])
         self.assertIn("perimeter_overlay_coverage_required", content)
         self.assertIn("coverageQualityReport", content)
-        self.assertIn('leftDatasetName="stressor_events_h3_clipped"', content)
-        self.assertIn('rightDatasetName="provincia_treviso"', content)
+        self.assertIn('sourceDatasetName="stressor_events_h3_clipped"', content)
+        self.assertIn('targetDatasetName="provincia_treviso"', content)
         self.assertIn("coveragePct", content)
 
     def test_requires_clip_step_before_cross_geometry_stats_finalization(self):
@@ -383,8 +383,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "arguments": json.dumps(
                                     {
                                         "sourceDatasetName": "stressor_events_h3",
-                                        "clipDatasetName": "h3_grid_treviso_r8",
-                                        "boundaryDatasetName": "provincia_treviso",
+                                        "targetDatasetName": "h3_grid_treviso_r8",
+                                        "targetDatasetName": "provincia_treviso",
                                         "newDatasetName": "stressor_events_h3_clipped",
                                     }
                                 ),
@@ -403,8 +403,8 @@ class RuntimeGuardrailInjectionBoundaryClipCoverageMixin:
                                 "name": "coverageQualityReport",
                                 "arguments": json.dumps(
                                     {
-                                        "leftDatasetName": "stressor_events_h3_clipped",
-                                        "rightDatasetName": "provincia_treviso",
+                                        "sourceDatasetName": "stressor_events_h3_clipped",
+                                        "targetDatasetName": "provincia_treviso",
                                     }
                                 ),
                             },

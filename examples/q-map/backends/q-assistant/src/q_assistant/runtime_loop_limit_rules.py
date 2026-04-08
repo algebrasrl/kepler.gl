@@ -197,8 +197,15 @@ def build_post_create_validation_decision(
     # Fallback: q-cumber query tools with loadedToMap=true also create datasets
     # in the map but are not in the unconditional set (they may also run with
     # loadToMap=false, which does NOT create a dataset).
+    # For conditional loads we only BLOCK deferred tools (styling/fit) but do NOT
+    # force tool_choice — the model should be free to continue with analysis tools
+    # (tessellate, aggregate, compute) before wait+count.
+    is_conditional_load = False
     if latest_create_idx < 0 and latest_conditional_load_index is not None:
-        latest_create_idx = latest_conditional_load_index(results)
+        conditional_idx = latest_conditional_load_index(results)
+        if conditional_idx >= 0:
+            latest_create_idx = conditional_idx
+            is_conditional_load = True
     wait_after_create_idx = (
         _first_successful_tool_index(results, {"waitForQMapDataset"}, start_idx=latest_create_idx + 1)
         if latest_create_idx >= 0
@@ -215,8 +222,13 @@ def build_post_create_validation_decision(
         {"countQMapRows"},
     )
     if latest_create_idx >= 0 and wait_after_create_idx < 0 and "waitForQMapDataset" in request_tool_names:
+        # For conditional loads (q-cumber queries), only block deferred tools
+        # but let the model continue with analysis tools (tessellate, aggregate).
+        # For unconditional creates (clip, overlay, etc.), force wait immediately.
         return RuntimeLoopRuleDecision(
-            remove_tool_names=request_tool_names.intersection(blocked_before_wait),
+            remove_tool_names=request_tool_names.intersection(
+                post_create_validation_deferred_tools if is_conditional_load else blocked_before_wait
+            ),
             guidance_lines=[
                 (
                     f"{runtime_guardrail_prefix} Selected rule `post_create_validation_wait_gate` "
@@ -230,7 +242,7 @@ def build_post_create_validation_decision(
                     f"{runtime_next_step_prefix} Call waitForQMapDataset now; defer count/style/focus steps until wait succeeds."
                 ),
             ],
-            forced_tool_choice_name="waitForQMapDataset",
+            forced_tool_choice_name="" if is_conditional_load else "waitForQMapDataset",
         )
 
     blocked_before_count = post_create_validation_deferred_tools.union(
@@ -239,7 +251,9 @@ def build_post_create_validation_decision(
     )
     if wait_after_create_idx >= 0 and count_after_wait_idx < 0 and "countQMapRows" in request_tool_names:
         return RuntimeLoopRuleDecision(
-            remove_tool_names=request_tool_names.intersection(blocked_before_count),
+            remove_tool_names=request_tool_names.intersection(
+                post_create_validation_deferred_tools if is_conditional_load else blocked_before_count
+            ),
             guidance_lines=[
                 (
                     f"{runtime_guardrail_prefix} Selected rule `post_create_validation_count_gate` "
@@ -253,7 +267,7 @@ def build_post_create_validation_decision(
                     f"{runtime_next_step_prefix} Call countQMapRows now and only then continue with styling/focus/final confirmation."
                 ),
             ],
-            forced_tool_choice_name="countQMapRows",
+            forced_tool_choice_name="" if is_conditional_load else "countQMapRows",
         )
 
     return RuntimeLoopRuleDecision(remove_tool_names=set(), guidance_lines=[])

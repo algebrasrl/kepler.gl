@@ -124,8 +124,8 @@ export function createAssessPopulationExposureTool(ctx: QMapToolContext) {
       'For each station, finds municipalities within a buffer radius and aggregates exposed population. ' +
       'Returns per-station exposure summary with population count and compliance status.',
     parameters: z.object({
-      stationDatasetName: z.string().describe('Dataset with measurement points (e.g. opas-measurements loaded on map)'),
-      boundaryDatasetName: z.string().describe('Dataset with admin boundaries + population (e.g. kontur municipalities)'),
+      sourceDatasetName: z.string().describe('Dataset with measurement points (e.g. opas-measurements loaded on map)'),
+      targetDatasetName: z.string().describe('Dataset with admin boundaries + population (e.g. kontur municipalities)'),
       valueField: z.string().optional().describe('Measurement field. Default: measure_value'),
       populationField: z.string().optional().describe('Population field. Default: population'),
       nameField: z.string().optional().describe('Boundary name field. Default: name'),
@@ -134,7 +134,8 @@ export function createAssessPopulationExposureTool(ctx: QMapToolContext) {
       showOnMap: z.boolean().optional().describe('Create derived dataset with exposure data. Default: false')
     }),
     execute: async (rawArgs: any) => {
-      const {stationDatasetName, boundaryDatasetName} = rawArgs;
+      const stationDatasetName = rawArgs.sourceDatasetName || rawArgs.stationDatasetName;
+      const boundaryDatasetName = rawArgs.targetDatasetName || rawArgs.boundaryDatasetName;
       const valueFieldArg: string = rawArgs.valueField || 'measure_value';
       const populationFieldArg: string = rawArgs.populationField || 'population';
       const nameFieldArg: string = rawArgs.nameField || 'name';

@@ -40,7 +40,7 @@ export function createAggregateDatasetToH3Tool(ctx: QMapToolContext) {
     description:
       'Aggregate dataset geometries into H3 cells with clipping mode and statistical metrics.',
     parameters: z.object({
-      datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
+      sourceDatasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
       resolution: z.number().min(4).max(11),
       valueField: z.string().optional().describe('Numeric field used for sum/avg/min/max'),
       operations: z
@@ -70,19 +70,20 @@ export function createAggregateDatasetToH3Tool(ctx: QMapToolContext) {
         .optional()
         .describe('Default true. Set false for intermediate technical datasets kept off-map.')
     }),
-    execute: async ({
-      datasetName,
-      resolution,
-      valueField,
-      operations,
-      distinctField,
-      groupByFields,
-      weightMode,
-      targetDatasetName,
-      maxFeatures,
-      useActiveFilters,
-      showOnMap
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const datasetName = rawArgs.sourceDatasetName || rawArgs.datasetName;
+      const {
+        resolution,
+        valueField,
+        operations,
+        distinctField,
+        groupByFields,
+        weightMode,
+        targetDatasetName,
+        maxFeatures,
+        useActiveFilters,
+        showOnMap
+      } = rawArgs;
       const sourceDataset = resolveDatasetByName(getCurrentVisState()?.datasets || {}, datasetName);
       if (!sourceDataset?.id) {
         return {llmResult: {success: false, details: `Dataset "${datasetName}" not found.`}};

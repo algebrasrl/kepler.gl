@@ -514,12 +514,14 @@ class RuntimeGuardrailLoopLimitsRecoveryMixin:
             "tool_choice": "auto",
         }
         out = _enforce_runtime_tool_loop_limits(payload)
-        # Should force waitForQMapDataset (post-create wait gate via qcumber load fallback)
-        tool_choice = out.get("tool_choice")
-        self.assertIsInstance(tool_choice, dict, "tool_choice should be forced to a specific tool")
-        self.assertEqual(tool_choice["function"]["name"], "waitForQMapDataset")
+        # For conditional q-cumber loads, the rule fires (guidance injected) but
+        # does NOT force tool_choice — the model is free to continue with analysis
+        # tools before wait+count.  Only deferred tools (styling/fit) are blocked.
         content = str(out["messages"][0]["content"])
         self.assertIn("post_create_validation_wait_gate", content)
+        # tool_choice should remain auto (not forced)
+        tool_choice = out.get("tool_choice")
+        self.assertEqual(tool_choice, "auto")
 
     def test_post_create_validation_does_not_fire_for_qcumber_query_without_loaded_to_map(self):
         """q-cumber query tools with loadedToMap absent or false should NOT

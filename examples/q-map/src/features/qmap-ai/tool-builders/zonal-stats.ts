@@ -53,10 +53,10 @@ export function createZonalStatsByAdminTool(ctx: QMapToolContext) {
     description:
       'Compute zonal statistics on administrative geometries/H3 from a value dataset with optional area-weighted aggregation.',
     parameters: z.object({
-      adminDatasetName: z.string(),
-      valueDatasetName: z.string(),
-      adminGeometryField: z.string().optional(),
-      valueGeometryField: z.string().optional(),
+      sourceDatasetName: z.string(),
+      targetDatasetName: z.string(),
+      sourceGeometryField: z.string().optional(),
+      targetGeometryField: z.string().optional(),
       valueField: z.string().optional().describe('Numeric field to aggregate; omit for count-only'),
       aggregation: QMAP_AGGREGATION_SCHEMA.describe('Default sum when valueField exists, else count'),
       weightMode: QMAP_WEIGHT_MODE_SCHEMA.describe('Default area_weighted'),
@@ -76,21 +76,22 @@ export function createZonalStatsByAdminTool(ctx: QMapToolContext) {
         .describe('Default false. Set true to auto-create a map layer for the output dataset.'),
       newDatasetName: z.string().optional()
     }),
-    execute: async ({
-      adminDatasetName,
-      valueDatasetName,
-      adminGeometryField,
-      valueGeometryField,
-      valueField,
-      aggregation,
-      weightMode,
-      useActiveFilters,
-      maxAdminFeatures,
-      maxValueFeatures,
-      outputFieldName,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const adminDatasetName = rawArgs.sourceDatasetName || rawArgs.adminDatasetName;
+      const valueDatasetName = rawArgs.targetDatasetName || rawArgs.valueDatasetName;
+      const adminGeometryField = rawArgs.sourceGeometryField || rawArgs.adminGeometryField;
+      const valueGeometryField = rawArgs.targetGeometryField || rawArgs.valueGeometryField;
+      const {
+        valueField,
+        aggregation,
+        weightMode,
+        useActiveFilters,
+        maxAdminFeatures,
+        maxValueFeatures,
+        outputFieldName,
+        showOnMap,
+        newDatasetName
+      } = rawArgs;
       const currentVisState = getCurrentVisState();
       const admin = resolveDatasetByName(currentVisState?.datasets || {}, adminDatasetName);
       const values = resolveDatasetByName(currentVisState?.datasets || {}, valueDatasetName);
@@ -251,7 +252,7 @@ export function createZonalStatsByAdminTool(ctx: QMapToolContext) {
             success: false,
             retryWithTool: 'aggregateDatasetToH3',
             retryWithArgs: {
-              datasetName: values.label || values.id,
+              sourceDatasetName: values.label || values.id,
               resolution: nextResolution,
               valueField: agg === 'count' ? undefined : resolvedValueField || valueField || undefined,
               operations: [aggregateOp],
@@ -262,8 +263,8 @@ export function createZonalStatsByAdminTool(ctx: QMapToolContext) {
             },
             retryReason: 'zonal-ui-freeze-budget',
             suggestedNextZonalArgs: {
-              adminDatasetName: admin.label || admin.id,
-              valueDatasetName: reroutedDatasetName,
+              sourceDatasetName: admin.label || admin.id,
+              targetDatasetName: reroutedDatasetName,
               valueField: reroutedValueField,
               aggregation: agg,
               outputFieldName: String(outputFieldName || '').trim() || 'zonal_value',

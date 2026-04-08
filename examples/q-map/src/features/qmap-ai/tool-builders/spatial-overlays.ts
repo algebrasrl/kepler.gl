@@ -6,7 +6,6 @@ import {z} from 'zod';
 import {selectQMapVisState} from '../../../state/qmap-selectors';
 import {runSpatialOpsJob, computeSpatialOpsTimeout} from '../../../workers/spatial-ops-runner';
 import type {QMapToolContext} from '../context/tool-context';
-import {preprocessDualDatasetArgs} from '../tool-args-normalization';
 import {useToolExecution} from './use-tool-execution';
 
 export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
@@ -39,11 +38,11 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
   return {
     description:
       'Spatially join two geometry/H3 datasets by predicate and materialize a derived dataset with aggregated right-side metrics.',
-    parameters: z.preprocess(preprocessDualDatasetArgs, z.object({
-      leftDatasetName: z.string().describe('Primary dataset (rows preserved)'),
-      rightDatasetName: z.string().describe('Secondary dataset used for spatial matching'),
-      leftGeometryField: z.string().optional(),
-      rightGeometryField: z.string().optional(),
+    parameters: z.object({
+      sourceDatasetName: z.string().describe('Primary dataset (rows preserved)'),
+      targetDatasetName: z.string().describe('Secondary dataset used for spatial matching'),
+      sourceGeometryField: z.string().optional(),
+      targetGeometryField: z.string().optional(),
       predicate: QMAP_SPATIAL_PREDICATE_SCHEMA.describe('Default intersects'),
       rightValueField: z.string().optional().describe('Numeric right field for sum/avg/min/max'),
       aggregations: z.array(QMAP_AGGREGATION_REQUIRED_SCHEMA).optional().describe('Default ["count"]'),
@@ -62,31 +61,32 @@ export function createSpatialJoinByPredicateTool(ctx: QMapToolContext) {
         .optional()
         .describe('Default false. Set true to auto-create a map layer for the output dataset.'),
       newDatasetName: z.string().optional()
-    })),
-    execute: async ({
-      leftDatasetName,
-      rightDatasetName,
-      leftGeometryField,
-      rightGeometryField,
-      predicate,
-      rightValueField,
-      aggregations,
-      includeRightFields,
-      useActiveFilters,
-      maxLeftFeatures,
-      maxRightFeatures,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    }),
+    execute: async (rawArgs: any) => {
+      const sourceDatasetName = rawArgs.sourceDatasetName || rawArgs.leftDatasetName;
+      const targetDatasetName = rawArgs.targetDatasetName || rawArgs.rightDatasetName;
+      const sourceGeometryField = rawArgs.sourceGeometryField || rawArgs.leftGeometryField;
+      const targetGeometryField = rawArgs.targetGeometryField || rawArgs.rightGeometryField;
+      const {
+        predicate,
+        rightValueField,
+        aggregations,
+        includeRightFields,
+        useActiveFilters,
+        maxLeftFeatures,
+        maxRightFeatures,
+        showOnMap,
+        newDatasetName
+      } = rawArgs;
       const currentVisState = getCurrentVisState();
-      const left = resolveDatasetByName(currentVisState?.datasets || {}, leftDatasetName);
-      const right = resolveDatasetByName(currentVisState?.datasets || {}, rightDatasetName);
-      if (!left?.id) return {llmResult: {success: false, details: `Left dataset "${leftDatasetName}" not found.`}};
-      if (!right?.id) return {llmResult: {success: false, details: `Right dataset "${rightDatasetName}" not found.`}};
-      const leftGeom = resolveGeojsonFieldName(left, leftGeometryField);
-      const rightGeom = resolveGeojsonFieldName(right, rightGeometryField);
-      const leftH3 = !leftGeom ? resolveH3FieldName(left, leftGeometryField || null) : null;
-      const rightH3 = !rightGeom ? resolveH3FieldName(right, rightGeometryField || null) : null;
+      const left = resolveDatasetByName(currentVisState?.datasets || {}, sourceDatasetName);
+      const right = resolveDatasetByName(currentVisState?.datasets || {}, targetDatasetName);
+      if (!left?.id) return {llmResult: {success: false, details: `Left dataset "${sourceDatasetName}" not found.`}};
+      if (!right?.id) return {llmResult: {success: false, details: `Right dataset "${targetDatasetName}" not found.`}};
+      const leftGeom = resolveGeojsonFieldName(left, sourceGeometryField);
+      const rightGeom = resolveGeojsonFieldName(right, targetGeometryField);
+      const leftH3 = !leftGeom ? resolveH3FieldName(left, sourceGeometryField || null) : null;
+      const rightH3 = !rightGeom ? resolveH3FieldName(right, targetGeometryField || null) : null;
       if ((!leftGeom && !leftH3) || (!rightGeom && !rightH3)) {
         return {
           llmResult: {
@@ -431,10 +431,10 @@ export function createOverlayDifferenceTool(ctx: QMapToolContext) {
     description:
       'Overlay two polygon/H3 datasets and materialize intersection/difference geometries for gap analysis.',
     parameters: z.object({
-      datasetAName: z.string(),
-      datasetBName: z.string(),
-      geometryFieldA: z.string().optional(),
-      geometryFieldB: z.string().optional(),
+      sourceDatasetName: z.string(),
+      targetDatasetName: z.string(),
+      sourceGeometryField: z.string().optional(),
+      targetGeometryField: z.string().optional(),
       includeIntersection: z.boolean().optional().describe('Default true'),
       includeADifference: z.boolean().optional().describe('Default true'),
       includeBDifference: z.boolean().optional().describe('Default false'),
@@ -453,20 +453,21 @@ export function createOverlayDifferenceTool(ctx: QMapToolContext) {
         .describe('Default false. Set true to auto-create a map layer for the output dataset.'),
       newDatasetName: z.string().optional()
     }),
-    execute: async ({
-      datasetAName,
-      datasetBName,
-      geometryFieldA,
-      geometryFieldB,
-      includeIntersection,
-      includeADifference,
-      includeBDifference,
-      useActiveFilters,
-      maxFeaturesA,
-      maxFeaturesB,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const datasetAName = rawArgs.sourceDatasetName || rawArgs.datasetAName;
+      const datasetBName = rawArgs.targetDatasetName || rawArgs.datasetBName;
+      const geometryFieldA = rawArgs.sourceGeometryField || rawArgs.geometryFieldA;
+      const geometryFieldB = rawArgs.targetGeometryField || rawArgs.geometryFieldB;
+      const {
+        includeIntersection,
+        includeADifference,
+        includeBDifference,
+        useActiveFilters,
+        maxFeaturesA,
+        maxFeaturesB,
+        showOnMap,
+        newDatasetName
+      } = rawArgs;
       const vis = getCurrentVisState();
       const a = resolveDatasetByName(vis?.datasets || {}, datasetAName);
       const b = resolveDatasetByName(vis?.datasets || {}, datasetBName);

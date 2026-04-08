@@ -29,8 +29,8 @@ export function createComputeQMapDatasetDeltaTool(ctx: QMapToolContext) {
       'Joins on joinKeyField and adds delta_<field> (absolute), delta_pct_<field> (relative %), ' +
       'change_class (new/removed/increased/decreased/stable), and changed_fields columns.',
     parameters: z.object({
-      baselineDatasetName: z.string().describe('Baseline dataset (t1)'),
-      currentDatasetName: z.string().describe('Current dataset (t2)'),
+      sourceDatasetName: z.string().describe('Baseline dataset (t1)'),
+      targetDatasetName: z.string().describe('Current dataset (t2)'),
       joinKeyField: z.string().describe('Key field used to match rows between the two datasets'),
       numericFields: z
         .array(z.string())
@@ -50,17 +50,18 @@ export function createComputeQMapDatasetDeltaTool(ctx: QMapToolContext) {
       showOnMap: z.boolean().optional().describe('Auto-create layer for output dataset. Default false.'),
       newDatasetName: z.string().optional().describe('Output dataset name. Default: <current>_delta')
     }),
-    execute: async ({
-      baselineDatasetName,
-      currentDatasetName,
-      joinKeyField,
-      numericFields,
-      deltaMode,
-      changeThresholdPct,
-      includeUnchangedRows,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const baselineDatasetName = rawArgs.sourceDatasetName || rawArgs.baselineDatasetName;
+      const currentDatasetName = rawArgs.targetDatasetName || rawArgs.currentDatasetName;
+      const {
+        joinKeyField,
+        numericFields,
+        deltaMode,
+        changeThresholdPct,
+        includeUnchangedRows,
+        showOnMap,
+        newDatasetName
+      } = rawArgs;
       const vis = getCurrentVisState();
       const baselineDs = resolveDatasetByName(vis?.datasets || {}, baselineDatasetName);
       if (!baselineDs?.id) {

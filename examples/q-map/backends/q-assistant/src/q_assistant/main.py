@@ -730,10 +730,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             base_payload,
             forbidden_qmap_runtime_tools=_FORBIDDEN_QMAP_RUNTIME_TOOLS,
         )
-        base_payload = _apply_intent_tool_selection(
-            base_payload,
-            objective_text=_extract_prompt_from_messages(base_payload.get("messages")),
-        )
+        # Intent-based tool selection: disabled by default (all tools pass through).
+        # Enable with Q_ASSISTANT_MAX_TOOLS_PER_REQUEST=40 to reduce tool schema
+        # for providers that struggle with large tool sets (e.g. Gemini empty completions).
+        if int(os.environ.get("Q_ASSISTANT_MAX_TOOLS_PER_REQUEST", "0") or "0") > 0:
+            base_payload = _apply_intent_tool_selection(
+                base_payload,
+                objective_text=_extract_prompt_from_messages(base_payload.get("messages")),
+            )
         base_payload = _prune_open_panel_only_chart_navigation(
             base_payload,
             extract_prompt_from_messages=_extract_prompt_from_messages,

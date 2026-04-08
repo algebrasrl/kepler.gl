@@ -5,7 +5,6 @@ import {z} from 'zod';
 
 import {selectQMapVisState} from '../../../state/qmap-selectors';
 import {runSpatialOpsJob, computeSpatialOpsTimeout} from '../../../workers/spatial-ops-runner';
-import {preprocessDualDatasetArgs} from '../tool-args-normalization';
 import {useToolExecution} from './use-tool-execution';
 
 import type {QMapToolContext} from '../context/tool-context';
@@ -620,11 +619,11 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
   return {
     description:
       'Report coverage and data-quality diagnostics for spatial matching between two geometry/H3 datasets.',
-    parameters: z.preprocess(preprocessDualDatasetArgs, z.object({
-      leftDatasetName: z.string(),
-      rightDatasetName: z.string(),
-      leftGeometryField: z.string().optional(),
-      rightGeometryField: z.string().optional(),
+    parameters: z.object({
+      sourceDatasetName: z.string(),
+      targetDatasetName: z.string(),
+      sourceGeometryField: z.string().optional(),
+      targetGeometryField: z.string().optional(),
       predicate: QMAP_SPATIAL_PREDICATE_SCHEMA.describe('Default intersects'),
       rightValueField: z.string().optional(),
       useActiveFilters: z.boolean().optional().describe('Default true'),
@@ -636,18 +635,19 @@ export function createCoverageQualityReportTool(ctx: QMapToolContext) {
         .number()
         .optional()
         .describe('Optional explicit cap on right features. Unset = full matched coverage (no truncation).')
-    })),
-    execute: async ({
-      leftDatasetName,
-      rightDatasetName,
-      leftGeometryField,
-      rightGeometryField,
-      predicate,
-      rightValueField,
-      useActiveFilters,
-      maxLeftFeatures,
-      maxRightFeatures
-    }: any) => {
+    }),
+    execute: async (rawArgs: any) => {
+      const leftDatasetName = rawArgs.sourceDatasetName || rawArgs.leftDatasetName;
+      const rightDatasetName = rawArgs.targetDatasetName || rawArgs.rightDatasetName;
+      const leftGeometryField = rawArgs.sourceGeometryField || rawArgs.leftGeometryField;
+      const rightGeometryField = rawArgs.targetGeometryField || rawArgs.rightGeometryField;
+      const {
+        predicate,
+        rightValueField,
+        useActiveFilters,
+        maxLeftFeatures,
+        maxRightFeatures
+      } = rawArgs;
       const vis = getCurrentVisState();
       const left = resolveDatasetByName(vis?.datasets || {}, leftDatasetName);
       const right = resolveDatasetByName(vis?.datasets || {}, rightDatasetName);

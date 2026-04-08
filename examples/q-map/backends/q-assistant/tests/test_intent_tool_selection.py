@@ -110,20 +110,20 @@ class TestSelectToolsForRequest(unittest.TestCase):
         self.assertIn("setQMapLayerColorByThresholds", result.selected_tools)
 
     def test_no_intent_stays_under_target(self):
-        """Vague question should produce <= 25 tools."""
-        result = select_tools_for_request(ALL_TOOLS, "che dataset conosci?", max_tools=25)
-        self.assertLessEqual(result.total_after, 25)
+        """Vague question should produce core+balanced (~36 tools)."""
+        result = select_tools_for_request(ALL_TOOLS, "che dataset conosci?", max_tools=40)
+        self.assertLessEqual(result.total_after, 40)
 
     def test_hard_cap_enforced(self):
         """Even with multiple intents, hard cap is respected.
-        Note: core+balanced = 22, so the minimum achievable is 22.
-        The cap should trim intent-added tools to stay as close as possible."""
+        Note: core+balanced = 36, so the minimum achievable is 36.
+        The cap should trim intent-added tools to stay at or below max_tools."""
         result = select_tools_for_request(
             ALL_TOOLS,
             "ritaglia, overlay, tassella, calcola regressione, mostra istogramma",
-            max_tools=25,
+            max_tools=40,
         )
-        self.assertLessEqual(result.total_after, 25)
+        self.assertLessEqual(result.total_after, 40)
         # Core tools must survive the cap
         for tool in CORE_TOOLS:
             if tool in ALL_TOOLS:
@@ -152,9 +152,9 @@ class TestSelectToolsForRequest(unittest.TestCase):
         result = select_tools_for_request(
             ALL_TOOLS,
             "mostrami i siti rete natura 2000 nella provincia di treviso",
-            max_tools=25,
+            max_tools=40,
         )
-        self.assertLessEqual(result.total_after, 25)
+        self.assertLessEqual(result.total_after, 40)
         # Must have query tools for the workflow
         self.assertIn("queryQCumberTerritorialUnits", result.selected_tools)
         self.assertIn("queryQCumberDatasetSpatial", result.selected_tools)
@@ -179,9 +179,9 @@ class TestApplyIntentToolSelection(unittest.TestCase):
     def test_filters_payload_tools(self):
         payload = self._make_payload(ALL_TOOLS)
         result = apply_intent_tool_selection(
-            payload, objective_text="che dataset conosci?", max_tools=25
+            payload, objective_text="che dataset conosci?", max_tools=40
         )
-        self.assertLessEqual(len(result["tools"]), 25)
+        self.assertLessEqual(len(result["tools"]), 40)
 
     def test_resets_forced_tool_choice_if_pruned(self):
         payload = self._make_payload(ALL_TOOLS)
@@ -190,7 +190,7 @@ class TestApplyIntentToolSelection(unittest.TestCase):
             "function": {"name": "paintQMapH3Cell"},
         }
         result = apply_intent_tool_selection(
-            payload, objective_text="che dataset conosci?", max_tools=25
+            payload, objective_text="che dataset conosci?", max_tools=40
         )
         # paintQMapH3Cell is h3-editing, not triggered by "che dataset conosci?"
         if "paintQMapH3Cell" not in {

@@ -130,7 +130,7 @@ export function createEraseQMapDatasetByGeometryTool(ctx: QMapToolContext) {
     description: 'Erase/mask source dataset geometries using one mask dataset (difference operation per feature).',
     parameters: z.object({
       sourceDatasetName: z.string(),
-      maskDatasetName: z.string(),
+      targetDatasetName: z.string(),
       sourceGeometryField: z.string().optional(),
       maskGeometryField: z.string().optional(),
       useActiveFilters: z.boolean().optional().describe('Default true'),
@@ -139,7 +139,9 @@ export function createEraseQMapDatasetByGeometryTool(ctx: QMapToolContext) {
       showOnMap: z.boolean().optional().describe('Default false'),
       newDatasetName: z.string().optional()
     }),
-    execute: async ({sourceDatasetName, maskDatasetName, sourceGeometryField, maskGeometryField, useActiveFilters, maxSourceFeatures, maxMaskFeatures, showOnMap, newDatasetName}: any) => {
+    execute: async (rawArgs: any) => {
+      const {sourceDatasetName, sourceGeometryField, maskGeometryField, useActiveFilters, maxSourceFeatures, maxMaskFeatures, showOnMap, newDatasetName} = rawArgs;
+      const maskDatasetName = rawArgs.targetDatasetName || rawArgs.maskDatasetName;
       const vis = ctx.getCurrentVisState();
       const datasets = vis?.datasets || {};
       const srcRes = resolveGeometryDataset(ctx, datasets, sourceDatasetName, sourceGeometryField, 'Source dataset');

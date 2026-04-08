@@ -137,7 +137,7 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "datasetName",
+        "sourceDatasetName",
         "resolution",
         "valueField",
         "operations",
@@ -286,8 +286,8 @@
         "regulatory"
       ],
       "inputKeys": [
-        "stationDatasetName",
-        "boundaryDatasetName",
+        "sourceDatasetName",
+        "targetDatasetName",
         "valueField",
         "populationField",
         "nameField",
@@ -937,8 +937,8 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "baselineDatasetName",
-        "currentDatasetName",
+        "sourceDatasetName",
+        "targetDatasetName",
         "joinKeyField",
         "numericFields",
         "deltaMode",
@@ -1090,7 +1090,17 @@
       "categories": [
         "geospatial-analysis"
       ],
-      "inputKeys": [],
+      "inputKeys": [
+        "sourceDatasetName",
+        "targetDatasetName",
+        "sourceGeometryField",
+        "targetGeometryField",
+        "predicate",
+        "rightValueField",
+        "useActiveFilters",
+        "maxLeftFeatures",
+        "maxRightFeatures"
+      ],
       "flags": {
         "mutatesDataset": false,
         "discovery": false,
@@ -1483,7 +1493,7 @@
       ],
       "inputKeys": [
         "sourceDatasetName",
-        "maskDatasetName",
+        "targetDatasetName",
         "sourceGeometryField",
         "maskGeometryField",
         "useActiveFilters",
@@ -2531,7 +2541,7 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "tessellationDatasetName",
+        "targetDatasetName",
         "sourceDatasetName",
         "sourceValueField",
         "allocationMode",
@@ -3584,7 +3594,7 @@
         "geospatial-analysis"
       ],
       "inputKeys": [
-        "datasetName",
+        "sourceDatasetName",
         "resolution",
         "targetDatasetName",
         "maxFeatures",

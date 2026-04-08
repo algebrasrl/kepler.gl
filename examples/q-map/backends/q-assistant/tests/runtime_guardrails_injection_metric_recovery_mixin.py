@@ -170,8 +170,8 @@ class RuntimeGuardrailInjectionMetricRecoveryMixin:
                                 "name": "spatialJoinByPredicate",
                                 "arguments": json.dumps(
                                     {
-                                        "leftDatasetName": "Kontur Boundaries Italia (query) [t7sj18]",
-                                        "rightDatasetName": "CLC 2018 Italia (query) [izcnma]",
+                                        "sourceDatasetName": "Kontur Boundaries Italia (query) [t7sj18]",
+                                        "targetDatasetName": "CLC 2018 Italia (query) [izcnma]",
                                         "rightValueField": "area_ha",
                                         "aggregations": ["count", "sum"],
                                         "newDatasetName": "Province_Pressione_Ambientale",

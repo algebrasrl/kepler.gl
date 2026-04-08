@@ -1949,8 +1949,8 @@
           "overlaySymmetricDifference"
         ],
         "required_keys_all": [
-          "datasetAName",
-          "datasetBName"
+          "sourceDatasetName",
+          "targetDatasetName"
         ]
       }
     ]

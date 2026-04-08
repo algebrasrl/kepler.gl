@@ -37,27 +37,22 @@ export function createDualDatasetOverlayTool(ctx: QMapToolContext, config: Overl
   return {
     description: config.toolDescription,
     parameters: z.object({
-      datasetAName: z.string(),
-      datasetBName: z.string(),
-      geometryFieldA: z.string().optional(),
-      geometryFieldB: z.string().optional(),
+      sourceDatasetName: z.string(),
+      targetDatasetName: z.string(),
+      sourceGeometryField: z.string().optional(),
+      targetGeometryField: z.string().optional(),
       useActiveFilters: z.boolean().optional().describe('Default true'),
       maxFeaturesA: z.number().optional(),
       maxFeaturesB: z.number().optional(),
       showOnMap: z.boolean().optional().describe('Default false'),
       newDatasetName: z.string().optional()
     }),
-    execute: async ({
-      datasetAName,
-      datasetBName,
-      geometryFieldA,
-      geometryFieldB,
-      useActiveFilters,
-      maxFeaturesA,
-      maxFeaturesB,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const datasetAName = rawArgs.sourceDatasetName || rawArgs.datasetAName;
+      const datasetBName = rawArgs.targetDatasetName || rawArgs.datasetBName;
+      const geometryFieldA = rawArgs.sourceGeometryField || rawArgs.geometryFieldA;
+      const geometryFieldB = rawArgs.targetGeometryField || rawArgs.geometryFieldB;
+      const {useActiveFilters, maxFeaturesA, maxFeaturesB, showOnMap, newDatasetName} = rawArgs;
       const vis = getCurrentVisState();
       const datasets = vis?.datasets || {};
       const a = resolveDatasetByName(datasets, datasetAName);

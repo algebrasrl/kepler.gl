@@ -449,8 +449,8 @@ def build_zonal_freeze_fallback_candidate(
 
     zonal_args = related_call.get("args") if isinstance(related_call, dict) else {}
     zonal_args = zonal_args if isinstance(zonal_args, dict) else {}
-    admin_dataset_name = str(zonal_args.get("adminDatasetName") or "").strip()
-    value_dataset_name = str(zonal_args.get("valueDatasetName") or "").strip()
+    admin_dataset_name = str(zonal_args.get("sourceDatasetName") or "").strip()
+    value_dataset_name = str(zonal_args.get("targetDatasetName") or "").strip()
     value_field = str(zonal_args.get("valueField") or "").strip()
     aggregation = str(zonal_args.get("aggregation") or "").strip().lower()
     if aggregation not in {"count", "sum", "avg", "min", "max"}:
@@ -500,7 +500,7 @@ def build_zonal_freeze_fallback_candidate(
             else ""
         )
         + f'targetDatasetName="{rerouted_dataset_name}", showOnMap=false), then call waitForQMapDataset(datasetName="{rerouted_dataset_name}"), '
-        f'then call zonalStatsByAdmin(adminDatasetName="{admin_dataset_name}", valueDatasetName="{rerouted_dataset_name}", '
+        f'then call zonalStatsByAdmin(sourceDatasetName="{admin_dataset_name}", targetDatasetName="{rerouted_dataset_name}", '
         + (f'valueField="{rerouted_value_field}", ' if rerouted_value_field else "")
         + f'aggregation="{aggregation}"). '
         + (
@@ -625,7 +625,7 @@ def build_perimeter_overlay_coverage_candidate(
         if isinstance(overlay_call, dict):
             args = overlay_call.get("args")
             if isinstance(args, dict):
-                reference_dataset = str(args.get("datasetBName") or args.get("datasetAName") or "").strip()
+                reference_dataset = str(args.get("targetDatasetName") or args.get("sourceDatasetName") or "").strip()
         if not reference_dataset and clip_idx >= 0:
             clip_call = find_related_tool_call(results[clip_idx], assistant_calls)
             if isinstance(clip_call, dict):
@@ -633,7 +633,7 @@ def build_perimeter_overlay_coverage_candidate(
                 if isinstance(clip_args, dict):
                     reference_dataset = str(
                         clip_args.get("boundaryDatasetName")
-                        or clip_args.get("clipDatasetName")
+                        or clip_args.get("targetDatasetName")
                         or clip_args.get("sourceDatasetName")
                         or ""
                     ).strip()
@@ -651,18 +651,18 @@ def build_perimeter_overlay_coverage_candidate(
             if isinstance(clip_args, dict):
                 reference_dataset = str(
                     clip_args.get("boundaryDatasetName")
-                    or clip_args.get("clipDatasetName")
+                    or clip_args.get("targetDatasetName")
                     or clip_args.get("sourceDatasetName")
                     or ""
                 ).strip()
 
     coverage_call = "Call coverageQualityReport"
     if overlay_dataset and reference_dataset:
-        coverage_call += f'(leftDatasetName="{overlay_dataset}", rightDatasetName="{reference_dataset}")'
+        coverage_call += f'(sourceDatasetName="{overlay_dataset}", targetDatasetName="{reference_dataset}")'
     elif overlay_dataset:
-        coverage_call += f'(leftDatasetName="{overlay_dataset}", rightDatasetName="<boundary/reference dataset>")'
+        coverage_call += f'(sourceDatasetName="{overlay_dataset}", targetDatasetName="<boundary/reference dataset>")'
     else:
-        coverage_call += "(leftDatasetName=<overlay output>, rightDatasetName=<boundary/reference dataset>)"
+        coverage_call += "(sourceDatasetName=<overlay output>, targetDatasetName=<boundary/reference dataset>)"
 
     return {
         "ruleId": "perimeter_overlay_coverage_required",

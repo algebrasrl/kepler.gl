@@ -10,6 +10,7 @@ type NormalizeQMapToolExecuteArgsOptions = {
 const CANONICAL_DATASET_ARG_KEYS = new Set([
   'datasetName',
   'sourceDatasetName',
+  'targetDatasetName',
   'leftDatasetName',
   'rightDatasetName',
   'valueDatasetName',
@@ -161,9 +162,11 @@ export function preprocessDualDatasetArgs(raw: unknown): unknown {
 }
 
 /**
- * Zod-preprocess callback for clip tools (sourceDatasetName + clipDatasetName).
- * Maps common model aliases: datasetName → sourceDatasetName,
- * maskDatasetName / boundaryDatasetName → clipDatasetName.
+ * Zod-preprocess callback for clip tools (sourceDatasetName + targetDatasetName).
+ * Maps common model aliases to canonical param names:
+ *   datasetName → sourceDatasetName,
+ *   clipDatasetName / maskDatasetName / boundaryDatasetName / maskGeometryDatasetName → targetDatasetName,
+ *   clipGeometryField → targetGeometryField.
  */
 export function preprocessClipDatasetArgs(raw: unknown): unknown {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return raw;
@@ -172,17 +175,25 @@ export function preprocessClipDatasetArgs(raw: unknown): unknown {
     args.sourceDatasetName = args.datasetName;
     delete args.datasetName;
   }
-  if (!args.clipDatasetName) {
+  if (!args.targetDatasetName) {
     const alias =
+      (typeof args.clipDatasetName === 'string' && args.clipDatasetName) ||
       (typeof args.maskDatasetName === 'string' && args.maskDatasetName) ||
       (typeof args.boundaryDatasetName === 'string' && args.boundaryDatasetName) ||
-      (typeof args.clipGeometryDatasetName === 'string' && args.clipGeometryDatasetName);
+      (typeof args.clipGeometryDatasetName === 'string' && args.clipGeometryDatasetName) ||
+      (typeof args.maskGeometryDatasetName === 'string' && args.maskGeometryDatasetName);
     if (alias) {
-      args.clipDatasetName = alias;
+      args.targetDatasetName = alias;
+      delete args.clipDatasetName;
       delete args.maskDatasetName;
       delete args.boundaryDatasetName;
       delete args.clipGeometryDatasetName;
+      delete args.maskGeometryDatasetName;
     }
+  }
+  if (!args.targetGeometryField && typeof args.clipGeometryField === 'string') {
+    args.targetGeometryField = args.clipGeometryField;
+    delete args.clipGeometryField;
   }
   return args;
 }

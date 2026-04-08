@@ -49,7 +49,7 @@ export function createPopulateTassellationFromAdminUnitsTool(ctx: QMapToolContex
     description:
       'Populate an H3 tessellation with an administrative numeric field (e.g. population): aggregate source to tessellation resolution, join on H3, and create a styled-ready dataset.',
     parameters: z.object({
-      tessellationDatasetName: z.string().describe('Tessellation dataset name (must contain H3 field)'),
+      targetDatasetName: z.string().describe('Tessellation dataset name (must contain H3 field)'),
       sourceDatasetName: z.string().describe('Administrative source dataset name (geojson or H3)'),
       sourceValueField: z.string().describe('Numeric source field to aggregate, e.g. population'),
       allocationMode: z
@@ -85,23 +85,24 @@ export function createPopulateTassellationFromAdminUnitsTool(ctx: QMapToolContex
       newDatasetName: z.string().optional().describe('Default <tessellation>_<sourceField>'),
       useActiveFilters: z.boolean().optional().describe('Apply active filters on source dataset (default true)')
     }),
-    execute: async ({
-      tessellationDatasetName,
-      sourceDatasetName,
-      sourceValueField,
-      allocationMode,
-      allocationSubMode,
-      valueSemantics,
-      aggregation,
-      resolution,
-      weightMode,
-      joinType,
-      showOnMap,
-      minCoveragePct,
-      targetValueFieldName,
-      newDatasetName,
-      useActiveFilters
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const tessellationDatasetName = rawArgs.targetDatasetName || rawArgs.tessellationDatasetName;
+      const {
+        sourceDatasetName,
+        sourceValueField,
+        allocationMode,
+        allocationSubMode,
+        valueSemantics,
+        aggregation,
+        resolution,
+        weightMode,
+        joinType,
+        showOnMap,
+        minCoveragePct,
+        targetValueFieldName,
+        newDatasetName,
+        useActiveFilters
+      } = rawArgs;
       // Derive effective params from allocationMode shortcut when provided
       let effectiveWeightMode: string | undefined;
       let effectiveAggregation: string | undefined;

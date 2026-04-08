@@ -134,7 +134,7 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
       'IMPORTANT: tessellation output contains only h3_id/h3_resolution — it does NOT include population or thematic data. ' +
       'To color cells by population or any admin metric, you MUST call populateTassellationFromAdminUnits after tessellation to enrich cells with data from the administrative source dataset.',
     parameters: z.object({
-      datasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
+      sourceDatasetName: z.string().describe('Exact dataset name from listQMapDatasets'),
       resolution: z.number().min(4).max(11),
       targetDatasetName: z.string().optional(),
       maxFeatures: z
@@ -152,16 +152,17 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
         .optional()
         .describe('Default true with active filters: create intermediate filtered dataset before tessellation')
     }),
-    execute: async ({
-      datasetName,
-      resolution,
-      targetDatasetName,
-      maxFeatures,
-      useActiveFilters,
-      appendToExisting,
-      showOnMap,
-      materializeFilteredDataset
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const datasetName = rawArgs.sourceDatasetName || rawArgs.datasetName;
+      const {
+        resolution,
+        targetDatasetName,
+        maxFeatures,
+        useActiveFilters,
+        appendToExisting,
+        showOnMap,
+        materializeFilteredDataset
+      } = rawArgs;
       const sourceDataset = resolveDatasetByName(getCurrentVisState()?.datasets || {}, datasetName);
       if (!sourceDataset?.id) {
         return {
@@ -187,7 +188,7 @@ export function createTassellateDatasetLayerTool(ctx: QMapToolContext) {
             success: false,
             retryWithTool: 'aggregateDatasetToH3',
             retryWithArgs: {
-              datasetName: sourceDataset.label || sourceDataset.id,
+              sourceDatasetName: sourceDataset.label || sourceDataset.id,
               resolution,
               operations: ['count'],
               groupByFields: suggestedGroupByFields.length ? suggestedGroupByFields : undefined,

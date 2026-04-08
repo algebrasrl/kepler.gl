@@ -56,9 +56,9 @@ export function createClipQMapDatasetByGeometryTool(ctx: QMapToolContext) {
       'Clip/mask a geometry dataset using another geometry dataset and materialize a derived dataset. Keeps source schema and applies active filters by default.',
     parameters: z.preprocess(preprocessClipDatasetArgs, z.object({
       sourceDatasetName: z.string().describe('Dataset to clip/mask'),
-      clipDatasetName: z.string().describe('Dataset providing clipping geometry'),
+      targetDatasetName: z.string().describe('Dataset providing clipping geometry'),
       sourceGeometryField: z.string().optional().describe('Optional explicit geojson field in source dataset'),
-      clipGeometryField: z.string().optional().describe('Optional explicit geojson field in clipping dataset'),
+      targetGeometryField: z.string().optional().describe('Optional explicit geojson field in clipping dataset'),
       mode: QMAP_CLIP_MODE_SCHEMA.describe('Default intersects'),
       useActiveFilters: z
         .boolean()
@@ -96,21 +96,22 @@ export function createClipQMapDatasetByGeometryTool(ctx: QMapToolContext) {
         .describe('Default true. Set false for intermediate technical datasets kept off-map.'),
       newDatasetName: z.string().optional().describe('Default <source>_clipped_<clip>')
     })),
-    execute: async ({
-      sourceDatasetName,
-      clipDatasetName,
-      sourceGeometryField,
-      clipGeometryField,
-      mode,
-      useActiveFilters,
-      maxSourceFeatures,
-      maxClipFeatures,
-      includeIntersectionMetrics,
-      includeDistinctPropertyCounts,
-      includeDistinctPropertyValueCounts,
-      showOnMap,
-      newDatasetName
-    }: any) => {
+    execute: async (rawArgs: any) => {
+      const sourceDatasetName = rawArgs.sourceDatasetName;
+      // Backward compat: accept legacy clipDatasetName / maskGeometryDatasetName
+      const clipDatasetName = rawArgs.targetDatasetName || rawArgs.clipDatasetName || rawArgs.maskGeometryDatasetName;
+      const sourceGeometryField = rawArgs.sourceGeometryField;
+      const clipGeometryField = rawArgs.targetGeometryField || rawArgs.clipGeometryField;
+      const mode = rawArgs.mode;
+      const useActiveFilters = rawArgs.useActiveFilters;
+      const maxSourceFeatures = rawArgs.maxSourceFeatures;
+      const maxClipFeatures = rawArgs.maxClipFeatures;
+      const includeIntersectionMetrics = rawArgs.includeIntersectionMetrics;
+      const includeDistinctPropertyCounts = rawArgs.includeDistinctPropertyCounts;
+      const includeDistinctPropertyValueCounts = rawArgs.includeDistinctPropertyValueCounts;
+      const showOnMap = rawArgs.showOnMap;
+      const newDatasetName = rawArgs.newDatasetName;
+
       const currentVisState = getCurrentVisState();
       const sourceDataset = resolveDatasetByName(currentVisState?.datasets || {}, sourceDatasetName);
       const clipDataset = resolveDatasetByName(currentVisState?.datasets || {}, clipDatasetName);

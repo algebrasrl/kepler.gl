@@ -249,7 +249,7 @@ def _objective_requests_chart_visualization(objective_text: str) -> bool:
     if not text:
         return False
     return bool(
-        re.search(r"grafic|chart|istogramm|histogram|plot|scatter|boxplot|word.?cloud|diagramm|barre|bars", text)
+        re.search(r"grafic|chart|istogramm|histogram|plot|scatter|boxplot|word.?cloud|diagramm|barre|bars|distribuzion.*valor|vista.*esplorat|esplorativ", text)
     )
 
 
@@ -258,7 +258,7 @@ def _objective_requests_mobility(objective_text: str) -> bool:
     if not text:
         return False
     return bool(
-        re.search(r"percors|routing|isocron|isochrone|geocod|indirizzo|address|stradale|road", text)
+        re.search(r"percors|routing|isocron|isochrone|geocod|indirizzo|address|stradale|road|missione.*territor", text)
     )
 
 
@@ -272,7 +272,10 @@ def _objective_requests_geospatial_analysis(objective_text: str) -> bool:
             r"|buffer|zonal|dissolve|unisci.*geometr|merge.*geometr|sovrapposi"
             r"|tassell|h3|esagon|tessellat|popola.*tassell|popola.*h3"
             r"|autocorrelaz|moran|lisa|hotspot|getis|equity|gini|theil"
-            r"|centroid|baricentro|raggio|circle.*buffer|bounding.?box",
+            r"|centroid|baricentro|raggio|circle.*buffer|bounding.?box"
+            r"|confronta.*perimet|aree.*comune|aree.*differenza|impatto.*giurisdizion"
+            r"|prossimit|vicinanz|adiacen|copertur.*qualit|coverage"
+            r"|correlazion.*spazial|bivariat|bivariat",
             text,
         )
     )
@@ -297,7 +300,7 @@ def _objective_requests_styling_full(objective_text: str) -> bool:
     if not text:
         return False
     return bool(
-        re.search(r"colora|choropleth|threshold|soglia|altezza|height|3d|estrus|preset|stile", text)
+        re.search(r"colora|choropleth|threshold|soglia|altezza|height|3d|estrus|preset|stile|leggibil|tooltip|visibil", text)
     )
 
 
@@ -305,7 +308,7 @@ def _objective_requests_load_save(objective_text: str) -> bool:
     text = str(objective_text or "").strip().lower()
     if not text:
         return False
-    return bool(re.search(r"carica.*dato|load.*data|salva|save|importa|esporta|export", text))
+    return bool(re.search(r"carica.*dato|load.*data|salva|save|importa|esporta|export|caricamento.*cloud|cloud.*load|validit.*dataset", text))
 
 
 def _objective_requests_h3_editing(objective_text: str) -> bool:

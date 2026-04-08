@@ -2181,7 +2181,7 @@ def _inject_runtime_guardrail_message(
             guidance_lines.append(
                 f"{_RUNTIME_GUARDRAIL_PREFIX} "
                 "For zonalStatsByAdmin use canonical args: "
-                "{adminDatasetName, valueDatasetName, valueField?, aggregation?, weightMode?, outputFieldName?, showOnMap?, newDatasetName?}. "
+                "{sourceDatasetName, targetDatasetName, valueField?, aggregation?, weightMode?, outputFieldName?, showOnMap?, newDatasetName?}. "
                 "Do not use non-canonical keys like targetDatasetName/adminNameField/targetValueFieldName/operations."
             )
 

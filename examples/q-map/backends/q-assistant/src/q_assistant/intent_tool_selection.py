@@ -67,13 +67,29 @@ BALANCED_LITE: frozenset[str] = frozenset({
     "previewQMapDatasetRows",
     "rankQMapDatasetRows",
     "deriveQMapDatasetBbox",
+    "distinctQMapFieldValues",
+    "describeQMapField",
     # Styling essentials
     "basemap",
+    "mapBoundary",
     "setQMapTooltipFields",
     "setQMapLayerColorByField",
+    "setQMapLayerSolidColor",
+    "setQMapLayerHeightByField",
+    "setQMapLayerColorByThresholds",
+    "setQMapLayerColorByStatsThresholds",
+    "applyQMapStylePreset",
     "setQMapLayerVisibility",
     "showOnlyQMapLayer",
     "setQMapLayerOrder",
+    # Data materialization essentials
+    "createDatasetFromFilter",
+    "createDatasetFromCurrentFilters",
+    "addComputedField",
+    "createDatasetWithNormalizedField",
+    # IO essentials
+    "loadData",
+    "saveDataToMap",
 })
 
 # ---------------------------------------------------------------------------
@@ -204,18 +220,18 @@ _DROP_PRIORITY: tuple[frozenset[str], ...] = (
     _REGULATORY_TOOLS,
     _STATISTICAL_TOOLS,
     _TIME_SERIES_TOOLS,
-    _MOBILITY_TOOLS,
-    _CHART_TOOLS,
-    _CLOUD_MAP_TOOLS,
-    _STYLING_FULL_EXTRA,
     _EXTRA_INSPECTION_TOOLS,
-    _GEOSPATIAL_H3_TOOLS,
+    _STYLING_FULL_EXTRA,
+    _CLOUD_MAP_TOOLS,
+    _CHART_TOOLS,
+    _MOBILITY_TOOLS,
     _GEOSPATIAL_CORE_TOOLS,
+    _GEOSPATIAL_H3_TOOLS,
     # CORE_TOOLS and BALANCED_LITE are never dropped
 )
 
 # Environment variable for hard cap.
-_MAX_TOOLS_DEFAULT = 20
+_MAX_TOOLS_DEFAULT = 99
 
 
 def _read_max_tools_per_request() -> int:
