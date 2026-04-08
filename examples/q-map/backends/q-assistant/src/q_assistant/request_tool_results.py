@@ -577,22 +577,36 @@ def _has_assistant_text_since_last_user(payload: dict[str, Any]) -> bool:
 
 
 def _find_last_workflow_boundary_index(messages: list[dict[str, Any]]) -> int:
-    """Find the index of the last assistant message that contains text
-    but no tool_calls within the current user-message scope.
+    """Find the index of the last workflow boundary within the current
+    user-message scope.
 
-    A text-only assistant message is the natural boundary of a completed
-    workflow step.  Tool results before this boundary belong to a previous
-    step and should not count toward the hard cap or watchdog."""
+    A boundary is either:
+    - An assistant message with text but no tool_calls (completed step), OR
+    - A successful countQMapRows tool result (post-mutation validation complete).
+
+    Tool results before the boundary belong to a previous workflow step and
+    should not count toward the hard cap or watchdog."""
     for idx in range(len(messages) - 1, -1, -1):
         msg = messages[idx]
         if not isinstance(msg, dict):
             continue
-        if str(msg.get("role") or "").strip().lower() != "assistant":
-            continue
-        has_text = bool(_text_from_message_content(msg.get("content")).strip())
-        has_tool_calls = bool(msg.get("tool_calls"))
-        if has_text and not has_tool_calls:
-            return idx
+        role = str(msg.get("role") or "").strip().lower()
+
+        # Boundary type 1: assistant text without tool_calls
+        if role == "assistant":
+            has_text = bool(_text_from_message_content(msg.get("content")).strip())
+            has_tool_calls = bool(msg.get("tool_calls"))
+            if has_text and not has_tool_calls:
+                return idx
+
+        # Boundary type 2: successful countQMapRows (post-mutation checkpoint)
+        if role == "tool":
+            content = msg.get("content")
+            if isinstance(content, str) and "countQMapRows" in content and '"success": true' in content:
+                return idx
+            if isinstance(content, str) and "countQMapRows" in content and '"success":true' in content:
+                return idx
+
     return -1
 
 
