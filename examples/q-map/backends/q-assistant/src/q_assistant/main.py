@@ -730,10 +730,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             base_payload,
             forbidden_qmap_runtime_tools=_FORBIDDEN_QMAP_RUNTIME_TOOLS,
         )
-        # Intent-based tool selection: disabled by default (all tools pass through).
-        # Enable with Q_ASSISTANT_MAX_TOOLS_PER_REQUEST=40 to reduce tool schema
-        # for providers that struggle with large tool sets (e.g. Gemini empty completions).
-        if int(os.environ.get("Q_ASSISTANT_MAX_TOOLS_PER_REQUEST", "0") or "0") > 0:
+        # Intent-based tool selection: reduces tools from ~99 to 36-70 based on
+        # user objective. Enabled by default — Gemini Flash produces empty completions
+        # (0 tokens) with >50 tools in ~25% of requests.
+        # Disable with Q_ASSISTANT_DISABLE_INTENT_TOOL_SELECTION=1.
+        if not os.environ.get("Q_ASSISTANT_DISABLE_INTENT_TOOL_SELECTION"):
             base_payload = _apply_intent_tool_selection(
                 base_payload,
                 objective_text=_extract_prompt_from_messages(base_payload.get("messages")),
