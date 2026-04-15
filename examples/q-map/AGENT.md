@@ -224,7 +224,7 @@ Working rule:
   - mode effects are enforced at runtime:
     - side panel tabs filtered in `src/components/panel-toggle.tsx`
     - built-in map controls visibility set via `uiState.mapControls` in `src/main.tsx` reducer plugin
-    - basemap default for `draw-stressor` is `satellite` (on initial boot in that mode and on mode switch to `draw-stressor` via `mapStyleChange`)
+    - default basemap for all q-map modes is `satellite` when a Mapbox token is configured (fallback `no_map` otherwise); `draw-stressor` and `geotoken` additionally re-assert `satellite` via `mapStyleChange` on mode entry. Override via hash `#basemap=...` or env `VITE_QMAP_DEFAULT_BASEMAP=...`
     - custom controls (`H3`, `AI`, custom draw menus `PE/OP`) are mode-gated in `src/components/h3-paint-control.tsx`, `src/features/qmap-ai/control.tsx`, and `src/components/draw-tool-controls.tsx`
     - Add Data modal methods are mode-gated in `src/components/load-data-modal.tsx`:
       - `draw-stressor` exposes only `upload` (`Carica file`)

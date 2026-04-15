@@ -180,7 +180,7 @@ const QMAP_BASEMAP_OPTIONS = new Set([
 ]);
 const QMAP_DEFAULT_BASEMAP = QMAP_BASEMAP_OPTIONS.has(String(import.meta.env.VITE_QMAP_DEFAULT_BASEMAP || ''))
   ? String(import.meta.env.VITE_QMAP_DEFAULT_BASEMAP)
-  : (QMAP_HAS_MAPBOX_TOKEN ? 'muted' : 'no_map');
+  : (QMAP_HAS_MAPBOX_TOKEN ? 'satellite' : 'no_map');
 const QMAP_DEFAULT_MAP_VIEWPORT = {
   latitude: 42.5,
   longitude: 12.5,

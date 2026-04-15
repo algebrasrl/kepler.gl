@@ -12,6 +12,9 @@ All notable changes to `examples/q-map` should be documented in this file.
 - **Bundle splitting: main chunk 11MB → 5MB:** added `manualChunks` for `deck-engine` (1.3MB), `charts` (3.3MB), `turf` (1.1MB), `color-scale` (0.3MB) in `vite.config.ts`. Chunks load in parallel, reducing TTI.
 - **Debounce `setMapBoundary` during drag/pan (200ms):** `onViewStateChange` in `main.tsx` now debounces the `setMapBoundary` Redux dispatch to avoid per-frame state churn that triggers `MapContainer` re-render and deck.gl layer recreation. AI assistant map boundary context updates after drag settles instead of every frame.
 
+### Changed
+- **Default basemap is now `satellite` for all q-map modes (when Mapbox token available):** `QMAP_DEFAULT_BASEMAP` in `src/main.tsx` switched from `muted` to `satellite`. Effect: `kepler` and `draw-on-map` modes now boot with satellite imagery, matching `draw-stressor` and `geotoken`. Without a Mapbox token the fallback remains `no_map`. Override via hash `#basemap=...` or env `VITE_QMAP_DEFAULT_BASEMAP=...`.
+
 ### Added
 - **Empty completion auto-retry in streaming transport:** when the upstream provider returns 0 content chunks (known Gemini Flash issue with large tool schemas), the streaming transport retries once without tool schema to force a text response. The retry text is injected as a synthetic SSE chunk before `[DONE]`, so the client receives content instead of silence. Implemented in `provider_transport.py` for the OpenRouter/OpenAI SDK streaming paths.
 - **`--verbose` flag for `run-ai-eval.mjs`:** prints prompt, tool calls with arguments, required tools, scoring breakdown, and assistant text for every case during the eval run. Usage: `--verbose` CLI flag.
